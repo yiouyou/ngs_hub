@@ -7,6 +7,15 @@
 // 	},
 // });
 frappe.ui.form.on('NGS Sample Info', {
+  onload(frm) {
+    // 判断是否客户或内部员工
+    const roles = frappe.session.user_roles || [];
+    const is_external = roles.includes('NGS External Customer');
+    // 客户看不到 inside_section
+    if (is_external) {
+      frm.toggle_display('inside_section', false);
+    }
+  },
   refresh(frm) {
     frm.add_custom_button(__('→ Sample Transfer'), () => {
       if (frm.doc.sample_transfer) {
