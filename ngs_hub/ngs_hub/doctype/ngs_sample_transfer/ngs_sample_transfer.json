@@ -1,0 +1,147 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:sample_transfer_id",
+ "creation": "2025-06-19 05:11:36.344010",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "customer",
+  "mode",
+  "transportation_company",
+  "tracking_number",
+  "departure_time",
+  "arrival_time",
+  "transportation_condition",
+  "arrival_status",
+  "arrival_record",
+  "note",
+  "section_break_rprt",
+  "sample_transfer_id",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_rprt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "arrival_time",
+   "fieldtype": "Datetime",
+   "label": "Arrival Time"
+  },
+  {
+   "depends_on": "eval:doc.mode == 'Mail'",
+   "fieldname": "tracking_number",
+   "fieldtype": "Data",
+   "label": "Tracking Number"
+  },
+  {
+   "depends_on": "eval:doc.mode == 'Mail'",
+   "fieldname": "transportation_company",
+   "fieldtype": "Data",
+   "label": "Transportation Company"
+  },
+  {
+   "fieldname": "transportation_condition",
+   "fieldtype": "Select",
+   "label": "Transportation Condition",
+   "options": "Room temperature\nIce packs\nDry ice"
+  },
+  {
+   "fieldname": "arrival_status",
+   "fieldtype": "Select",
+   "label": "Arrival Status",
+   "options": "Passed\nQuantity does not match\nLabel does not match\nRefrigeration is exhausted\nOther status (specify)"
+  },
+  {
+   "fieldname": "arrival_record",
+   "fieldtype": "Attach",
+   "label": "Arrival Record"
+  },
+  {
+   "fieldname": "mode",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Mode",
+   "options": "Mail\nOnsite\nPickup"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  },
+  {
+   "fieldname": "departure_time",
+   "fieldtype": "Datetime",
+   "label": "Departure time"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "no_copy": 1,
+   "options": "NGS Customer",
+   "print_hide": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "NGS Sample Transfer",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "NGS Sample Transfer",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "sample_transfer_id",
+   "fieldtype": "Data",
+   "label": "Sample Transfer ID",
+   "read_only": 1,
+   "unique": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-06-21 10:37:42.263465",
+ "modified_by": "Administrator",
+ "module": "NGS Hub",
+ "name": "NGS Sample Transfer",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

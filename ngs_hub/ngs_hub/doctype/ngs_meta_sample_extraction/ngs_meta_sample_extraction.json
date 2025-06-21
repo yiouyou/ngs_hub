@@ -1,0 +1,154 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:meta_sample_extraction_id",
+ "creation": "2025-06-20 22:30:52.671014",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "customer",
+  "sample_transfer",
+  "sample_info",
+  "start_time",
+  "end_time",
+  "sop_version",
+  "operator",
+  "qc_status",
+  "qc_result",
+  "sample_final_volume",
+  "sample_final_concentration",
+  "note",
+  "section_break_sl8c",
+  "meta_sample_extraction_id",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_sl8c",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "NGS Meta Sample Extraction",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "no_copy": 1,
+   "options": "NGS Customer",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "sample_transfer",
+   "fieldtype": "Link",
+   "label": "Sample Transfer",
+   "no_copy": 1,
+   "options": "NGS Sample Transfer",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "sample_info",
+   "fieldtype": "Link",
+   "label": "Sample Info",
+   "no_copy": 1,
+   "options": "NGS Sample Info",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "start_time",
+   "fieldtype": "Datetime",
+   "label": "Start Time"
+  },
+  {
+   "fieldname": "end_time",
+   "fieldtype": "Datetime",
+   "label": "End Time"
+  },
+  {
+   "fieldname": "sop_version",
+   "fieldtype": "Data",
+   "label": "SOP Version"
+  },
+  {
+   "fieldname": "operator",
+   "fieldtype": "Link",
+   "label": "Operator",
+   "options": "User"
+  },
+  {
+   "fieldname": "qc_status",
+   "fieldtype": "Select",
+   "label": "QC Status",
+   "options": "PASS\nFAIL\nNA"
+  },
+  {
+   "fieldname": "qc_result",
+   "fieldtype": "Attach",
+   "label": "QC Result"
+  },
+  {
+   "fieldname": "sample_final_volume",
+   "fieldtype": "Data",
+   "label": "Sample Final Volume (uL)"
+  },
+  {
+   "fieldname": "sample_final_concentration",
+   "fieldtype": "Data",
+   "label": "Sample Final Concentration (ng/uL)"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  },
+  {
+   "fieldname": "meta_sample_extraction_id",
+   "fieldtype": "Data",
+   "label": "Meta Sample Extraction ID",
+   "read_only": 1,
+   "unique": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-06-21 10:44:28.709416",
+ "modified_by": "Administrator",
+ "module": "NGS Hub",
+ "name": "NGS Meta Sample Extraction",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

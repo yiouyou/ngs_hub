@@ -1,0 +1,194 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:singlecell_library_construction_id",
+ "creation": "2025-06-19 00:37:16.762325",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "customer",
+  "sample_transfer",
+  "sample_info",
+  "singlecell_10x_preprocess",
+  "singlecell_10x_chromium",
+  "start_time",
+  "end_time",
+  "sop_version",
+  "operator",
+  "qc_status",
+  "qc_result",
+  "library_type",
+  "library_index_sequence",
+  "library_insert_size",
+  "library_final_volume",
+  "library_final_concentration",
+  "note",
+  "section_break_lwhs",
+  "singlecell_library_construction_id",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_lwhs",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "NGS SingleCell Library Construction",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "start_time",
+   "fieldtype": "Datetime",
+   "label": "Start Time"
+  },
+  {
+   "fieldname": "end_time",
+   "fieldtype": "Datetime",
+   "label": "End Time"
+  },
+  {
+   "fieldname": "operator",
+   "fieldtype": "Data",
+   "label": "Operator"
+  },
+  {
+   "fieldname": "sop_version",
+   "fieldtype": "Data",
+   "label": "SOP Version"
+  },
+  {
+   "fieldname": "qc_status",
+   "fieldtype": "Select",
+   "label": "QC Status",
+   "options": "PASS\nFAIL\nNA"
+  },
+  {
+   "fieldname": "qc_result",
+   "fieldtype": "Attach",
+   "label": "QC Result"
+  },
+  {
+   "fieldname": "library_type",
+   "fieldtype": "Select",
+   "label": "Library Type",
+   "options": "SingleCell transcriptome\nSingleCell ATAC\nSingleCell VDJ\nSingleCell full-length transcriptome"
+  },
+  {
+   "fieldname": "library_index_sequence",
+   "fieldtype": "Data",
+   "label": "Library Index Sequence"
+  },
+  {
+   "fieldname": "library_insert_size",
+   "fieldtype": "Data",
+   "label": "Library Insert Size"
+  },
+  {
+   "fieldname": "library_final_volume",
+   "fieldtype": "Data",
+   "label": "Library Final Volume (uL)"
+  },
+  {
+   "fieldname": "library_final_concentration",
+   "fieldtype": "Data",
+   "label": "Library Final Concentration (ng/uL)"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  },
+  {
+   "fieldname": "singlecell_library_construction_id",
+   "fieldtype": "Data",
+   "label": "SingleCell Library Construction ID",
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "no_copy": 1,
+   "options": "NGS Customer",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "sample_transfer",
+   "fieldtype": "Link",
+   "label": "Sample Transfer",
+   "no_copy": 1,
+   "options": "NGS Sample Transfer",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "sample_info",
+   "fieldtype": "Link",
+   "label": "Sample Info",
+   "no_copy": 1,
+   "options": "NGS Sample Info",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "singlecell_10x_preprocess",
+   "fieldtype": "Link",
+   "label": "SingleCell 10x Preprocess",
+   "no_copy": 1,
+   "options": "NGS SingleCell 10x Preprocess",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "singlecell_10x_chromium",
+   "fieldtype": "Link",
+   "label": "SingleCell 10x Chromium",
+   "no_copy": 1,
+   "options": "NGS SingleCell 10x Chromium",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-06-21 11:24:57.895541",
+ "modified_by": "Administrator",
+ "module": "NGS Hub",
+ "name": "NGS SingleCell Library Construction",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

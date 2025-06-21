@@ -1,0 +1,190 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:sample_info_id",
+ "creation": "2025-06-18 22:55:49.793377",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "customer_section",
+  "sample_name",
+  "sample_type",
+  "sample_index",
+  "sample_wvc",
+  "storage_condition",
+  "urgency",
+  "after_project",
+  "note",
+  "inside_section",
+  "customer",
+  "sample_transfer",
+  "class_type",
+  "sample_wvc_2",
+  "collection_time",
+  "operator",
+  "section_break_scpp",
+  "sample_info_id",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer_section",
+   "fieldtype": "Section Break",
+   "label": "Customer"
+  },
+  {
+   "fieldname": "sample_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Sample Name"
+  },
+  {
+   "fieldname": "sample_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Sample Type"
+  },
+  {
+   "fieldname": "storage_condition",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Storage Condition"
+  },
+  {
+   "fieldname": "sample_index",
+   "fieldtype": "Data",
+   "label": "Sample Index"
+  },
+  {
+   "fieldname": "inside_section",
+   "fieldtype": "Section Break",
+   "label": "Inside"
+  },
+  {
+   "fieldname": "collection_time",
+   "fieldtype": "Datetime",
+   "label": "Collection Time"
+  },
+  {
+   "fieldname": "operator",
+   "fieldtype": "Link",
+   "label": "Operator",
+   "options": "User"
+  },
+  {
+   "fieldname": "section_break_scpp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "sample_wvc",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Sample Weight/Volume/Conc."
+  },
+  {
+   "fieldname": "sample_wvc_2",
+   "fieldtype": "Data",
+   "label": "Sample Weight/Volume/Conc."
+  },
+  {
+   "fieldname": "urgency",
+   "fieldtype": "Select",
+   "label": "Urgency",
+   "options": "Standard\nExpedited"
+  },
+  {
+   "fieldname": "after_project",
+   "fieldtype": "Select",
+   "label": "After Project",
+   "options": "Discard after standard storage time\nSend back after standard storage time (charge required)\nExtended storage (charge required)"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "no_copy": 1,
+   "options": "NGS Customer",
+   "print_hide": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "sample_transfer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Sample Transfer",
+   "no_copy": 1,
+   "options": "NGS Sample Transfer",
+   "print_hide": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "NGS Sample Info",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "NGS Sample Info",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "sample_info_id",
+   "fieldtype": "Data",
+   "label": "Sample Info ID",
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "class_type",
+   "fieldtype": "Select",
+   "label": "Class Type",
+   "options": "SingleCell\nMeta\nRNAseq"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-06-21 10:40:17.847791",
+ "modified_by": "Administrator",
+ "module": "NGS Hub",
+ "name": "NGS Sample Info",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
