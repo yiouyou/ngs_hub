@@ -5,6 +5,13 @@ app_description = "NGS Hub"
 app_email = "zhuosong@gmail.com"
 app_license = "mit"
 
+
+fixtures = [
+	{"dt": "Role", "filters": [["name", "in", ["NGS Internal Staff", "NGS External Customer"]]]},
+	{"dt": "Workspace", "filters": [["name", "=", "NGS Hub"]]},
+]
+
+
 # Apps
 # ------------------
 
