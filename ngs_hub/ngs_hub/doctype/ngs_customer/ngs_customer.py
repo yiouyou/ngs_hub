@@ -52,7 +52,7 @@ class NGSCustomer(Document):
 </html>"""
 		# 发送邮件
 		frappe.sendmail(
-			recipients=[doc.email],
+			recipients=[self.email],
 			subject="Your Athenomics Account Has Been Created",
 			message=message,
 			is_html=True,
