@@ -55,6 +55,5 @@ class NGSCustomer(Document):
 			recipients=[self.email],
 			subject="Your Athenomics Account Has Been Created",
 			message=message,
-			is_html=True,
 			delayed=False,
 		)
