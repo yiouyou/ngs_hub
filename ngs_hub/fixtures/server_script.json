@@ -55,24 +55,5 @@
   "reference_doctype": "NGS Meta Library Construction",
   "script": "if doc.qc_status == \"PASS\" and doc.customer:\r\n    customer = frappe.get_doc(\"NGS Customer\", doc.customer)\r\n    lib_id = f\"{doc.meta_library_construction_id or doc.name}\"\r\n    sample_link_html = \"\"\r\n    if doc.sample_info:\r\n        sample_link = frappe.utils.get_url_to_form(\"NGS Sample Info\", doc.sample_info)\r\n        sample_link_html = f\"\"\"<p style=\"margin-bottom: 24px;\">\r\n        You can view the details of your sample information here:<br>\r\n        <a href=\"{sample_link}\" style=\"color: #0066cc; font-weight: bold;\">\r\n          View Sample Info ({doc.sample_info})\r\n        </a>\r\n      </p>\"\"\"\r\n    if customer.email:\r\n        subject = f\"Your Library QC Status: PASS — {lib_id}\"\r\n        message = f\"\"\"<!DOCTYPE html>\r\n<html>\r\n  <body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.8; padding: 20px;\">\r\n    <div style=\"max-width: 640px; margin: auto; border: 1px solid #e0e0e0; border-radius: 10px; padding: 30px; background-color: #fafafa;\">\r\n      <h2 style=\"color: #0066cc; margin-bottom: 20px;\">QC Status: PASS</h2>\r\n      <p style=\"margin-bottom: 20px;\">Dear {customer.full_name or 'Customer'},</p>\r\n      <p style=\"margin-bottom: 20px;\">\r\n        We are pleased to inform you that your library construction \r\n        <strong>{lib_id}</strong> \r\n        has successfully passed the quality control (QC) process.\r\n      </p>\r\n      {sample_link_html}\r\n      <p style=\"margin-bottom: 32px;\">\r\n        If you have any questions or need further assistance, feel free to contact us.\r\n      </p>\r\n      <hr style=\"border: none; border-top: 1px solid #ddd; margin: 40px 0;\">\r\n      <p style=\"margin-bottom: 0;\">\r\n        Best regards,<br>\r\n        <strong>Your Athenomics Lab Team</strong>\r\n      </p>\r\n    </div>\r\n  </body>\r\n</html>\"\"\"\r\n        frappe.sendmail(\r\n            recipients=[customer.email],\r\n            subject=subject,\r\n            message=message,\r\n            delayed=False,\r\n            is_html=True\r\n        )\r\n",
   "script_type": "DocType Event"
- },
- {
-  "allow_guest": 0,
-  "api_method": null,
-  "cron_format": null,
-  "disabled": 0,
-  "docstatus": 0,
-  "doctype": "Server Script",
-  "doctype_event": "After Submit",
-  "enable_rate_limit": 0,
-  "event_frequency": "All",
-  "modified": "2025-06-27 12:05:47.034975",
-  "module": "NGS Hub",
-  "name": "Create User on NGS Customer Submit",
-  "rate_limit_count": 5,
-  "rate_limit_seconds": 86400,
-  "reference_doctype": "NGS Customer",
-  "script": "user_name, password = frappe.get_attr(\"ngs_hub.api.user_utils.create_ngs_customer_user\")(doc.email, doc.full_name)\r\n\r\n\r\nif user_name:\r\n    login_url = frappe.utils.get_url(\"/login\")\r\n    message = f\"\"\"<!DOCTYPE html>\r\n<html>\r\n  <body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.8; padding: 20px;\">\r\n    <div style=\"max-width: 640px; margin: auto; border: 1px solid #e0e0e0; border-radius: 10px; padding: 30px; background-color: #fafafa;\">\r\n      <h2 style=\"color: #0066cc; margin-bottom: 20px;\">Welcome to NGS Hub</h2>\r\n      <p style=\"margin-bottom: 20px;\">Dear {doc.full_name or 'Customer'},</p>\r\n      <p style=\"margin-bottom: 20px;\">\r\n        Your NGS Hub account has been successfully created. You can now log in using the following credentials:\r\n      </p>\r\n      <ul style=\"margin-bottom: 24px;\">\r\n        <li><strong>Login URL:</strong> <a href=\"{login_url}\" style=\"color: #0066cc;\">{login_url}</a></li>\r\n        <li><strong>Email:</strong> {doc.email}</li>\r\n        <li><strong>Password:</strong> {password}</li>\r\n      </ul>\r\n      <p style=\"margin-bottom: 32px;\"><em>Please change your password after logging in for the first time.</em></p>\r\n      <hr style=\"border: none; border-top: 1px solid #ddd; margin: 40px 0;\">\r\n      <p style=\"margin-bottom: 0;\">\r\n        Best regards,<br>\r\n        <strong>NGS Hub Team</strong>\r\n      </p>\r\n    </div>\r\n  </body>\r\n</html>\"\"\"\r\n    # 发送邮件\r\n    frappe.sendmail(\r\n        recipients=[doc.email],\r\n        subject=\"Your Athenomics Account Has Been Created\",\r\n        message=message,\r\n        is_html=True,\r\n        delayed=False\r\n    )\r\n",
-  "script_type": "DocType Event"
  }
 ]
