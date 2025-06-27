@@ -24,6 +24,7 @@ frappe.ui.form.on('NGS Sample Info', {
         frappe.msgprint(__('No associated Sample Transfer found.'));
       }
     });
+    if (!frm.doc.class_type) return;
     if (frm.doc.class_type === 'SingleCell') {
       frm.add_custom_button(__('+ SingleCell 10x Pre'), () => {
         frappe.new_doc('NGS SingleCell 10x Preprocess', {}, (doc) => {
