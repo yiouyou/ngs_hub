@@ -34,15 +34,15 @@ fixtures = [
 # required_apps = []
 
 # Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "ngs_hub",
-# 		"logo": "/assets/ngs_hub/logo.png",
-# 		"title": "NGS Hub",
-# 		"route": "/ngs_hub",
-# 		"has_permission": "ngs_hub.api.permission.has_app_permission"
-# 	}
-# ]
+add_to_apps_screen = [
+	{
+		"name": "ngs_hub",
+		"logo": "/assets/ngs_hub/logo.png",
+		"title": "NGS Hub",
+		"route": "/app/ngs-hub",
+		# "has_permission": "ngs_hub.api.permission.has_app_permission",
+	}
+]
 
 # Includes in <head>
 # ------------------
