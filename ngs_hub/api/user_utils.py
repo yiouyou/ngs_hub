@@ -22,6 +22,7 @@ def create_ngs_customer_user(email, full_name):
 			"first_name": full_name or "NGS Customer",
 			"role_profile_name": "NGS Customer",
 			"module_profile": "NGS Customer",
+			"send_welcome_email": 0,
 			"enabled": 1,
 		}
 	)
