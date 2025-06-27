@@ -9,6 +9,20 @@ app_license = "mit"
 fixtures = [
 	{"dt": "Role", "filters": [["name", "in", ["NGS Internal Staff", "NGS External Customer"]]]},
 	{"dt": "Workspace", "filters": [["name", "=", "NGS Hub"]]},
+	{
+		"dt": "Server Script",
+		"filters": [
+			[
+				"name",
+				"in",
+				[
+					"Send Email on SingleCell LIB QC PASS",
+					"Send Email on RNAseq LIB QC PASS",
+					"Send Email on Meta LIB QC PASS",
+				],
+			]
+		],
+	},
 ]
 
 
