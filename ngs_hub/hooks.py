@@ -19,10 +19,13 @@ fixtures = [
 					"Send Email on SingleCell LIB QC PASS",
 					"Send Email on RNAseq LIB QC PASS",
 					"Send Email on Meta LIB QC PASS",
+					"Create User on NGS Customer Submit",
 				],
 			]
 		],
 	},
+	# {"dt": "Role Profile", "filters": [["name", "in", ["NGS Customer"]]]},
+	# {"dt": "Module Profile", "filters": [["name", "in", ["NGS Customer"]]]},
 ]
 
 
