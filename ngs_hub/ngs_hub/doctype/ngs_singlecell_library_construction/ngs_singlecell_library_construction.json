@@ -54,8 +54,9 @@
   },
   {
    "fieldname": "operator",
-   "fieldtype": "Data",
-   "label": "Operator"
+   "fieldtype": "Link",
+   "label": "Operator",
+   "options": "User"
   },
   {
    "fieldname": "sop_version",
@@ -166,7 +167,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-28 01:02:07.850703",
+ "modified": "2025-06-28 03:16:49.021544",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS SingleCell Library Construction",
@@ -182,6 +183,19 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "NGS Internal Staff",
    "share": 1,
    "submit": 1,
    "write": 1
