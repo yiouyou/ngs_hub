@@ -31,10 +31,10 @@ class NGSCustomer(Document):
 <html>
   <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.8; padding: 20px;">
     <div style="max-width: 640px; margin: auto; border: 1px solid #e0e0e0; border-radius: 10px; padding: 30px; background-color: #fafafa;">
-      <h2 style="color: #0066cc; margin-bottom: 20px;">Welcome to NGS Hub</h2>
+      <h2 style="color: #0066cc; margin-bottom: 20px;">Welcome to Athenomics</h2>
       <p style="margin-bottom: 20px;">Dear {self.full_name or "Customer"},</p>
       <p style="margin-bottom: 20px;">
-        Your NGS Hub account has been successfully created. You can now log in using the following credentials:
+        Your Athenomics account has been successfully created. You can now log in using the following credentials:
       </p>
       <ul style="margin-bottom: 24px;">
         <li><strong>Login URL:</strong> <a href="{login_url}" style="color: #0066cc;">{login_url}</a></li>
@@ -56,4 +56,8 @@ class NGSCustomer(Document):
 			subject="Your Athenomics Account Has Been Created",
 			message=message,
 			delayed=False,
+			retry=3,
+		)
+		frappe.msgprint(
+			f"Create User for {self.full_name} and send Welcome email to {self.email}", alert=True
 		)
