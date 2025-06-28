@@ -26,6 +26,11 @@ def create_ngs_customer_user(email, full_name):
 			"enabled": 1,
 		}
 	)
-	user.insert(ignore_permissions=True)
-	update_password(user.name, password)
+	try:
+		user.insert(ignore_permissions=True)
+		update_password(user.name, password)
+		frappe.msgprint(f"Create User for {full_name} ({email})", alert=True)
+		frappe.logger("create_user").info(f"Create User for {full_name} ({email})")
+	except Exception:
+		frappe.logger("create_user").error(f"失败：Create User for {full_name} ({email})", exc_info=True)
 	return user.name, password

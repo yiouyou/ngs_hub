@@ -144,7 +144,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-21 10:43:26.440220",
+ "modified": "2025-06-28 01:00:39.771130",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS RNAseq Enrichment",
@@ -165,8 +165,10 @@
    "write": 1
   }
  ],
+ "quick_entry": 1,
  "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

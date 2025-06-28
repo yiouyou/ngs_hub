@@ -50,14 +50,18 @@ class NGSCustomer(Document):
     </div>
   </body>
 </html>"""
-		# 发送邮件
-		frappe.sendmail(
-			recipients=[self.email],
-			subject="Welcome to Athenomics",
-			message=message,
-			delayed=False,
-			retry=3,
-		)
-		frappe.msgprint(
-			f"Create User for {self.full_name} and send Welcome email to {self.email}", alert=True
-		)
+		try:
+			# 发送邮件
+			frappe.sendmail(
+				recipients=[self.email],
+				subject="Welcome to Athenomics",
+				message=message,
+				delayed=False,
+				retry=3,
+			)
+			frappe.msgprint(f"Send welcome email to {self.email} ({self.full_name})", alert=True)
+			frappe.logger("send_email").info(f"Send welcome email to {self.email} ({self.full_name})")
+		except Exception:
+			frappe.logger("send_email").error(
+				f"失败：Send welcome email to {self.email} ({self.full_name})", exc_info=True
+			)
