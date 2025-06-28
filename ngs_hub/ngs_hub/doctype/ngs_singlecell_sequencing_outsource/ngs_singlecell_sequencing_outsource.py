@@ -23,6 +23,5 @@ class NGSSingleCellSequencingOutsource(Document):
 			frappe.throw(
 				_("SingCell Library Construction is required to generate SingCell Sequencing Outsource")
 			)
-		autoname = make_autoname(".YY.-.MM.-.#####")
-		self.singlecell_sequencing_outsource_id = f"SINGLECELL-SPL-SEQ-{autoname}"
+		self.singlecell_sequencing_outsource_id = make_autoname("SINGLECELL-SPL-SEQ-.YY.-.MM.-.DD.-.####")
 		self.name = self.singlecell_sequencing_outsource_id

@@ -15,6 +15,5 @@ class NGSRNAseqSampleExtraction(Document):
 			frappe.throw(_("Sample Transfer is required to generate RNAseq Sample Extraction"))
 		if not self.sample_info:
 			frappe.throw(_("Sample Info is required to generate RNAseq Sample Extraction"))
-		autoname = make_autoname(".YY.-.MM.-.#####")
-		self.rnaseq_sample_extraction_id = f"RNASEQ-SPL-EXT-{autoname}"
+		self.rnaseq_sample_extraction_id = make_autoname("RNASEQ-SPL-EXT-.YY.-.MM.-.DD.-.####")
 		self.name = self.rnaseq_sample_extraction_id

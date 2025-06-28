@@ -13,6 +13,5 @@ class NGSSampleTransfer(Document):
 			frappe.throw(_("Customer is required to generate Sample Transfer"))
 		if not self.mode:
 			frappe.throw(_("Mode is required to generate Sample Transfer ID"))
-		autoname = make_autoname(".YY.-.MM.-.###")
-		self.sample_transfer_id = f"SPL-{self.mode}-{autoname}"
+		self.sample_transfer_id = make_autoname(f"SPL-{self.mode}-.YY.-.MM.-.DD.-.####")
 		self.name = self.sample_transfer_id

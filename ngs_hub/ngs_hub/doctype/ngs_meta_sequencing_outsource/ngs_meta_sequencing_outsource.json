@@ -131,12 +131,12 @@
   },
   {
    "fieldname": "planned_raw_data_output",
-   "fieldtype": "Date",
+   "fieldtype": "Data",
    "label": "Planned Raw Data Output"
   },
   {
    "fieldname": "actual_raw_data_output_copy",
-   "fieldtype": "Date",
+   "fieldtype": "Data",
    "label": "Actual Raw Data Output Copy"
   },
   {
@@ -154,7 +154,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-28 03:14:43.273158",
+ "modified": "2025-06-28 04:30:55.391798",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Meta Sequencing Outsource",

@@ -19,6 +19,5 @@ class NGSMetaSequencingOutsource(Document):
 			frappe.throw(_("Meta Sample Extraction is required to generate Meta Sequencing Outsource"))
 		if not self.meta_library_construction:
 			frappe.throw(_("Meta Library Construction is required to generate Meta Sequencing Outsource"))
-		autoname = make_autoname(".YY.-.MM.-.#####")
-		self.meta_sequencing_outsource_id = f"META-SPL-SEQ-{autoname}"
+		self.meta_sequencing_outsource_id = make_autoname("META-SPL-SEQ-.YY.-.MM.-.DD.-.####")
 		self.name = self.meta_sequencing_outsource_id

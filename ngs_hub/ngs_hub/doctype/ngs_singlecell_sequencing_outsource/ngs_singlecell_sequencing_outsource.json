@@ -74,7 +74,7 @@
   },
   {
    "fieldname": "planned_raw_data_output",
-   "fieldtype": "Date",
+   "fieldtype": "Data",
    "label": "Planned Raw Data Output"
   },
   {
@@ -165,7 +165,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-28 03:17:11.623608",
+ "modified": "2025-06-28 04:30:15.249934",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS SingleCell Sequencing Outsource",

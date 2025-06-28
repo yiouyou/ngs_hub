@@ -21,6 +21,5 @@ class NGSRNAseqSequencingOutsource(Document):
 			frappe.throw(_("RNAseq enrichment is required to generate RNAseq Sequencing Outsource"))
 		if not self.rnaseq_library_construction:
 			frappe.throw(_("RNAseq Library Construction is required to generate RNAseq Sequencing Outsource"))
-		autoname = make_autoname(".YY.-.MM.-.#####")
-		self.rnaseq_sequencing_outsource_id = f"RNASEQ-SPL-SEQ-{autoname}"
+		self.rnaseq_sequencing_outsource_id = make_autoname("RNASEQ-SPL-SEQ-.YY.-.MM.-.DD.-.####")
 		self.name = self.rnaseq_sequencing_outsource_id

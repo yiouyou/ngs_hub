@@ -15,6 +15,5 @@ class NGSMetaSampleExtraction(Document):
 			frappe.throw(_("Sample Transfer is required to generate Meta Sample Extraction"))
 		if not self.sample_info:
 			frappe.throw(_("Sample Info is required to generate Meta Sample Extraction"))
-		autoname = make_autoname(".YY.-.MM.-.#####")
-		self.meta_sample_extraction_id = f"META-SPL-EXT-{autoname}"
+		self.meta_sample_extraction_id = make_autoname("META-SPL-EXT-.YY.-.MM.-.DD.-.####")
 		self.name = self.meta_sample_extraction_id
