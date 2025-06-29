@@ -13,6 +13,7 @@
   "singlecell_10x_preprocess",
   "singlecell_10x_chromium",
   "singlecell_library_construction",
+  "section_break_etdf",
   "start_time",
   "end_time",
   "sequencing_platform",
@@ -90,7 +91,6 @@
    "no_copy": 1,
    "options": "NGS Customer",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
   },
   {
@@ -100,7 +100,6 @@
    "no_copy": 1,
    "options": "NGS Sample Transfer",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
   },
   {
@@ -110,7 +109,6 @@
    "no_copy": 1,
    "options": "NGS Sample Info",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
   },
   {
@@ -120,7 +118,6 @@
    "no_copy": 1,
    "options": "NGS SingleCell 10x Preprocess",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
   },
   {
@@ -130,7 +127,6 @@
    "no_copy": 1,
    "options": "NGS SingleCell 10x Chromium",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
   },
   {
@@ -158,7 +154,6 @@
    "no_copy": 1,
    "options": "NGS SingleCell Library Construction",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
   },
   {
@@ -168,15 +163,18 @@
    "no_copy": 1,
    "options": "NGS Project",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "section_break_etdf",
+   "fieldtype": "Section Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-29 00:59:09.397257",
+ "modified": "2025-06-29 03:53:45.376672",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS SingleCell Sequencing Outsource",

@@ -10,6 +10,7 @@
   "project",
   "sample_transfer",
   "sample_info",
+  "section_break_ecev",
   "start_time",
   "end_time",
   "sop_version",
@@ -45,7 +46,6 @@
    "no_copy": 1,
    "options": "NGS Customer",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
   },
   {
@@ -55,7 +55,6 @@
    "no_copy": 1,
    "options": "NGS Sample Transfer",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
   },
   {
@@ -65,7 +64,6 @@
    "no_copy": 1,
    "options": "NGS Sample Info",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
   },
   {
@@ -129,15 +127,18 @@
    "no_copy": 1,
    "options": "NGS Project",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "section_break_ecev",
+   "fieldtype": "Section Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-29 00:54:06.147835",
+ "modified": "2025-06-29 03:38:17.836850",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Meta Sample Extraction",

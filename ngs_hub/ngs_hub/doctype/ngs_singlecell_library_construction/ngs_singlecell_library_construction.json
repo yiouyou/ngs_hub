@@ -12,6 +12,7 @@
   "sample_info",
   "singlecell_10x_preprocess",
   "singlecell_10x_chromium",
+  "section_break_rohn",
   "start_time",
   "end_time",
   "sop_version",
@@ -120,7 +121,6 @@
    "no_copy": 1,
    "options": "NGS Customer",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
   },
   {
@@ -130,7 +130,6 @@
    "no_copy": 1,
    "options": "NGS Sample Transfer",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
   },
   {
@@ -140,7 +139,6 @@
    "no_copy": 1,
    "options": "NGS Sample Info",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
   },
   {
@@ -150,7 +148,6 @@
    "no_copy": 1,
    "options": "NGS SingleCell 10x Preprocess",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
   },
   {
@@ -160,7 +157,6 @@
    "no_copy": 1,
    "options": "NGS SingleCell 10x Chromium",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
   },
   {
@@ -170,15 +166,18 @@
    "no_copy": 1,
    "options": "NGS Project",
    "print_hide": 1,
-   "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "section_break_rohn",
+   "fieldtype": "Section Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-29 00:58:46.683725",
+ "modified": "2025-06-29 03:50:01.315901",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS SingleCell Library Construction",

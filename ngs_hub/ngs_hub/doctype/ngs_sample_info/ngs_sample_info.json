@@ -134,15 +134,18 @@
    "fieldtype": "Data",
    "label": "Sample Info ID",
    "permlevel": 1,
+   "print_hide": 1,
    "read_only": 1,
    "unique": 1
   },
   {
    "fieldname": "class_type",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Class Type",
    "options": "\nSingleCell\nRNAseq\nMeta",
-   "permlevel": 1
+   "permlevel": 1,
+   "print_hide": 1
   },
   {
    "fieldname": "project",
@@ -175,7 +178,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-29 02:54:56.552486",
+ "modified": "2025-06-29 03:36:14.750620",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Sample Info",
