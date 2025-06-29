@@ -13,6 +13,8 @@ from ngs_hub.api.user_utils import create_ngs_customer_user
 
 class NGSCustomer(Document):
 	def before_insert(self):
+		if not self.email:
+			frappe.throw(_("Email is required to generate Customer"))
 		if not self.full_name:
 			frappe.throw(_("Full Name is required to generate Customer ID"))
 		safe_name = re.sub(r"[^\w\s-]", "", self.full_name).replace(" ", "_")
