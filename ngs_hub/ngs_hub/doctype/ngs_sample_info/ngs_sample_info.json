@@ -7,28 +7,23 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "section_break_iovx",
-  "sample_name",
-  "column_break_brkb",
-  "sample_type",
-  "column_break_ogcm",
-  "sample_index",
-  "section_break_yrau",
-  "sample_wvc",
-  "after_project",
-  "column_break_vbqj",
-  "storage_condition",
-  "urgency",
-  "section_break_tuyd",
-  "note",
-  "inside_section",
+  "section_break_gwic",
   "customer",
   "project",
   "class_type",
   "sample_transfer",
-  "sample_wvc_2",
+  "section_break_yrau",
+  "sample_name",
+  "sample_wvc",
+  "urgency",
   "collection_time",
+  "column_break_vbqj",
+  "sample_index",
+  "storage_condition",
+  "after_project",
   "operator",
+  "section_break_tuyd",
+  "note",
   "section_break_scpp",
   "sample_info_id",
   "amended_from"
@@ -41,12 +36,6 @@
    "label": "Sample Name"
   },
   {
-   "fieldname": "sample_type",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Sample Type"
-  },
-  {
    "fieldname": "storage_condition",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -56,11 +45,6 @@
    "fieldname": "sample_index",
    "fieldtype": "Data",
    "label": "Sample Index"
-  },
-  {
-   "fieldname": "inside_section",
-   "fieldtype": "Section Break",
-   "label": "Inside"
   },
   {
    "fieldname": "collection_time",
@@ -84,12 +68,6 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Sample Weight/Volume/Conc."
-  },
-  {
-   "fieldname": "sample_wvc_2",
-   "fieldtype": "Data",
-   "label": "Sample Weight/Volume/Conc.",
-   "permlevel": 1
   },
   {
    "fieldname": "urgency",
@@ -177,19 +155,7 @@
    "search_index": 1
   },
   {
-   "fieldname": "column_break_brkb",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_ogcm",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "section_break_yrau",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "section_break_iovx",
    "fieldtype": "Section Break"
   },
   {
@@ -199,13 +165,17 @@
   {
    "fieldname": "section_break_tuyd",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_gwic",
+   "fieldtype": "Section Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-29 02:08:19.969803",
+ "modified": "2025-06-29 02:54:56.552486",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Sample Info",
