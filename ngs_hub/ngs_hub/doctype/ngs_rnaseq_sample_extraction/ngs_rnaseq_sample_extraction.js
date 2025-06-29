@@ -18,6 +18,7 @@ frappe.ui.form.on('NGS RNAseq Sample Extraction', {
     frm.add_custom_button(__('+ RNAseq Enrichment'), () => {
       frappe.new_doc('NGS RNAseq Enrichment', {}, (doc) => {
         doc.customer = frm.doc.customer
+        doc.project = frm.doc.project
         doc.sample_transfer = frm.doc.sample_transfer;
         doc.sample_info = frm.doc.sample_info;
         doc.rnaseq_sample_extraction = frm.doc.rnaseq_sample_extraction_id;

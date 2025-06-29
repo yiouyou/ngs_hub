@@ -18,6 +18,7 @@ frappe.ui.form.on('NGS Meta Sample Extraction', {
     frm.add_custom_button(__('+ Meta Lib Constr'), () => {
       frappe.new_doc('NGS Meta Library Construction', {}, (doc) => {
         doc.customer = frm.doc.customer
+        doc.project = frm.doc.project
         doc.sample_transfer = frm.doc.sample_transfer;
         doc.sample_info = frm.doc.sample_info;
         doc.meta_sample_extraction = frm.doc.meta_sample_extraction_id;

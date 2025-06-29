@@ -29,6 +29,7 @@ frappe.ui.form.on('NGS Sample Info', {
       frm.add_custom_button(__('+ SingleCell 10x Pre'), () => {
         frappe.new_doc('NGS SingleCell 10x Preprocess', {}, (doc) => {
           doc.customer = frm.doc.customer
+          doc.project = frm.doc.project
           doc.sample_transfer = frm.doc.sample_transfer;
           doc.sample_info = frm.doc.sample_info_id;
           doc.save();
@@ -39,6 +40,7 @@ frappe.ui.form.on('NGS Sample Info', {
       frm.add_custom_button(__('+ RNAseq Sample Ext'), () => {
         frappe.new_doc('NGS RNAseq Sample Extraction', {}, (doc) => {
           doc.customer = frm.doc.customer
+          doc.project = frm.doc.project
           doc.sample_transfer = frm.doc.sample_transfer;
           doc.sample_info = frm.doc.sample_info_id;
           doc.save();
@@ -49,6 +51,7 @@ frappe.ui.form.on('NGS Sample Info', {
       frm.add_custom_button(__('+ Meta Sample Ext'), () => {
         frappe.new_doc('NGS Meta Sample Extraction', {}, (doc) => {
           doc.customer = frm.doc.customer
+          doc.project = frm.doc.project
           doc.sample_transfer = frm.doc.sample_transfer;
           doc.sample_info = frm.doc.sample_info_id;
           doc.save();

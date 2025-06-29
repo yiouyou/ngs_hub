@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:sample_info_id",
  "creation": "2025-06-18 22:55:49.793377",
@@ -8,8 +9,11 @@
  "field_order": [
   "customer_section",
   "sample_name",
+  "column_break_brkb",
   "sample_type",
+  "column_break_ogcm",
   "sample_index",
+  "section_break_yrau",
   "sample_wvc",
   "storage_condition",
   "urgency",
@@ -17,8 +21,9 @@
   "note",
   "inside_section",
   "customer",
-  "sample_transfer",
+  "project",
   "class_type",
+  "sample_transfer",
   "sample_wvc_2",
   "collection_time",
   "operator",
@@ -163,13 +168,35 @@
    "label": "Class Type",
    "options": "\nSingleCell\nMeta\nRNAseq",
    "permlevel": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "no_copy": 1,
+   "options": "NGS Project",
+   "permlevel": 1,
+   "print_hide": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_brkb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ogcm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_yrau",
+   "fieldtype": "Section Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-28 03:09:48.338404",
+ "modified": "2025-06-29 00:52:53.992262",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Sample Info",
@@ -177,10 +204,13 @@
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
    "export": 1,
+   "import": 1,
    "print": 1,
    "read": 1,
    "report": 1,
@@ -191,23 +221,13 @@
    "write": 1
   },
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
    "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "NGS External Customer",
-   "select": 1,
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
+   "import": 1,
    "print": 1,
    "read": 1,
    "report": 1,
@@ -221,11 +241,26 @@
    "delete": 1,
    "email": 1,
    "export": 1,
+   "import": 1,
    "permlevel": 1,
    "print": 1,
    "read": 1,
    "report": 1,
    "role": "NGS Internal Staff",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "import": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "NGS External Customer",
    "select": 1,
    "share": 1,
    "write": 1

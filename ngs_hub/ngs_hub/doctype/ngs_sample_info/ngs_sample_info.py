@@ -15,5 +15,5 @@ class NGSSampleInfo(Document):
 			frappe.throw(_("Sample Transfer is required to generate Sample Info"))
 		if not self.class_type:
 			frappe.throw(_("Class Type is required to generate Sample Info ID"))
-		self.sample_info_id = make_autoname(f"SPL-{self.class_type}-.YY.-.MM.-.DD.-.####")
+		self.sample_info_id = make_autoname(f"SPL-{self.class_type}-.YY.-.MM.-.DD.-.###")
 		self.name = self.sample_info_id

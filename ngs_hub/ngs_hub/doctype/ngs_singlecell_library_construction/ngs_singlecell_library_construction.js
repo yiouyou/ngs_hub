@@ -18,6 +18,7 @@ frappe.ui.form.on('NGS SingleCell Library Construction', {
     frm.add_custom_button(__('+ SingleCell Sequencing Out'), () => {
       frappe.new_doc('NGS SingleCell Sequencing Outsource', {}, (doc) => {
         doc.customer = frm.doc.customer
+        doc.project = frm.doc.project
         doc.sample_transfer = frm.doc.sample_transfer;
         doc.sample_info = frm.doc.sample_info;
         doc.singlecell_10x_preprocess = frm.doc.singlecell_10x_preprocess;

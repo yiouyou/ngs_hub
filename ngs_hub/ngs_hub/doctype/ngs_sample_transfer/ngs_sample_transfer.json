@@ -7,6 +7,8 @@
  "engine": "InnoDB",
  "field_order": [
   "customer",
+  "project",
+  "class_type",
   "mode",
   "transportation_company",
   "tracking_number",
@@ -82,6 +84,7 @@
    "label": "Customer",
    "no_copy": 1,
    "options": "NGS Customer",
+   "permlevel": 1,
    "print_hide": 1,
    "search_index": 1
   },
@@ -91,6 +94,7 @@
    "label": "Amended From",
    "no_copy": 1,
    "options": "NGS Sample Transfer",
+   "permlevel": 1,
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
@@ -101,6 +105,7 @@
    "label": "Amended From",
    "no_copy": 1,
    "options": "NGS Sample Transfer",
+   "permlevel": 1,
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
@@ -109,15 +114,31 @@
    "fieldname": "sample_transfer_id",
    "fieldtype": "Data",
    "label": "Sample Transfer ID",
+   "permlevel": 1,
    "read_only": 1,
    "unique": 1
+  },
+  {
+   "fieldname": "class_type",
+   "fieldtype": "Data",
+   "label": "Class Type"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "no_copy": 1,
+   "options": "NGS Project",
+   "permlevel": 1,
+   "print_hide": 1,
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-28 03:09:13.249576",
+ "modified": "2025-06-29 00:44:36.442163",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Sample Transfer",
@@ -125,6 +146,8 @@
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -133,9 +156,36 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "select": 1,
    "share": 1,
    "submit": 1,
    "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "NGS Internal Staff",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "NGS Internal Staff",
+   "share": 1
   },
   {
    "create": 1,
@@ -145,9 +195,9 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "NGS Internal Staff",
+   "role": "NGS External Customer",
+   "select": 1,
    "share": 1,
-   "submit": 1,
    "write": 1
   }
  ],

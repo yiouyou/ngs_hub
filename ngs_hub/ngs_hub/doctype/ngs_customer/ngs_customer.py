@@ -15,9 +15,9 @@ class NGSCustomer(Document):
 	def before_insert(self):
 		if not self.full_name:
 			frappe.throw(_("Full Name is required to generate Customer ID"))
-		autoname = make_autoname("CUST-.#####.-")
+		autoname = make_autoname("CUST-.#####")
 		safe_name = re.sub(r"[^\w\s-]", "", self.full_name).replace(" ", "_")
-		self.customer_id = f"{autoname}{safe_name}"
+		self.customer_id = f"{autoname}-{safe_name}"
 		self.name = self.customer_id
 
 	def on_submit(self):

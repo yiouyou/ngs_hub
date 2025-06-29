@@ -18,6 +18,7 @@ frappe.ui.form.on('NGS Meta Library Construction', {
     frm.add_custom_button(__('+ Meta Sequencing Out'), () => {
       frappe.new_doc('NGS Meta Sequencing Outsource', {}, (doc) => {
         doc.customer = frm.doc.customer
+        doc.project = frm.doc.project
         doc.sample_transfer = frm.doc.sample_transfer;
         doc.sample_info = frm.doc.sample_info;
         doc.meta_sample_extraction = frm.doc.meta_sample_extraction;

@@ -1,96 +1,65 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:customer_id",
- "creation": "2025-06-18 23:27:12.857687",
+ "autoname": "field:project_id",
+ "creation": "2025-06-28 13:36:50.910129",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "full_name",
-  "organization",
-  "phone",
-  "email",
-  "adress",
-  "note",
-  "section_break_quft",
-  "customer_id",
+  "customer",
+  "class_type",
+  "section_break_tpzy",
+  "project_id",
   "amended_from"
  ],
  "fields": [
   {
-   "fieldname": "organization",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Organization"
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "NGS Project",
+   "permlevel": 1,
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   },
   {
-   "fieldname": "phone",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Phone"
-  },
-  {
-   "fieldname": "email",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Email"
-  },
-  {
-   "fieldname": "adress",
-   "fieldtype": "Data",
-   "label": "Adress"
-  },
-  {
-   "fieldname": "note",
-   "fieldtype": "Small Text",
-   "label": "Note"
-  },
-  {
-   "fieldname": "section_break_quft",
+   "fieldname": "section_break_tpzy",
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "NGS Customer",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "NGS Customer",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
-  },
-  {
-   "fieldname": "customer_id",
+   "fieldname": "project_id",
    "fieldtype": "Data",
-   "label": "Customer ID",
+   "label": "Project ID",
+   "permlevel": 1,
    "read_only": 1,
    "unique": 1
   },
   {
-   "fieldname": "full_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Full Name"
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "no_copy": 1,
+   "options": "NGS Customer",
+   "print_hide": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "class_type",
+   "fieldtype": "Select",
+   "label": "Class Type",
+   "options": "\nSingleCell\nMeta\nRNAseq"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-29 00:43:46.222987",
+ "modified": "2025-06-29 00:43:57.900630",
  "modified_by": "Administrator",
  "module": "NGS Hub",
- "name": "NGS Customer",
+ "name": "NGS Project",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
@@ -124,6 +93,24 @@
    "select": 1,
    "share": 1,
    "submit": 1,
+   "write": 1
+  },
+  {
+   "permlevel": 1,
+   "read": 1,
+   "role": "NGS Internal Staff"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "NGS External Customer",
+   "select": 1,
+   "share": 1,
    "write": 1
   }
  ],
