@@ -19,5 +19,5 @@ class NGSSingleCell10xChromium(Document):
 			frappe.throw(_("Sample Info is required to generate SingCell 10x Chromium"))
 		if not self.singlecell_10x_preprocess:
 			frappe.throw(_("SingCell 10x Preprocess is required to generate SingCell 10x Chromium"))
-		self.singlecell_10x_chromium_id = make_autoname("SINGLECELL-SPL-10x-.YY.-.MM.-.DD.-.###")
+		self.singlecell_10x_chromium_id = make_autoname("SingleCell-10x-.YY.-.MM.-.DD.-.###")
 		self.name = self.singlecell_10x_chromium_id

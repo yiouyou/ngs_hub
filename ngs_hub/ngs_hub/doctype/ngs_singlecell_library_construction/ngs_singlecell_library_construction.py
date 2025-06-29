@@ -21,5 +21,5 @@ class NGSSingleCellLibraryConstruction(Document):
 			frappe.throw(_("SingCell 10x Preprocess is required to generate SingCell Library Construction"))
 		if not self.singlecell_10x_chromium:
 			frappe.throw(_("SingCell 10x Chromium is required to generate SingCell Library Construction"))
-		self.singlecell_library_construction_id = make_autoname("SINGLECELL-SPL-LIB-.YY.-.MM.-.DD.-.###")
+		self.singlecell_library_construction_id = make_autoname("SingleCell-LIB-.YY.-.MM.-.DD.-.###")
 		self.name = self.singlecell_library_construction_id

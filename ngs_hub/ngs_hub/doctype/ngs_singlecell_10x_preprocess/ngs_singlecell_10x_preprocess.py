@@ -17,5 +17,5 @@ class NGSSingleCell10xPreprocess(Document):
 			frappe.throw(_("Sample Transfer is required to generate SingCell 10x Preprocess"))
 		if not self.sample_info:
 			frappe.throw(_("Sample Info is required to generate SingCell 10x Preprocess"))
-		self.singlecell_10x_preprocess_id = make_autoname("SINGLECELL-SPL-PRE-.YY.-.MM.-.DD.-.###")
+		self.singlecell_10x_preprocess_id = make_autoname("SingleCell-PRE-.YY.-.MM.-.DD.-.###")
 		self.name = self.singlecell_10x_preprocess_id

@@ -19,5 +19,5 @@ class NGSMetaLibraryConstruction(Document):
 			frappe.throw(_("Sample Info is required to generate Meta Library Construction"))
 		if not self.meta_sample_extraction:
 			frappe.throw(_("Meta Sample Extraction is required to generate Meta Library Construction"))
-		self.meta_library_construction_id = make_autoname("META-SPL-LIB-.YY.-.MM.-.DD.-.###")
+		self.meta_library_construction_id = make_autoname("Meta-LIB-.YY.-.MM.-.DD.-.###")
 		self.name = self.meta_library_construction_id
