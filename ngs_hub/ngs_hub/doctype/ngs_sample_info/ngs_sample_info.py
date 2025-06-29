@@ -11,6 +11,8 @@ class NGSSampleInfo(Document):
 	def before_insert(self):
 		if not self.customer:
 			frappe.throw(_("Customer is required to generate Sample Info"))
+		if not self.project:
+			frappe.throw(_("Project is required to generate Sample Info"))
 		if not self.sample_transfer:
 			frappe.throw(_("Sample Transfer is required to generate Sample Info"))
 		if not self.class_type:

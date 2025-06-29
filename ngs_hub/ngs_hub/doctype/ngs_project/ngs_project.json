@@ -49,14 +49,14 @@
    "fieldname": "class_type",
    "fieldtype": "Select",
    "label": "Class Type",
-   "options": "\nSingleCell\nMeta\nRNAseq"
+   "options": "\nSingleCell\nRNAseq\nMeta"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-29 00:43:57.900630",
+ "modified": "2025-06-29 02:00:11.296050",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Project",
