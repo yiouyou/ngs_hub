@@ -1,0 +1,26 @@
+[
+ {
+  "account": null,
+  "address_line_1": null,
+  "address_line_2": null,
+  "city": null,
+  "company": "Athenomics",
+  "default_in_transit_warehouse": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Warehouse",
+  "email_id": null,
+  "is_group": 0,
+  "is_rejected_warehouse": 0,
+  "mobile_no": null,
+  "modified": "2025-06-30 11:52:20.446314",
+  "name": "NGS Lab - ATH",
+  "old_parent": "",
+  "parent_warehouse": null,
+  "phone_no": null,
+  "pin": null,
+  "state": null,
+  "warehouse_name": "NGS Lab - ATH",
+  "warehouse_type": null
+ }
+]

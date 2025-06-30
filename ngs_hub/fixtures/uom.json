@@ -1,0 +1,74 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "UOM",
+  "enabled": 1,
+  "modified": "2025-05-28 11:44:59.828577",
+  "must_be_whole_number": 1,
+  "name": "Box",
+  "uom_name": "Box"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "UOM",
+  "enabled": 1,
+  "modified": "2025-05-28 11:44:59.928716",
+  "must_be_whole_number": 0,
+  "name": "Hour",
+  "uom_name": "Hour"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "UOM",
+  "enabled": 1,
+  "modified": "2025-06-30 12:02:15.918686",
+  "must_be_whole_number": 0,
+  "name": "Pack",
+  "uom_name": "Pack"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "UOM",
+  "enabled": 1,
+  "modified": "2025-06-30 12:04:33.142906",
+  "must_be_whole_number": 0,
+  "name": "Piece",
+  "uom_name": "Piece"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "UOM",
+  "enabled": 1,
+  "modified": "2025-06-30 13:03:51.352463",
+  "must_be_whole_number": 0,
+  "name": "Gb",
+  "uom_name": "Gb"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "UOM",
+  "enabled": 1,
+  "modified": "2025-06-30 11:45:40.540847",
+  "must_be_whole_number": 0,
+  "name": "L",
+  "uom_name": "L"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "UOM",
+  "enabled": 1,
+  "modified": "2025-06-30 11:46:59.376824",
+  "must_be_whole_number": 0,
+  "name": "uL",
+  "uom_name": "uL"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "UOM",
+  "enabled": 1,
+  "modified": "2025-06-30 11:46:52.762189",
+  "must_be_whole_number": 0,
+  "name": "mL",
+  "uom_name": "mL"
+ }
+]
