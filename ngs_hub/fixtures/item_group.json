@@ -138,8 +138,8 @@
   "item_group_name": "All Item Groups",
   "modified": "2025-05-28 11:44:56.753092",
   "name": "All Item Groups",
-  "old_parent": "",
-  "parent_item_group": "",
+  "old_parent": null,
+  "parent_item_group": null,
   "taxes": []
  },
  {
