@@ -10,6 +10,7 @@
   "project",
   "sample_transfer",
   "sample_info",
+  "urgency",
   "section_break_plet",
   "start_time",
   "end_time",
@@ -76,7 +77,7 @@
    "fieldname": "qc_status",
    "fieldtype": "Select",
    "label": "QC Status",
-   "options": "PASS\nFAIL\nNA"
+   "options": "\nPASS\nFAIL"
   },
   {
    "fieldname": "qc_result",
@@ -139,13 +140,20 @@
   {
    "fieldname": "section_break_plet",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "urgency",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Urgency",
+   "options": "Standard\nCritical"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-29 03:47:58.932290",
+ "modified": "2025-07-02 04:44:55.117360",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS SingleCell 10x Preprocess",

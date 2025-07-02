@@ -73,7 +73,7 @@
    "fieldname": "urgency",
    "fieldtype": "Select",
    "label": "Urgency",
-   "options": "Standard\nExpedited"
+   "options": "Standard\nCritical"
   },
   {
    "fieldname": "after_project",
@@ -178,7 +178,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-29 03:36:14.750620",
+ "modified": "2025-07-02 03:39:14.106998",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Sample Info",

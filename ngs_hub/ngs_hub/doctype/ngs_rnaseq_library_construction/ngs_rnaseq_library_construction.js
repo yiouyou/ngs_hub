@@ -21,6 +21,7 @@ frappe.ui.form.on('NGS RNAseq Library Construction', {
         doc.project = frm.doc.project
         doc.sample_transfer = frm.doc.sample_transfer;
         doc.sample_info = frm.doc.sample_info;
+        doc.urgency = frm.doc.urgency;
         doc.rnaseq_sample_extraction = frm.doc.rnaseq_sample_extraction;
         doc.rnaseq_enrichment = frm.doc.rnaseq_enrichment;
         doc.rnaseq_library_construction = frm.doc.rnaseq_library_construction_id;

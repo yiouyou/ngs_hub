@@ -21,6 +21,7 @@ frappe.ui.form.on('NGS Meta Library Construction', {
         doc.project = frm.doc.project
         doc.sample_transfer = frm.doc.sample_transfer;
         doc.sample_info = frm.doc.sample_info;
+        doc.urgency = frm.doc.urgency;
         doc.meta_sample_extraction = frm.doc.meta_sample_extraction;
         doc.meta_library_construction = frm.doc.meta_library_construction_id;
         doc.save();

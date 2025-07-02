@@ -10,6 +10,7 @@
   "project",
   "sample_transfer",
   "sample_info",
+  "urgency",
   "section_break_ecev",
   "start_time",
   "end_time",
@@ -91,7 +92,7 @@
    "fieldname": "qc_status",
    "fieldtype": "Select",
    "label": "QC Status",
-   "options": "PASS\nFAIL\nNA"
+   "options": "\nPASS\nFAIL"
   },
   {
    "fieldname": "qc_result",
@@ -132,13 +133,20 @@
   {
    "fieldname": "section_break_ecev",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "urgency",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Urgency",
+   "options": "Standard\nCritical"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-29 03:38:17.836850",
+ "modified": "2025-07-02 04:43:45.517315",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Meta Sample Extraction",

@@ -21,6 +21,7 @@ frappe.ui.form.on('NGS SingleCell 10x Chromium', {
         doc.project = frm.doc.project
         doc.sample_transfer = frm.doc.sample_transfer;
         doc.sample_info = frm.doc.sample_info;
+        doc.urgency = frm.doc.urgency;
         doc.singlecell_10x_preprocess = frm.doc.singlecell_10x_preprocess;
         doc.singlecell_10x_chromium = frm.doc.singlecell_10x_chromium_id;
         doc.save();

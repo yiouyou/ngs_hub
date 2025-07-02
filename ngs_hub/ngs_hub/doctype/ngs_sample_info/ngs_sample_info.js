@@ -32,6 +32,7 @@ frappe.ui.form.on('NGS Sample Info', {
           doc.project = frm.doc.project
           doc.sample_transfer = frm.doc.sample_transfer;
           doc.sample_info = frm.doc.sample_info_id;
+          doc.urgency = frm.doc.urgency;
           doc.save();
         });
       });
@@ -43,6 +44,7 @@ frappe.ui.form.on('NGS Sample Info', {
           doc.project = frm.doc.project
           doc.sample_transfer = frm.doc.sample_transfer;
           doc.sample_info = frm.doc.sample_info_id;
+          doc.urgency = frm.doc.urgency;
           doc.save();
         });
       });
@@ -54,6 +56,7 @@ frappe.ui.form.on('NGS Sample Info', {
           doc.project = frm.doc.project
           doc.sample_transfer = frm.doc.sample_transfer;
           doc.sample_info = frm.doc.sample_info_id;
+          doc.urgency = frm.doc.urgency;
           doc.save();
         });
       });

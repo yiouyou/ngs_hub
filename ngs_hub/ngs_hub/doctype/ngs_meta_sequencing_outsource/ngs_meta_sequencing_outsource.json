@@ -11,6 +11,7 @@
   "project",
   "sample_transfer",
   "sample_info",
+  "urgency",
   "meta_sample_extraction",
   "meta_library_construction",
   "section_break_uhde",
@@ -115,7 +116,7 @@
    "fieldname": "qc_status",
    "fieldtype": "Select",
    "label": "QC Status",
-   "options": "PASS\nFAIL\nNA"
+   "options": "\nPASS\nFAIL"
   },
   {
    "fieldname": "qc_result",
@@ -163,13 +164,20 @@
   {
    "fieldname": "section_break_ohne",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "urgency",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Urgency",
+   "options": "Standard\nCritical"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-29 03:42:28.516925",
+ "modified": "2025-07-02 04:44:06.369336",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Meta Sequencing Outsource",
