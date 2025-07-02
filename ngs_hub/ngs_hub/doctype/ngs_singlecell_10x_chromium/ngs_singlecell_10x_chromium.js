@@ -7,6 +7,15 @@
 // 	},
 // });
 frappe.ui.form.on('NGS SingleCell 10x Chromium', {
+  setup(frm) {
+    frm.set_query('singlecell_10x_preprocess', () => {
+      return {
+        filters: {
+          'qc_status': ['!=', 'FAIL']
+        }
+      };
+    });
+  },
   refresh(frm) {
     frm.add_custom_button(__('→ SingleCell 10x Pre'), () => {
       if (frm.doc.singlecell_10x_preprocess) {
@@ -16,16 +25,20 @@ frappe.ui.form.on('NGS SingleCell 10x Chromium', {
       }
     });
     frm.add_custom_button(__('+ SingleCell Lib Constr'), () => {
-      frappe.new_doc('NGS SingleCell Library Construction', {}, (doc) => {
-        doc.customer = frm.doc.customer
-        doc.project = frm.doc.project
-        doc.sample_transfer = frm.doc.sample_transfer;
-        doc.sample_info = frm.doc.sample_info;
-        doc.urgency = frm.doc.urgency;
-        doc.singlecell_10x_preprocess = frm.doc.singlecell_10x_preprocess;
-        doc.singlecell_10x_chromium = frm.doc.singlecell_10x_chromium_id;
-        doc.save();
-      });
+      if (frm.doc.qc_status === 'PASS') {
+        frappe.new_doc('NGS SingleCell Library Construction', {}, (doc) => {
+          doc.customer = frm.doc.customer
+          doc.project = frm.doc.project
+          doc.sample_transfer = frm.doc.sample_transfer;
+          doc.sample_info = frm.doc.sample_info;
+          doc.urgency = frm.doc.urgency;
+          doc.singlecell_10x_preprocess = frm.doc.singlecell_10x_preprocess;
+          doc.singlecell_10x_chromium = frm.doc.singlecell_10x_chromium_id;
+          doc.save();
+        });
+      } else {
+        frappe.msgprint(__('Cannot proceed. QC Status must be "PASS".'));
+      }
     });
   }
 });

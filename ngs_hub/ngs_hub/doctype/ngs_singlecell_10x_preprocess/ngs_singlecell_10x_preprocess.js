@@ -16,15 +16,19 @@ frappe.ui.form.on('NGS SingleCell 10x Preprocess', {
       }
     });
     frm.add_custom_button(__('+ SingleCell 10x Chromium'), () => {
-      frappe.new_doc('NGS SingleCell 10x Chromium', {}, (doc) => {
-        doc.customer = frm.doc.customer
-        doc.project = frm.doc.project
-        doc.sample_transfer = frm.doc.sample_transfer;
-        doc.sample_info = frm.doc.sample_info;
-        doc.urgency = frm.doc.urgency;
-        doc.singlecell_10x_preprocess = frm.doc.singlecell_10x_preprocess_id;
-        doc.save();
-      });
+      if (frm.doc.qc_status === 'PASS') {
+        frappe.new_doc('NGS SingleCell 10x Chromium', {}, (doc) => {
+          doc.customer = frm.doc.customer
+          doc.project = frm.doc.project
+          doc.sample_transfer = frm.doc.sample_transfer;
+          doc.sample_info = frm.doc.sample_info;
+          doc.urgency = frm.doc.urgency;
+          doc.singlecell_10x_preprocess = frm.doc.singlecell_10x_preprocess_id;
+          doc.save();
+        });
+      } else {
+        frappe.msgprint(__('Cannot proceed. QC Status must be "PASS".'));
+      }
     });
   }
 });

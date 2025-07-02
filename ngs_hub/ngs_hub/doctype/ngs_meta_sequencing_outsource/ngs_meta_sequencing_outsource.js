@@ -7,6 +7,22 @@
 // 	},
 // });
 frappe.ui.form.on('NGS Meta Sequencing Outsource', {
+  setup(frm) {
+    frm.set_query('meta_sample_extraction', () => {
+      return {
+        filters: {
+          'qc_status': ['!=', 'FAIL']
+        }
+      };
+    });
+    frm.set_query('meta_library_construction', () => {
+      return {
+        filters: {
+          'qc_status': ['!=', 'FAIL']
+        }
+      };
+    });
+  },
   refresh(frm) {
     frm.add_custom_button(__('→ Meta Library Construction'), () => {
       if (frm.doc.meta_library_construction) {

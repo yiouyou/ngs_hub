@@ -7,6 +7,29 @@
 // 	},
 // });
 frappe.ui.form.on('NGS SingleCell Sequencing Outsource', {
+  setup(frm) {
+    frm.set_query('singlecell_10x_preprocess', () => {
+      return {
+        filters: {
+          'qc_status': ['!=', 'FAIL']
+        }
+      };
+    });
+    frm.set_query('singlecell_10x_chromium', () => {
+      return {
+        filters: {
+          'qc_status': ['!=', 'FAIL']
+        }
+      };
+    });
+    frm.set_query('singlecell_library_construction', () => {
+      return {
+        filters: {
+          'qc_status': ['!=', 'FAIL']
+        }
+      };
+    });
+  },
   refresh(frm) {
     frm.add_custom_button(__('→ SingleCell Library Construction'), () => {
       if (frm.doc.singlecell_library_construction) {

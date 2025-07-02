@@ -7,6 +7,22 @@
 // 	},
 // });
 frappe.ui.form.on('NGS SingleCell Library Construction', {
+  setup(frm) {
+    frm.set_query('singlecell_10x_preprocess', () => {
+      return {
+        filters: {
+          'qc_status': ['!=', 'FAIL']
+        }
+      };
+    });
+    frm.set_query('singlecell_10x_chromium', () => {
+      return {
+        filters: {
+          'qc_status': ['!=', 'FAIL']
+        }
+      };
+    });
+  },
   refresh(frm) {
     frm.add_custom_button(__('→ SingleCell 10x Chromium'), () => {
       if (frm.doc.singlecell_10x_chromium) {
@@ -16,17 +32,21 @@ frappe.ui.form.on('NGS SingleCell Library Construction', {
       }
     });
     frm.add_custom_button(__('+ SingleCell Sequencing Out'), () => {
-      frappe.new_doc('NGS SingleCell Sequencing Outsource', {}, (doc) => {
-        doc.customer = frm.doc.customer
-        doc.project = frm.doc.project
-        doc.sample_transfer = frm.doc.sample_transfer;
-        doc.sample_info = frm.doc.sample_info;
-        doc.urgency = frm.doc.urgency;
-        doc.singlecell_10x_preprocess = frm.doc.singlecell_10x_preprocess;
-        doc.singlecell_10x_chromium = frm.doc.singlecell_10x_chromium;
-        doc.singlecell_library_construction = frm.doc.singlecell_library_construction_id;
-        doc.save();
-      });
+      if (frm.doc.qc_status === 'PASS') {
+        frappe.new_doc('NGS SingleCell Sequencing Outsource', {}, (doc) => {
+          doc.customer = frm.doc.customer
+          doc.project = frm.doc.project
+          doc.sample_transfer = frm.doc.sample_transfer;
+          doc.sample_info = frm.doc.sample_info;
+          doc.urgency = frm.doc.urgency;
+          doc.singlecell_10x_preprocess = frm.doc.singlecell_10x_preprocess;
+          doc.singlecell_10x_chromium = frm.doc.singlecell_10x_chromium;
+          doc.singlecell_library_construction = frm.doc.singlecell_library_construction_id;
+          doc.save();
+        });
+      } else {
+        frappe.msgprint(__('Cannot proceed. QC Status must be "PASS".'));
+      }
     });
   }
 });

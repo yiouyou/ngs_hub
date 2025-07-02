@@ -7,6 +7,29 @@
 // 	},
 // });
 frappe.ui.form.on('NGS RNAseq Sequencing Outsource', {
+  setup(frm) {
+    frm.set_query('rnaseq_sample_extraction', () => {
+      return {
+        filters: {
+          'qc_status': ['!=', 'FAIL']
+        }
+      };
+    });
+    frm.set_query('rnaseq_enrichment', () => {
+      return {
+        filters: {
+          'qc_status': ['!=', 'FAIL']
+        }
+      };
+    });
+    frm.set_query('rnaseq_library_construction', () => {
+      return {
+        filters: {
+          'qc_status': ['!=', 'FAIL']
+        }
+      };
+    });
+  },
   refresh(frm) {
     frm.add_custom_button(__('→ RNAseq Library Construction'), () => {
       if (frm.doc.rnaseq_library_construction) {

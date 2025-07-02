@@ -7,6 +7,15 @@
 // 	},
 // });
 frappe.ui.form.on('NGS Meta Library Construction', {
+  setup(frm) {
+    frm.set_query('meta_sample_extraction', () => {
+      return {
+        filters: {
+          'qc_status': ['!=', 'FAIL']
+        }
+      };
+    });
+  },
   refresh(frm) {
     frm.add_custom_button(__('→ Meta Sample Extraction'), () => {
       if (frm.doc.meta_sample_extraction) {
@@ -16,16 +25,20 @@ frappe.ui.form.on('NGS Meta Library Construction', {
       }
     });
     frm.add_custom_button(__('+ Meta Sequencing Out'), () => {
-      frappe.new_doc('NGS Meta Sequencing Outsource', {}, (doc) => {
-        doc.customer = frm.doc.customer
-        doc.project = frm.doc.project
-        doc.sample_transfer = frm.doc.sample_transfer;
-        doc.sample_info = frm.doc.sample_info;
-        doc.urgency = frm.doc.urgency;
-        doc.meta_sample_extraction = frm.doc.meta_sample_extraction;
-        doc.meta_library_construction = frm.doc.meta_library_construction_id;
-        doc.save();
-      });
+      if (frm.doc.qc_status === 'PASS') {
+        frappe.new_doc('NGS Meta Sequencing Outsource', {}, (doc) => {
+          doc.customer = frm.doc.customer
+          doc.project = frm.doc.project
+          doc.sample_transfer = frm.doc.sample_transfer;
+          doc.sample_info = frm.doc.sample_info;
+          doc.urgency = frm.doc.urgency;
+          doc.meta_sample_extraction = frm.doc.meta_sample_extraction;
+          doc.meta_library_construction = frm.doc.meta_library_construction_id;
+          doc.save();
+        });
+      } else {
+        frappe.msgprint(__('Cannot proceed. QC Status must be "PASS".'));
+      }
     });
   }
 });
