@@ -8,7 +8,7 @@ app_license = "mit"
 
 fixtures = [
 	{"dt": "Role", "filters": [["name", "in", ["NGS Internal Staff", "NGS External Customer"]]]},
-	{"dt": "Workspace", "filters": [["name", "=", "NGS Hub"]]},
+	{"dt": "Workspace", "filters": [["name", "in", ["NGS Hub", "NGS QC FAIL"]]]},
 	{
 		"dt": "Server Script",
 		"filters": [
