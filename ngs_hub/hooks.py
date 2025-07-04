@@ -19,6 +19,8 @@ fixtures = [
 					"Send Email on SingleCell LIB QC PASS",
 					"Send Email on RNAseq LIB QC PASS",
 					"Send Email on Meta LIB QC PASS",
+					"Sync Customer and User - Add",
+					"Sync Customer and User - Del",
 				],
 			]
 		],

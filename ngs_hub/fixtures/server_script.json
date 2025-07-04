@@ -55,5 +55,43 @@
   "reference_doctype": "NGS Meta Library Construction",
   "script": "if doc.qc_status == \"PASS\" and doc.customer:\r\n    customer = frappe.get_doc(\"NGS Customer\", doc.customer)\r\n    lib_id = f\"{doc.meta_library_construction_id or doc.name}\"\r\n    sample_link_html = \"\"\r\n    if doc.sample_info:\r\n        sample_link = frappe.utils.get_url_to_form(\"NGS Sample Info\", doc.sample_info)\r\n        sample_link_html = f\"\"\"<p style=\"margin-bottom: 24px;\">\r\n        You can view the details of your sample information here:<br>\r\n        <a href=\"{sample_link}\" style=\"color: #0066cc; font-weight: bold;\">\r\n          View Sample Info ({doc.sample_info})\r\n        </a>\r\n      </p>\"\"\"\r\n    if customer.email:\r\n        subject = f\"Library QC Passed: {lib_id}\"\r\n        message = f\"\"\"<!DOCTYPE html>\r\n<html>\r\n  <body style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.8; padding: 20px;\">\r\n    <div style=\"max-width: 640px; margin: auto; border: 1px solid #e0e0e0; border-radius: 10px; padding: 30px; background-color: #fafafa;\">\r\n      <h2 style=\"color: #0066cc; margin-bottom: 20px;\">QC Status: PASS</h2>\r\n      <p style=\"margin-bottom: 20px;\">Dear {customer.full_name or 'Customer'},</p>\r\n      <p style=\"margin-bottom: 20px;\">\r\n        We are pleased to inform you that your library construction \r\n        <strong>{lib_id}</strong> \r\n        has successfully passed the quality control (QC) process.\r\n      </p>\r\n      {sample_link_html}\r\n      <p style=\"margin-bottom: 32px;\">\r\n        If you have any questions or need further assistance, feel free to contact us.\r\n      </p>\r\n      <hr style=\"border: none; border-top: 1px solid #ddd; margin: 40px 0;\">\r\n      <p style=\"margin-bottom: 0;\">\r\n        Best regards,<br>\r\n        <strong>Your Athenomics Lab Team</strong>\r\n      </p>\r\n    </div>\r\n  </body>\r\n</html>\"\"\"\r\n        frappe.sendmail(\r\n            recipients=[customer.email],\r\n            subject=subject,\r\n            message=message,\r\n            delayed=False,\r\n            retry=3,\r\n        )\r\n",
   "script_type": "DocType Event"
+ },
+ {
+  "allow_guest": 0,
+  "api_method": null,
+  "cron_format": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Server Script",
+  "doctype_event": "After Submit",
+  "enable_rate_limit": 0,
+  "event_frequency": "All",
+  "modified": "2025-07-04 04:18:10.385346",
+  "module": "NGS Hub",
+  "name": "Sync Customer and User - Add",
+  "rate_limit_count": 5,
+  "rate_limit_seconds": 86400,
+  "reference_doctype": "NGS Customer",
+  "script": "# 自动为提交的 NGS Customer 添加 User Permission\r\n# doc.name 是 NGS Customer 记录的 name（即 customer_id，如 \"CUST-John_Doe-001\"）\r\n\r\nuser = frappe.db.get_value('User',\r\n    {'email': doc.email, 'enabled': 1}, 'name')\r\n\r\nif user:\r\n    if not frappe.db.exists('User Permission', {\r\n        'user': user, 'allow': 'NGS Customer', 'for_value': doc.name\r\n    }):\r\n        perm = frappe.get_doc({\r\n            'doctype': 'User Permission',\r\n            'user': user,\r\n            'allow': 'NGS Customer',\r\n            'for_value': doc.name,\r\n            'is_default': 1\r\n        })\r\n        perm.insert(ignore_permissions=True)\r\n        frappe.msgprint(f\"✅ 已移添加户 {user} 对 NGS Customer '{doc.name}' 的访问权限\")\r\n",
+  "script_type": "DocType Event"
+ },
+ {
+  "allow_guest": 0,
+  "api_method": null,
+  "cron_format": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Server Script",
+  "doctype_event": "After Cancel",
+  "enable_rate_limit": 0,
+  "event_frequency": "All",
+  "modified": "2025-07-04 04:17:38.355643",
+  "module": "NGS Hub",
+  "name": "Sync Customer and User - Del",
+  "rate_limit_count": 5,
+  "rate_limit_seconds": 86400,
+  "reference_doctype": "NGS Customer",
+  "script": "# 自动在取消提交时移除 User Permission\r\n# doc.name 是 NGS Customer 记录的 name（即 customer_id，如 \"CUST-John_Doe-001\"）\r\n\r\nuser = frappe.db.get_value('User',\r\n    {'email': doc.email}, 'name')\r\n\r\nif user:\r\n    up_name = frappe.db.get_value('User Permission', {\r\n        'user': user, 'allow': 'NGS Customer', 'for_value': doc.name\r\n    }, 'name')\r\n\r\n    if up_name:\r\n        frappe.delete_doc('User Permission', up_name, force=True)\r\n        frappe.msgprint(f\"🛑 已移除用户 {user} 对 NGS Customer '{doc.name}' 的访问权限\")\r\n",
+  "script_type": "DocType Event"
  }
 ]
