@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "QC FAIL",
  "links": [],
- "modified": "2025-07-02 06:17:02.900645",
+ "modified": "2025-07-04 03:45:30.932396",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "QC FAIL",
@@ -78,7 +78,11 @@
    "quick_list_filter": "[[\"NGS Meta Sequencing Outsource\",\"qc_status\",\"=\",\"FAIL\",false]]"
   }
  ],
- "roles": [],
+ "roles": [
+  {
+   "role": "NGS Internal Staff"
+  }
+ ],
  "sequence_id": 24.0,
  "shortcuts": [],
  "title": "QC FAIL"

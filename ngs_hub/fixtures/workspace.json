@@ -12,7 +12,7 @@
   "is_hidden": 0,
   "label": "QC FAIL",
   "links": [],
-  "modified": "2025-07-02 06:17:02.900645",
+  "modified": "2025-07-04 03:45:30.932396",
   "module": "NGS Hub",
   "name": "QC FAIL",
   "number_cards": [],
@@ -109,7 +109,14 @@
    }
   ],
   "restrict_to_domain": null,
-  "roles": [],
+  "roles": [
+   {
+    "parent": "QC FAIL",
+    "parentfield": "roles",
+    "parenttype": "Workspace",
+    "role": "NGS Internal Staff"
+   }
+  ],
   "sequence_id": 24.0,
   "shortcuts": [],
   "title": "QC FAIL"
