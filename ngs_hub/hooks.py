@@ -57,7 +57,7 @@ fixtures = [
 					"Meta Wetlab",
 					"Meta Bioinfo",
 					"Sequencing Outsource",
-					"All Item Groups",
+					# "All Item Groups",
 				],
 			]
 		],
