@@ -66,13 +66,13 @@
   "doctype_event": "After Submit",
   "enable_rate_limit": 0,
   "event_frequency": "All",
-  "modified": "2025-07-04 04:18:10.385346",
+  "modified": "2025-07-04 05:22:12.999648",
   "module": "NGS Hub",
   "name": "Sync Customer and User - Add",
   "rate_limit_count": 5,
   "rate_limit_seconds": 86400,
   "reference_doctype": "NGS Customer",
-  "script": "# 自动为提交的 NGS Customer 添加 User Permission\r\n# doc.name 是 NGS Customer 记录的 name（即 customer_id，如 \"CUST-John_Doe-001\"）\r\n\r\nuser = frappe.db.get_value('User',\r\n    {'email': doc.email, 'enabled': 1}, 'name')\r\n\r\nif user:\r\n    if not frappe.db.exists('User Permission', {\r\n        'user': user, 'allow': 'NGS Customer', 'for_value': doc.name\r\n    }):\r\n        perm = frappe.get_doc({\r\n            'doctype': 'User Permission',\r\n            'user': user,\r\n            'allow': 'NGS Customer',\r\n            'for_value': doc.name,\r\n            'is_default': 1\r\n        })\r\n        perm.insert(ignore_permissions=True)\r\n        frappe.msgprint(f\"✅ 已移添加户 {user} 对 NGS Customer '{doc.name}' 的访问权限\")\r\n",
+  "script": "# 自动为提交的 NGS Customer 添加 User Permission\r\n# doc.name 是 NGS Customer 记录的 name（即 customer_id，如 \"CUST-John_Doe-001\"）\r\n\r\nuser = frappe.db.get_value('User',\r\n    {'email': doc.email, 'enabled': 1}, 'name')\r\n\r\nif user:\r\n    if not frappe.db.exists('User Permission', {\r\n        'user': user, 'allow': 'NGS Customer', 'for_value': doc.name\r\n    }):\r\n        perm = frappe.get_doc({\r\n            'doctype': 'User Permission',\r\n            'user': user,\r\n            'allow': 'NGS Customer',\r\n            'for_value': doc.name,\r\n            'is_default': 1\r\n        })\r\n        perm.insert(ignore_permissions=True)\r\n        frappe.msgprint(f\"✅ 已移添加户 {user} 对 NGS Customer '{doc.name}' 的访问权限\", alert=True)\r\n",
   "script_type": "DocType Event"
  },
  {
@@ -85,13 +85,13 @@
   "doctype_event": "After Cancel",
   "enable_rate_limit": 0,
   "event_frequency": "All",
-  "modified": "2025-07-04 04:17:38.355643",
+  "modified": "2025-07-04 05:22:47.362120",
   "module": "NGS Hub",
   "name": "Sync Customer and User - Del",
   "rate_limit_count": 5,
   "rate_limit_seconds": 86400,
   "reference_doctype": "NGS Customer",
-  "script": "# 自动在取消提交时移除 User Permission\r\n# doc.name 是 NGS Customer 记录的 name（即 customer_id，如 \"CUST-John_Doe-001\"）\r\n\r\nuser = frappe.db.get_value('User',\r\n    {'email': doc.email}, 'name')\r\n\r\nif user:\r\n    up_name = frappe.db.get_value('User Permission', {\r\n        'user': user, 'allow': 'NGS Customer', 'for_value': doc.name\r\n    }, 'name')\r\n\r\n    if up_name:\r\n        frappe.delete_doc('User Permission', up_name, force=True)\r\n        frappe.msgprint(f\"🛑 已移除用户 {user} 对 NGS Customer '{doc.name}' 的访问权限\")\r\n",
+  "script": "# 自动在取消提交时移除 User Permission\r\n# doc.name 是 NGS Customer 记录的 name（即 customer_id，如 \"CUST-John_Doe-001\"）\r\n\r\nuser = frappe.db.get_value('User',\r\n    {'email': doc.email}, 'name')\r\n\r\nif user:\r\n    up_name = frappe.db.get_value('User Permission', {\r\n        'user': user, 'allow': 'NGS Customer', 'for_value': doc.name\r\n    }, 'name')\r\n\r\n    if up_name:\r\n        frappe.delete_doc('User Permission', up_name, force=True)\r\n        frappe.msgprint(f\"🛑 已移除用户 {user} 对 NGS Customer '{doc.name}' 的访问权限\", alert=True)\r\n",
   "script_type": "DocType Event"
  }
 ]
