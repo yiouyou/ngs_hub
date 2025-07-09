@@ -12,7 +12,7 @@
   "is_hidden": 0,
   "label": "QC FAIL",
   "links": [],
-  "modified": "2025-07-04 03:45:30.932396",
+  "modified": "2025-07-08 23:19:04.636466",
   "module": "NGS Hub",
   "name": "QC FAIL",
   "number_cards": [],
@@ -117,7 +117,7 @@
     "role": "NGS Internal Staff"
    }
   ],
-  "sequence_id": 24.0,
+  "sequence_id": 2.0,
   "shortcuts": [],
   "title": "QC FAIL"
  },
@@ -513,7 +513,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2025-07-02 06:08:27.447319",
+  "modified": "2025-07-08 23:19:04.545557",
   "module": "NGS Hub",
   "name": "NGS Hub",
   "number_cards": [],

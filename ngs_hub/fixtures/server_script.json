@@ -85,7 +85,7 @@
   "doctype_event": "After Cancel",
   "enable_rate_limit": 0,
   "event_frequency": "All",
-  "modified": "2025-07-04 05:22:47.362120",
+  "modified": "2025-07-09 13:43:47.243036",
   "module": "NGS Hub",
   "name": "Sync Customer and User - Del",
   "rate_limit_count": 5,

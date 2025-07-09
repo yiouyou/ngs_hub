@@ -1,0 +1,60 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-09 13:13:57.087108",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "anthropic_api_key",
+  "openai_api_key",
+  "gemini_api_key",
+  "deepseek_api_key"
+ ],
+ "fields": [
+  {
+   "fieldname": "anthropic_api_key",
+   "fieldtype": "Password",
+   "label": "ANTHROPIC_API_KEY"
+  },
+  {
+   "fieldname": "openai_api_key",
+   "fieldtype": "Password",
+   "label": "OPENAI_API_KEY"
+  },
+  {
+   "fieldname": "gemini_api_key",
+   "fieldtype": "Password",
+   "label": "GEMINI_API_KEY"
+  },
+  {
+   "fieldname": "deepseek_api_key",
+   "fieldtype": "Password",
+   "label": "DEEPSEEK_API_KEY"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-07-09 13:15:13.757917",
+ "modified_by": "Administrator",
+ "module": "NGS Hub",
+ "name": "NGS API KEY",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
