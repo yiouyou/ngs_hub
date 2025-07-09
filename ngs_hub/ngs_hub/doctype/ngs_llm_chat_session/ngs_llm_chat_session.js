@@ -432,7 +432,7 @@ frappe.ui.form.on('NGS LLM Chat Session', {
         // 调用AI API（不传递附件）
         const response = await new Promise((resolve, reject) => {
           frappe.call({
-            method: 'patent_hub.api.anthropic_chat.anthropic_call',
+            method: 'ngs_hub.api.anthropic_chat.anthropic_call',
             args: {
               prompt: message,
               attachment_path: null // 附件路径设为空
