@@ -64,7 +64,7 @@ fixtures = [
 			]
 		],
 	},
-	{"dt": "Item", "filters": [["item_code", "in", ["BUFFER-ATL-100ML", "QIA-DNA-KIT-96", "TUBE-1.5ML"]]]},
+	# {"dt": "Item", "filters": [["item_code", "in", ["BUFFER-ATL-100ML", "QIA-DNA-KIT-96", "TUBE-1.5ML"]]]},
 	# {"dt": "Role Profile", "filters": [["name", "in", ["NGS Customer"]]]},
 	# {"dt": "Module Profile", "filters": [["name", "in", ["NGS Customer"]]]},
 ]
