@@ -64,7 +64,28 @@ fixtures = [
 			]
 		],
 	},
-	# {"dt": "Item", "filters": [["item_code", "in", ["BUFFER-ATL-100ML", "QIA-DNA-KIT-96", "TUBE-1.5ML"]]]},
+	{
+		"dt": "Item",
+		"filters": [
+			[
+				"item_name",
+				"in",
+				[
+					"SingleCell Wetlab",
+					"Meta Wetlab",
+					"RNAseq Wetlab",
+					"SingleCell Bioinfo",
+					"Meta Bioinfo",
+					"RNAseq Bioinfo",
+					"Sequencing Outsource",
+					"Customized Data Analysis",
+					"SingleCell Package",
+					"Meta Package",
+					"RNAseq Package",
+				],
+			]
+		],
+	},
 	# {"dt": "Role Profile", "filters": [["name", "in", ["NGS Customer"]]]},
 	# {"dt": "Module Profile", "filters": [["name", "in", ["NGS Customer"]]]},
 ]
