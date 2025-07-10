@@ -6,6 +6,8 @@ app_email = "zhuosong@gmail.com"
 app_license = "mit"
 
 
+after_install = "ngs_hub.install.create_default_uoms"
+
 fixtures = [
 	{"dt": "Role", "filters": [["name", "in", ["NGS Internal Staff", "NGS External Customer"]]]},
 	{"dt": "Workspace", "filters": [["name", "in", ["NGS Hub", "QC FAIL"]]]},
