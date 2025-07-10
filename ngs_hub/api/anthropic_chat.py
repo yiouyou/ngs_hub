@@ -181,7 +181,7 @@ def anthropic_call(
 		frappe.throw("max_tokens 必须是1-8192之间的整数")
 	if not isinstance(temperature, (int, float)) or temperature < 0 or temperature > 1:
 		frappe.throw("temperature 必须在0-1之间")
-	api_key = frappe.get_single("API KEY")
+	api_key = frappe.get_single("NGS API KEY")
 	ANTHROPIC_API_KEY = api_key.get_password("anthropic_api_key")
 	if not ANTHROPIC_API_KEY:
 		frappe.throw("Anthropic API Key 未配置")
