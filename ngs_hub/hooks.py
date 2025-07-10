@@ -28,7 +28,11 @@ fixtures = [
 	{
 		"dt": "UOM",
 		"filters": [
-			["name", "in", ["uL", "mL", "L", "Prep", "Reaction", "Piece", "Pack", "Box", "Gb", "Hour"]]
+			[
+				"name",
+				"in",
+				["uL", "mL", "L", "Prep", "Reaction", "Piece", "Pack", "Box", "Gb", "Hour", "Sample"],
+			]
 		],
 	},
 	{"dt": "UOM Category", "filters": [["name", "in", ["Volume", "Quantity", "Data Volume"]]]},
