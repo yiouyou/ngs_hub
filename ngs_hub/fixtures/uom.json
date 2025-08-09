@@ -66,8 +66,8 @@
   "docstatus": 0,
   "doctype": "UOM",
   "enabled": 1,
-  "modified": "2025-06-30 13:04:07.995678",
-  "must_be_whole_number": 0,
+  "modified": "2025-07-09 23:19:30.393110",
+  "must_be_whole_number": 1,
   "name": "Sample",
   "uom_name": "Sample"
  },

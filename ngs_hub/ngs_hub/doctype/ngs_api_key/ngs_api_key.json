@@ -8,7 +8,10 @@
   "anthropic_api_key",
   "openai_api_key",
   "gemini_api_key",
-  "deepseek_api_key"
+  "deepseek_api_key",
+  "section_break_lsax",
+  "turnstile_site_key",
+  "turnstile_secret_key"
  ],
  "fields": [
   {
@@ -30,13 +33,27 @@
    "fieldname": "deepseek_api_key",
    "fieldtype": "Password",
    "label": "DEEPSEEK_API_KEY"
+  },
+  {
+   "fieldname": "section_break_lsax",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "turnstile_site_key",
+   "fieldtype": "Data",
+   "label": "Turnstile Site Key"
+  },
+  {
+   "fieldname": "turnstile_secret_key",
+   "fieldtype": "Data",
+   "label": "Turnstile Secret Key"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-07-09 13:15:13.757917",
+ "modified": "2025-08-09 01:40:43.419323",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS API KEY",
