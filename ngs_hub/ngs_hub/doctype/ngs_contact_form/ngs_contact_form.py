@@ -8,7 +8,8 @@ VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 
 def _get_turnstile_secret():
 	# 从 Single DocType 读取 Secret
-	secret = frappe.db.get_single_value("NGS API KEY", "turnstile_secret_key")
+	api_key = frappe.get_single("NGS API KEY")
+	secret = api_key.get_password("turnstile_secret_key")
 	if not secret:
 		frappe.throw(_("Turnstile secret key not configured in 'NGS API KEY'."))
 	return secret
@@ -48,13 +49,10 @@ class NGSContactForm(Document):
 		token = (self.get("turnstile_token") or "").strip()
 		if not token:
 			frappe.throw(_("Captcha token missing."))
-
 		# 2) Turnstile 校验
 		_verify_turnstile(token)
-
 		# 3) 验完清空，不长期保存
 		self.turnstile_token = ""
-
 		# 4) （可选）按 IP 限流：5 分钟最多 5 次
 		ip = getattr(frappe.local, "request_ip", "unknown")
 		_rate_limit(f"ngs-contact:{ip}", limit=5, ttl=300)

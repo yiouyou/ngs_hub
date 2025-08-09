@@ -5,11 +5,12 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "llm_section",
   "anthropic_api_key",
   "openai_api_key",
   "gemini_api_key",
   "deepseek_api_key",
-  "section_break_lsax",
+  "section_turnstile",
   "turnstile_site_key",
   "turnstile_secret_key"
  ],
@@ -35,25 +36,31 @@
    "label": "DEEPSEEK_API_KEY"
   },
   {
-   "fieldname": "section_break_lsax",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "turnstile_site_key",
-   "fieldtype": "Data",
+   "fieldtype": "Password",
    "label": "Turnstile Site Key"
   },
   {
    "fieldname": "turnstile_secret_key",
-   "fieldtype": "Data",
+   "fieldtype": "Password",
    "label": "Turnstile Secret Key"
+  },
+  {
+   "fieldname": "llm_section",
+   "fieldtype": "Section Break",
+   "label": "LLM"
+  },
+  {
+   "fieldname": "section_turnstile",
+   "fieldtype": "Section Break",
+   "label": "Turnstile"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-08-09 01:40:43.419323",
+ "modified": "2025-08-09 08:53:10.107063",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS API KEY",
