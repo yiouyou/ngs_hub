@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:contact_id",
  "creation": "2025-08-09 01:22:02.752336",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -9,22 +10,27 @@
   "email",
   "message",
   "section_break_pvcm",
+  "contact_id",
   "turnstile_token"
  ],
  "fields": [
   {
    "fieldname": "full_name",
    "fieldtype": "Data",
-   "label": "Full Name"
+   "in_list_view": 1,
+   "label": "Full Name",
+   "unique": 1
   },
   {
    "fieldname": "email",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Email"
   },
   {
    "fieldname": "message",
    "fieldtype": "Small Text",
+   "in_list_view": 1,
    "label": "Message"
   },
   {
@@ -36,15 +42,22 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Turnstile Token"
+  },
+  {
+   "fieldname": "contact_id",
+   "fieldtype": "Data",
+   "label": "Contact ID",
+   "unique": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-09 01:29:46.845469",
+ "modified": "2025-08-10 05:28:42.016648",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Contact Form",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {

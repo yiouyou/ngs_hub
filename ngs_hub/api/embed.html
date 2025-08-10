@@ -1,0 +1,121 @@
+<div id="cf-turnstile"></div>
+<input type="hidden" id="turnstile_token" />
+
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script>
+(() => {
+  const WEB_FORM_ROUTE = "ngs-contact-form";          // 改成你的 Web Form 路由
+  const TEST_KEY = "1x00000000000000000000AA";        // 本地测试 Key
+  const PROD_KEY = "0x4AAAAAABp1eZXXvJC2tv3p";        // 上线 Key
+  const SITE_KEY = (location.hostname === "localhost" || location.hostname.endsWith(".localhost"))
+    ? TEST_KEY : PROD_KEY;
+
+  const $ = id => document.getElementById(id);
+  const el = {
+    full_name: $("full_name"),
+    email: $("email"),
+    message: $("message"),
+    btn: $("submitBtn"),
+    msg: $("msgBox"),
+    token: $("turnstile_token"),
+    mount: $("cf-turnstile")
+  };
+
+  // 按钮状态管理
+  function setBusy(on) {
+    if (!el.btn) return;
+    if (on) {
+      if (!el.btn.dataset.origHtml) el.btn.dataset.origHtml = el.btn.innerHTML;
+      el.btn.disabled = true;
+      el.btn.setAttribute("disabled", "disabled");
+      el.btn.setAttribute("aria-busy", "true");
+      el.btn.classList.add("is-disabled", "btn-disabled", "disabled");
+      el.btn.innerText = "Submitting...";
+    } else {
+      el.btn.disabled = false;
+      el.btn.removeAttribute("disabled");
+      el.btn.removeAttribute("aria-busy");
+      el.btn.classList.remove("is-disabled", "btn-disabled", "disabled");
+      el.btn.innerHTML = el.btn.dataset.origHtml || "Submit";
+    }
+  }
+
+  function toast(text, ok) {
+    if (!el.msg) return;
+    el.msg.textContent = text || "";
+    el.msg.style.padding = "6px 10px";
+    el.msg.style.borderRadius = "6px";
+    el.msg.style.marginTop = "8px";
+    el.msg.style.background = text ? (ok ? "#e8fff1" : "#ffecec") : "transparent";
+  }
+
+  // 渲染 Turnstile
+  let rendered = false;
+  function renderOnce() {
+    if (rendered) return;
+    if (!window.turnstile) return setTimeout(renderOnce, 150);
+    rendered = true;
+    turnstile.render(el.mount, {
+      sitekey: SITE_KEY,
+      theme: "auto",
+      callback: t => { el.token.value = t; console.log("[Turnstile] token:", t); },
+      "expired-callback": () => { el.token.value = ""; toast("验证过期，请重新勾选。", false); },
+      "error-callback": () => { el.token.value = ""; toast("人机验证加载失败（检查Key/白名单/CSP）", false); }
+    });
+  }
+  renderOnce();
+
+  // 提交
+  async function submitForm() {
+    const payload = {
+      full_name: el.full_name?.value || "",
+      email: el.email?.value || "",
+      message: el.message?.value || "",
+      turnstile_token: el.token?.value || ""
+    };
+
+    console.log("[submit] payload:", payload);
+    if (!payload.turnstile_token) { toast("请先通过人机验证。", false); return; }
+
+    const body = new URLSearchParams({
+      web_form: WEB_FORM_ROUTE,
+      data: JSON.stringify(payload)
+    });
+
+    setBusy(true);
+    toast("Submitting...", true);
+
+    try {
+      const res = await fetch("/api/method/frappe.website.doctype.web_form.web_form.accept", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "X-Frappe-CSRF-Token": (window.csrf_token || window.frappe?.csrf_token || "")
+        },
+        credentials: "include",
+        body
+      });
+
+      const json = await res.json();
+      console.log("[accept] response:", json);
+
+      if (res.ok && !json.exc) {
+        toast("OK：已创建记录。", true);
+        ["full_name","email","message"].forEach(id => { const i = $(id); if (i) i.value = ""; });
+      } else {
+        toast("FAIL: " + (json.message || JSON.stringify(json)), false);
+      }
+    } catch (e) {
+      console.error(e);
+      toast("网络错误", false);
+    } finally {
+      setBusy(false);
+      if (window.turnstile) turnstile.reset();
+      if (el.token) el.token.value = "";
+    }
+  }
+
+  el.btn?.addEventListener("click", e => { e.preventDefault(); submitForm(); });
+})();
+</script>

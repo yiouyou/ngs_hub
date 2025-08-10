@@ -1,13 +1,19 @@
+import re
+
 import frappe
 import requests
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import escape_html, get_url, validate_email_address
+from frappe.model.naming import make_autoname
+from frappe.utils import get_url  # escape_html/validate_email_address 如需再启用再引入
 
 VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 
-# 允许的主机名（Turnstile 返回的 hostname）
-ALLOWED_HOSTNAMES = {"athenomics.com", "www.athenomics.com"}
+# 允许的主机名（Turnstile 返回的 hostname）——含本地联调域名
+ALLOWED_HOSTNAMES = {
+	"athenomics.com",
+	"www.athenomics.com",
+}
 
 
 def _get_client_ip() -> str:
@@ -32,34 +38,22 @@ def _get_turnstile_secret() -> str:
 
 
 def _verify_turnstile(token: str):
-	"""调用 Cloudflare 接口验证 Token，失败抛错"""
+	host = frappe.request.host if getattr(frappe, "request", None) else ""
+	# 本地放行（或用配置开关）
+	if host == "localhost" or host.endswith(".localhost"):
+		return
+	# 正式校验
 	secret = _get_turnstile_secret()
 	ip = _get_client_ip()
-
-	try:
-		r = requests.post(
-			VERIFY_URL,
-			data={"secret": secret, "response": token, "remoteip": ip},
-			timeout=8,
-		)
-		r.raise_for_status()
-		data = r.json()
-	except Exception as e:
-		frappe.log_error(f"Turnstile verify request failed: {e}", "Turnstile Verify")
-		frappe.throw(_("Human verification failed, please try again later."))
-
+	r = requests.post(VERIFY_URL, data={"secret": secret, "response": token, "remoteip": ip}, timeout=8)
+	r.raise_for_status()
+	data = r.json()
 	ok = bool(data.get("success"))
-
-	# 允许多个主机名：athenomics.com 与 www.athenomics.com
 	hostname = data.get("hostname")
-	host_ok = (hostname in ALLOWED_HOSTNAMES) if hostname else False
-	ok = ok and host_ok
-
-	if not ok:
-		errs = ", ".join(data.get("error-codes", [])) or "unknown_error"
-		frappe.log_error(
-			f"Turnstile failed. ip={ip}, hostname={hostname}, errors={errs}, resp={data}", "Turnstile Verify"
-		)
+	host_ok = bool(hostname) and (hostname in ALLOWED_HOSTNAMES)
+	if not (ok and host_ok):
+		# 可在开发阶段临时打印 error-codes；上线后建议只记简短日志
+		# frappe.log_error(title="Turnstile Debug", message=frappe.as_json(data))
 		frappe.throw(_("Captcha verification failed. Please try again."))
 
 
@@ -83,24 +77,22 @@ class NGSContactForm(Document):
 		self.full_name = (self.full_name or "").strip()
 		self.email = (self.email or "").strip()
 		self.message = (self.message or "").strip()
-
 		if not self.full_name or not self.email or not self.message:
 			frappe.throw(_("Full Name, Email and Message are required."))
-
-		email_err = validate_email_address(self.email, throw=False)
-		if email_err:
-			frappe.throw(_("Invalid email address."))
-
+		safe_name = re.sub(r"[^\w\s-]", "", self.full_name).replace(" ", "_")
+		self.contact_id = make_autoname(f"CT-{safe_name}-.###")
+		self.name = self.contact_id
+		# email_err = validate_email_address(self.email, throw=False)
+		# if email_err:
+		# 	frappe.throw(_("Invalid email address."))
 		if len(self.message) > 8000:
 			frappe.throw(_("Message is too long."))
-
 		# ---- Turnstile 校验 ----
 		token = (self.get("turnstile_token") or "").strip()
 		if not token:
 			frappe.throw(_("Captcha token missing."))
 		_verify_turnstile(token)
 		self.turnstile_token = ""  # 通过后清空
-
 		# ---- 限流（按 IP + 邮箱）----
 		ip = _get_client_ip()
 		_rate_limit(f"ngs-contact:ip:{ip}", limit=5, ttl=300)  # 5 分钟最多 5 次
@@ -109,15 +101,15 @@ class NGSContactForm(Document):
 	def after_insert(self):
 		"""可选：落库后发通知邮件"""
 		try:
-			to = frappe.db.get_single_value("Website Settings", "contact_email") or "support@example.com"
+			to = "sz@athenomics.com"
 			subject = f"New Contact: {self.full_name}"
 			message = f"""
-                <p><b>Name:</b> {escape_html(self.full_name)}</p>
-                <p><b>Email:</b> {escape_html(self.email)}</p>
-                <p><b>Message:</b></p>
-                <pre>{escape_html(self.message or "")}</pre>
-                <p>Record: <a href="{get_url(self.get_url())}">{escape_html(self.name)}</a></p>
-            """
+	<p><b>Name:</b> {escape_html(self.full_name)}</p>
+	<p><b>Email:</b> {escape_html(self.email)}</p>
+	<p><b>Message:</b></p>
+	<pre>{escape_html(self.message or "")}</pre>
+	<p>Record: <a href="{get_url(self.get_url())}">{escape_html(self.name)}</a></p>
+	"""
 			frappe.sendmail(
 				recipients=[to],
 				subject=subject,
