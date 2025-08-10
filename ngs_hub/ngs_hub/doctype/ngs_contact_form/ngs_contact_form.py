@@ -5,7 +5,7 @@ import requests
 from frappe import _
 from frappe.model.document import Document
 from frappe.model.naming import make_autoname
-from frappe.utils import get_url  # escape_html/validate_email_address 如需再启用再引入
+from frappe.utils import escape_html, get_url, validate_email_address
 
 VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 
@@ -13,6 +13,8 @@ VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 ALLOWED_HOSTNAMES = {
 	"athenomics.com",
 	"www.athenomics.com",
+	"athenomics.frappe.cloud",
+	"www.athenomics.frappe.cloud",
 }
 
 
