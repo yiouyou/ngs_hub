@@ -100,24 +100,24 @@ class NGSContactForm(Document):
 		_rate_limit(f"ngs-contact:ip:{ip}", limit=5, ttl=300)  # 5 分钟最多 5 次
 		_rate_limit(f"ngs-contact:email:{self.email}", limit=5, ttl=300)
 
-	def after_insert(self):
-		"""可选：落库后发通知邮件"""
-		try:
-			to = "sz@athenomics.com"
-			subject = f"New Contact: {self.full_name}"
-			message = f"""
-	<p><b>Name:</b> {escape_html(self.full_name)}</p>
-	<p><b>Email:</b> {escape_html(self.email)}</p>
-	<p><b>Message:</b></p>
-	<pre>{escape_html(self.message or "")}</pre>
-	<p>Record: <a href="{get_url(self.get_url())}">{escape_html(self.name)}</a></p>
-	"""
-			frappe.sendmail(
-				recipients=[to],
-				subject=subject,
-				message=message,
-				reference_doctype=self.doctype,
-				reference_name=self.name,
-			)
-		except Exception as e:
-			frappe.log_error(f"Send contact notification failed: {e}", "NGS Contact Email")
+	# def after_insert(self):
+	# 	"""可选：落库后发通知邮件"""
+	# 	try:
+	# 		to = "sz@athenomics.com"
+	# 		subject = f"New Contact: {self.full_name}"
+	# 		message = f"""
+	# <p><b>Name:</b> {escape_html(self.full_name)}</p>
+	# <p><b>Email:</b> {escape_html(self.email)}</p>
+	# <p><b>Message:</b></p>
+	# <pre>{escape_html(self.message or "")}</pre>
+	# <p>Record: <a href="{get_url(self.get_url())}">{escape_html(self.name)}</a></p>
+	# """
+	# 		frappe.sendmail(
+	# 			recipients=[to],
+	# 			subject=subject,
+	# 			message=message,
+	# 			reference_doctype=self.doctype,
+	# 			reference_name=self.name,
+	# 		)
+	# 	except Exception as e:
+	# 		frappe.log_error(f"Send contact notification failed: {e}", "NGS Contact Email")
