@@ -89,11 +89,11 @@ class NGSContactForm(Document):
 		# 	frappe.throw(_("Invalid email address."))
 		if len(self.message) > 8000:
 			frappe.throw(_("Message is too long."))
-		# ---- Turnstile 校验 ----
-		token = (self.get("turnstile_token") or "").strip()
-		if not token:
-			frappe.throw(_("Captcha token missing."))
-		_verify_turnstile(token)
+		# # ---- Turnstile 校验 ----
+		# token = (self.get("turnstile_token") or "").strip()
+		# if not token:
+		# 	frappe.throw(_("Captcha token missing."))
+		# _verify_turnstile(token)
 		self.turnstile_token = ""  # 通过后清空
 		# ---- 限流（按 IP + 邮箱）----
 		ip = _get_client_ip()
