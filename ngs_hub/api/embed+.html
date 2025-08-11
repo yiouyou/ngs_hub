@@ -1,0 +1,112 @@
+<div id="cf-turnstile"></div>
+<input type="hidden" id="turnstile_token" />
+
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script>
+(() => {
+  console.log("[A] embed script loaded");
+
+  const WEB_FORM_ROUTE = "ngs-contact-form";
+  const TEST_KEY = "1x00000000000000000000AA";
+  const PROD_KEY = "0x4AAAAAABp1eZXXvJC2tv3p";
+  const SITE_KEY = (location.hostname === "localhost" || location.hostname.endsWith(".localhost")) ? TEST_KEY : PROD_KEY;
+
+  const $ = id => document.getElementById(id);
+  const el = {
+    full_name: $("full_name"),
+    email: $("email"),
+    message: $("message"),
+    btn: $("submitBtn"),
+    msg: $("msgBox"),
+    token: $("turnstile_token"),
+    mount: $("cf-turnstile")
+  };
+
+  // 渲染 Turnstile
+  let rendered = false;
+  function renderOnce() {
+    if (rendered) return;
+    if (!window.turnstile) return setTimeout(renderOnce, 120);
+    rendered = true;
+    console.log("[B] rendering turnstile, SITE_KEY starts:", SITE_KEY.slice(0,4));
+    turnstile.render(el.mount || document.getElementById("cf-turnstile") || document.body.appendChild(Object.assign(document.createElement("div"),{id:"cf-turnstile"})), {
+      sitekey: SITE_KEY, theme: "auto",
+      callback: (t)=>{ el.token = $("turnstile_token") || Object.assign(document.createElement("input"), {type:"hidden", id:"turnstile_token"}); (document.querySelector("form")||document.body).appendChild(el.token); el.token.value=t; console.log("[B1] token set"); },
+      "expired-callback": ()=>{ if(el.token) el.token.value=""; console.warn("[B2] token expired"); },
+      "error-callback": ()=>{ if(el.token) el.token.value=""; console.warn("[B3] turnstile error"); }
+    });
+  }
+  renderOnce();
+
+  function setBusy(on){
+    if(!el.btn) return;
+    if(on){
+      if(!el.btn.dataset.origHtml) el.btn.dataset.origHtml = el.btn.innerHTML;
+      el.btn.disabled = true; el.btn.setAttribute("disabled","disabled"); el.btn.classList.add("is-disabled","btn-disabled","disabled");
+      el.btn.innerText = "Submitting...";
+    }else{
+      el.btn.disabled = false; el.btn.removeAttribute("disabled"); el.btn.classList.remove("is-disabled","btn-disabled","disabled");
+      el.btn.innerHTML = el.btn.dataset.origHtml || "Submit";
+    }
+  }
+
+  function toast(t, ok){ if(el.msg){ el.msg.textContent=t||""; el.msg.style.background=t?(ok?"#e8fff1":"#ffecec"):"transparent"; } }
+
+  async function submitForm(ev){
+    console.log("[C] submit handler fired, btn:", ev?.target);
+    const payload = {
+      full_name: el.full_name?.value || "",
+      email: el.email?.value || "",
+      message: el.message?.value || "",
+      turnstile_token: el.token?.value || ""
+    };
+    console.log("[D] payload:", payload);
+    console.log("[D1] web_form param:", WEB_FORM_ROUTE);
+
+    if(!WEB_FORM_ROUTE){ toast("web_form 缺失", false); return; }
+    if(!payload.turnstile_token){ toast("请先通过人机验证。", false); return; }
+
+    const body = new URLSearchParams({ web_form: WEB_FORM_ROUTE, data: JSON.stringify(payload) });
+    console.log("[E] form-data:", body.toString());   // ← 你要看的这行
+
+    setBusy(true); toast("Submitting...", true);
+    try{
+      console.log("[F] fetch start");
+      const res = await fetch("/api/method/frappe.website.doctype.web_form.web_form.accept", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "X-Frappe-CSRF-Token": (window.csrf_token || window.frappe?.csrf_token || "")
+        },
+        credentials: "include",
+        body
+      });
+      console.log("[G] fetch done status:", res.status);
+      const json = await res.json().catch(()=>({}));
+      console.log("[G1] accept response:", json);
+
+      if (res.ok && !json.exc){ toast("OK：已创建记录。", true); ["full_name","email","message"].forEach(id=>{ const i=$(id); if(i) i.value=""; }); }
+      else { toast("FAIL: " + (json.message || JSON.stringify(json)), false); }
+    }catch(err){
+      console.error("[Gx] network/error:", err);
+      toast("网络错误", false);
+    }finally{
+      setBusy(false);
+      try{ if(window.turnstile) turnstile.reset(); if(el.token) el.token.value=""; }catch{}
+      console.log("[H] finalize");
+    }
+  }
+
+  // 绑定点击 + 兜底绑定 form submit
+  if (el.btn){
+    el.btn.type = "button";
+    el.btn.addEventListener("click", (e)=>{ e.preventDefault(); submitForm(e); });
+    console.log("[A2] click bound on button");
+  } else {
+    console.warn("[A2] no button found; binding form submit instead");
+    const form = (el.full_name || el.email || el.message)?.closest?.("form") || document.querySelector("form");
+    form?.addEventListener("submit", (e)=>{ e.preventDefault(); submitForm(e); });
+  }
+})();
+</script>

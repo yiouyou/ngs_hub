@@ -5,11 +5,10 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
 (() => {
-  const WEB_FORM_ROUTE = "ngs-contact-form";          // 改成你的 Web Form 路由
-  const TEST_KEY = "1x00000000000000000000AA";        // 本地测试 Key
-  const PROD_KEY = "0x4AAAAAABp1eZXXvJC2tv3p";        // 上线 Key
-  const SITE_KEY = (location.hostname === "localhost" || location.hostname.endsWith(".localhost"))
-    ? TEST_KEY : PROD_KEY;
+  const WEB_FORM_ROUTE = "ngs-contact-form";
+  const TEST_KEY = "1x00000000000000000000AA";
+  const PROD_KEY = "0x4AAAAAABp1eZXXvJC2tv3p";
+  const SITE_KEY = (location.hostname === "localhost" || location.hostname.endsWith(".localhost")) ? TEST_KEY : PROD_KEY;
 
   const $ = id => document.getElementById(id);
   const el = {
