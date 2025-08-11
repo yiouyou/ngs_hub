@@ -1,0 +1,110 @@
+<script>
+(() => {
+  console.log("[A] embed script loaded (no-turnstile)");
+
+  const WEB_FORM_ROUTE = "ngs-contact-form";  // ← 改成你的 Web Form 路由
+
+  const $ = id => document.getElementById(id);
+  const el = {
+    full_name: $("full_name"),
+    email: $("email") || $("email_id"),
+    message: $("message"),
+    btn: $("submitBtn"),
+    msg: $("msgBox")
+  };
+
+  // 兜底：找不到 submitBtn 就自动挑一个按钮
+  if (!el.btn) {
+    el.btn = document.querySelector('#submitBtn, button[type="submit"], button[id*="submit"], .btn-primary, .btn-submit');
+    console.log("[A1] auto-picked button:", el.btn);
+  }
+
+  function setBusy(on){
+    if(!el.btn) return;
+    if(on){
+      if(!el.btn.dataset.origHtml) el.btn.dataset.origHtml = el.btn.innerHTML;
+      el.btn.disabled = true;
+      el.btn.setAttribute("disabled","disabled");
+      el.btn.setAttribute("aria-busy","true");
+      el.btn.classList.add("is-disabled","btn-disabled","disabled");
+      el.btn.innerText = "Submitting...";
+    }else{
+      el.btn.disabled = false;
+      el.btn.removeAttribute("disabled");
+      el.btn.removeAttribute("aria-busy");
+      el.btn.classList.remove("is-disabled","btn-disabled","disabled");
+      el.btn.innerHTML = el.btn.dataset.origHtml || "Submit";
+    }
+  }
+
+  function toast(t, ok){
+    if(!el.msg) return;
+    el.msg.textContent = t || "";
+    el.msg.style.padding = "6px 10px";
+    el.msg.style.borderRadius = "6px";
+    el.msg.style.marginTop = "8px";
+    el.msg.style.background = t ? (ok ? "#e8fff1" : "#ffecec") : "transparent";
+  }
+
+  async function submitForm(ev){
+    console.log("[C] submit handler fired, btn:", ev?.target);
+    const payload = {
+      full_name: el.full_name?.value || "",
+      email: el.email?.value || "",
+      message: el.message?.value || ""
+      // no turnstile_token
+    };
+    console.log("[D] payload:", payload);
+    console.log("[D1] web_form param:", WEB_FORM_ROUTE);
+
+    if(!WEB_FORM_ROUTE){ toast("web_form 缺失，无法提交", false); return; }
+    if(!payload.full_name || !payload.email || !payload.message){
+      toast("请填写完整信息。", false); return;
+    }
+
+    const body = new URLSearchParams({ web_form: WEB_FORM_ROUTE, data: JSON.stringify(payload) });
+    console.log("[E] form-data:", body.toString());
+
+    setBusy(true); toast("Submitting...", true);
+    try{
+      console.log("[F] fetch start");
+      const res = await fetch("/api/method/frappe.website.doctype.web_form.web_form.accept", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "X-Frappe-CSRF-Token": (window.csrf_token || window.frappe?.csrf_token || "")
+        },
+        credentials: "include",
+        body
+      });
+      console.log("[G] fetch done status:", res.status);
+      const json = await res.json().catch(()=>({}));
+      console.log("[G1] accept response:", json);
+
+      if (res.ok && !json.exc){
+        toast("OK：已创建记录。", true);
+        ["full_name","email","message"].forEach(id => { const i = $(id); if(i) i.value = ""; });
+      } else {
+        toast("FAIL: " + (json.message || JSON.stringify(json)), false);
+      }
+    }catch(err){
+      console.error("[Gx] network/error:", err);
+      toast("网络错误", false);
+    }finally{
+      setBusy(false);
+      console.log("[H] finalize");
+    }
+  }
+
+  // 绑定点击 + 兜底绑定 form submit
+  if (el.btn){
+    el.btn.type = "button";
+    el.btn.addEventListener("click", e => { e.preventDefault(); submitForm(e); });
+    console.log("[A2] click bound on button");
+  } else {
+    console.warn("[A2] no button found; binding form submit instead");
+    const form = (el.full_name || el.email || el.message)?.closest?.("form") || document.querySelector("form");
+    form?.addEventListener("submit", e => { e.preventDefault(); submitForm(e); });
+  }
+})();
+</script>
