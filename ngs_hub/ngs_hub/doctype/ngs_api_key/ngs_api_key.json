@@ -5,7 +5,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "llm_section",
+  "section_llm",
   "anthropic_api_key",
   "openai_api_key",
   "gemini_api_key",
@@ -46,21 +46,21 @@
    "label": "Turnstile Secret Key"
   },
   {
-   "fieldname": "llm_section",
-   "fieldtype": "Section Break",
-   "label": "LLM"
-  },
-  {
    "fieldname": "section_turnstile",
    "fieldtype": "Section Break",
    "label": "Turnstile"
+  },
+  {
+   "fieldname": "section_llm",
+   "fieldtype": "Section Break",
+   "label": "LLM"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-08-09 08:53:10.107063",
+ "modified": "2025-08-21 02:16:07.729409",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS API KEY",

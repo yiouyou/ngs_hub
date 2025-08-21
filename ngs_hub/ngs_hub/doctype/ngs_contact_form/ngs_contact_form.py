@@ -14,7 +14,6 @@ ALLOWED_HOSTNAMES = {
 	"athenomics.com",
 	"www.athenomics.com",
 	"athenomics.frappe.cloud",
-	"www.athenomics.frappe.cloud",
 }
 
 
