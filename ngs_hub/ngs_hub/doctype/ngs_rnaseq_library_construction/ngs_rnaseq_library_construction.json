@@ -80,6 +80,7 @@
   {
    "fieldname": "library_type",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Library Type",
    "options": "General transcriptome\nStrand-specific transcriptome\nFull-length transcriptome"
   },
@@ -91,6 +92,7 @@
   {
    "fieldname": "library_insert_size",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Library Insert Size"
   },
   {
@@ -185,7 +187,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-02 04:44:35.409513",
+ "modified": "2025-08-23 04:24:02.784616",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS RNAseq Library Construction",
