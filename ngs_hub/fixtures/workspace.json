@@ -1,7 +1,7 @@
 [
  {
   "charts": [],
-  "content": "[{\"id\":\"V7pjRMpZPH\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">QC FAIL</span>\",\"col\":12}},{\"id\":\"cuATd84edE\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"0v6-YWZtXP\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>SingleCell</b></span>\",\"col\":12}},{\"id\":\"jyBssxxfYt\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS SingleCell 10x Preprocess\",\"col\":4}},{\"id\":\"WtDzeYPZrO\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS SingleCell 10x Chromium\",\"col\":4}},{\"id\":\"8t48VPyXkB\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS SingleCell Library Construction\",\"col\":4}},{\"id\":\"LqFsSlwEz4\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"tSzXuxtO9l\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>RNAseq</b></span>\",\"col\":12}},{\"id\":\"CBJtZjH82C\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS RNAseq Sample Extraction\",\"col\":4}},{\"id\":\"iocBur3PXg\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS RNAseq Enrichment\",\"col\":4}},{\"id\":\"54_EK2f9z1\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS RNAseq Library Construction\",\"col\":4}},{\"id\":\"RHTm95ub3F\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"GGapK07Jud\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Meta</b></span>\",\"col\":12}},{\"id\":\"EAmIO_-FNC\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Meta Sample Extraction\",\"col\":4}},{\"id\":\"DHtTRLxLze\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Meta Library Construction\",\"col\":4}},{\"id\":\"k7sSXSDtvb\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"ZgY46tfXZ0\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Sequencing Outsource</b></span>\",\"col\":12}},{\"id\":\"B5yBsPiqzD\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS SingleCell Sequencing Outsource\",\"col\":4}},{\"id\":\"7lP3951QKG\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS RNAseq Sequencing Outsource\",\"col\":4}},{\"id\":\"Fobz6RmdnA\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Meta Sequencing Outsource\",\"col\":4}}]",
+  "content": "[{\"id\":\"V7pjRMpZPH\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">NGS QC FAIL</span>\",\"col\":12}},{\"id\":\"cuATd84edE\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"0v6-YWZtXP\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>SingleCell</b></span>\",\"col\":12}},{\"id\":\"jyBssxxfYt\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS SingleCell 10x Preprocess\",\"col\":4}},{\"id\":\"WtDzeYPZrO\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS SingleCell 10x Chromium\",\"col\":4}},{\"id\":\"8t48VPyXkB\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS SingleCell Library Construction\",\"col\":4}},{\"id\":\"LqFsSlwEz4\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"tSzXuxtO9l\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>RNAseq</b></span>\",\"col\":12}},{\"id\":\"CBJtZjH82C\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS RNAseq Sample Extraction\",\"col\":4}},{\"id\":\"iocBur3PXg\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS RNAseq Enrichment\",\"col\":4}},{\"id\":\"54_EK2f9z1\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS RNAseq Library Construction\",\"col\":4}},{\"id\":\"RHTm95ub3F\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"GGapK07Jud\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Meta</b></span>\",\"col\":12}},{\"id\":\"EAmIO_-FNC\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Meta Sample Extraction\",\"col\":4}},{\"id\":\"DHtTRLxLze\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Meta Library Construction\",\"col\":4}},{\"id\":\"k7sSXSDtvb\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"ZgY46tfXZ0\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Sequencing Outsource</b></span>\",\"col\":12}},{\"id\":\"B5yBsPiqzD\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS SingleCell Sequencing Outsource\",\"col\":4}},{\"id\":\"7lP3951QKG\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS RNAseq Sequencing Outsource\",\"col\":4}},{\"id\":\"Fobz6RmdnA\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Meta Sequencing Outsource\",\"col\":4}}]",
   "custom_blocks": [],
   "docstatus": 0,
   "doctype": "Workspace",
@@ -10,19 +10,19 @@
   "icon": "unhide",
   "indicator_color": "green",
   "is_hidden": 0,
-  "label": "QC FAIL",
+  "label": "NGS QC FAIL",
   "links": [],
-  "modified": "2025-07-30 06:23:29.089845",
+  "modified": "2025-09-28 05:13:01.608088",
   "module": "NGS Hub",
-  "name": "QC FAIL",
+  "name": "NGS QC FAIL",
   "number_cards": [],
-  "parent_page": "NGS Hub",
+  "parent_page": "",
   "public": 1,
   "quick_lists": [
    {
     "document_type": "NGS SingleCell 10x Preprocess",
     "label": "NGS SingleCell 10x Preprocess",
-    "parent": "QC FAIL",
+    "parent": "NGS QC FAIL",
     "parentfield": "quick_lists",
     "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS SingleCell 10x Preprocess\",\"qc_status\",\"=\",\"FAIL\",false]]"
@@ -30,7 +30,7 @@
    {
     "document_type": "NGS RNAseq Sample Extraction",
     "label": "NGS RNAseq Sample Extraction",
-    "parent": "QC FAIL",
+    "parent": "NGS QC FAIL",
     "parentfield": "quick_lists",
     "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS RNAseq Sample Extraction\",\"qc_status\",\"=\",\"FAIL\",false]]"
@@ -38,7 +38,7 @@
    {
     "document_type": "NGS SingleCell 10x Chromium",
     "label": "NGS SingleCell 10x Chromium",
-    "parent": "QC FAIL",
+    "parent": "NGS QC FAIL",
     "parentfield": "quick_lists",
     "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS SingleCell 10x Chromium\",\"qc_status\",\"=\",\"FAIL\",false]]"
@@ -46,7 +46,7 @@
    {
     "document_type": "NGS RNAseq Enrichment",
     "label": "NGS RNAseq Enrichment",
-    "parent": "QC FAIL",
+    "parent": "NGS QC FAIL",
     "parentfield": "quick_lists",
     "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS RNAseq Enrichment\",\"qc_status\",\"=\",\"FAIL\",false]]"
@@ -54,7 +54,7 @@
    {
     "document_type": "NGS SingleCell Library Construction",
     "label": "NGS SingleCell Library Construction",
-    "parent": "QC FAIL",
+    "parent": "NGS QC FAIL",
     "parentfield": "quick_lists",
     "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS SingleCell Library Construction\",\"qc_status\",\"=\",\"FAIL\",false]]"
@@ -62,7 +62,7 @@
    {
     "document_type": "NGS RNAseq Library Construction",
     "label": "NGS RNAseq Library Construction",
-    "parent": "QC FAIL",
+    "parent": "NGS QC FAIL",
     "parentfield": "quick_lists",
     "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS RNAseq Library Construction\",\"qc_status\",\"=\",\"FAIL\",false]]"
@@ -70,7 +70,7 @@
    {
     "document_type": "NGS Meta Sample Extraction",
     "label": "NGS Meta Sample Extraction",
-    "parent": "QC FAIL",
+    "parent": "NGS QC FAIL",
     "parentfield": "quick_lists",
     "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS Meta Sample Extraction\",\"qc_status\",\"=\",\"FAIL\",false]]"
@@ -78,7 +78,7 @@
    {
     "document_type": "NGS Meta Library Construction",
     "label": "NGS Meta Library Construction",
-    "parent": "QC FAIL",
+    "parent": "NGS QC FAIL",
     "parentfield": "quick_lists",
     "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS Meta Library Construction\",\"qc_status\",\"=\",\"FAIL\",false]]"
@@ -86,7 +86,7 @@
    {
     "document_type": "NGS SingleCell Sequencing Outsource",
     "label": "NGS SingleCell Sequencing Outsource",
-    "parent": "QC FAIL",
+    "parent": "NGS QC FAIL",
     "parentfield": "quick_lists",
     "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS SingleCell Sequencing Outsource\",\"qc_status\",\"=\",\"FAIL\",false]]"
@@ -94,7 +94,7 @@
    {
     "document_type": "NGS RNAseq Sequencing Outsource",
     "label": "NGS RNAseq Sequencing Outsource",
-    "parent": "QC FAIL",
+    "parent": "NGS QC FAIL",
     "parentfield": "quick_lists",
     "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS RNAseq Sequencing Outsource\",\"qc_status\",\"=\",\"FAIL\",false]]"
@@ -102,7 +102,7 @@
    {
     "document_type": "NGS Meta Sequencing Outsource",
     "label": "NGS Meta Sequencing Outsource",
-    "parent": "QC FAIL",
+    "parent": "NGS QC FAIL",
     "parentfield": "quick_lists",
     "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS Meta Sequencing Outsource\",\"qc_status\",\"=\",\"FAIL\",false]]"
@@ -111,7 +111,7 @@
   "restrict_to_domain": null,
   "roles": [
    {
-    "parent": "QC FAIL",
+    "parent": "NGS QC FAIL",
     "parentfield": "roles",
     "parenttype": "Workspace",
     "role": "NGS Internal Staff"
@@ -119,7 +119,7 @@
   ],
   "sequence_id": 2.0,
   "shortcuts": [],
-  "title": "QC FAIL"
+  "title": "NGS QC FAIL"
  },
  {
   "charts": [],
@@ -513,7 +513,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2025-08-11 05:32:38.846282",
+  "modified": "2025-09-28 05:13:01.557763",
   "module": "NGS Hub",
   "name": "NGS Hub",
   "number_cards": [],

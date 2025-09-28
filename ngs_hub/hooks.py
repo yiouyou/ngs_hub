@@ -10,7 +10,7 @@ before_install = "ngs_hub.install.create_default_uoms"
 
 fixtures = [
 	{"dt": "Role", "filters": [["name", "in", ["NGS Internal Staff", "NGS External Customer"]]]},
-	{"dt": "Workspace", "filters": [["name", "in", ["NGS Hub", "QC FAIL"]]]},
+	{"dt": "Workspace", "filters": [["name", "in", ["NGS Hub", "NGS QC FAIL"]]]},
 	{
 		"dt": "Server Script",
 		"filters": [
