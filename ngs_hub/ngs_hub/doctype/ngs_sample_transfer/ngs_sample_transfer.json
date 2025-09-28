@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:sample_transfer_id",
  "creation": "2025-06-19 05:11:36.344010",
@@ -166,7 +167,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-08-23 04:28:57.934865",
+ "modified": "2025-09-28 08:53:14.972195",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Sample Transfer",

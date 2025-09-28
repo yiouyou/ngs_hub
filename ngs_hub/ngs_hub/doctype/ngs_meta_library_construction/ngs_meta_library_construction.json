@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:meta_library_construction_id",
  "creation": "2025-06-19 00:36:22.879077",
@@ -185,7 +186,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-02 04:43:55.951112",
+ "modified": "2025-09-28 08:54:32.679110",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Meta Library Construction",

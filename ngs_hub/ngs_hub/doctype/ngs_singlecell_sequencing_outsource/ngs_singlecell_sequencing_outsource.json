@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:singlecell_sequencing_outsource_id",
  "creation": "2025-06-19 00:18:44.667915",
@@ -182,7 +183,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-02 04:45:23.958996",
+ "modified": "2025-09-28 08:57:24.736655",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS SingleCell Sequencing Outsource",

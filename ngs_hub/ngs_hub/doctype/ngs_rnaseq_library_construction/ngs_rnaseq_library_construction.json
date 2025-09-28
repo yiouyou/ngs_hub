@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:rnaseq_library_construction_id",
  "creation": "2025-06-19 00:35:35.557908",
@@ -187,7 +188,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-08-23 04:24:02.784616",
+ "modified": "2025-09-28 08:48:29.061980",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS RNAseq Library Construction",

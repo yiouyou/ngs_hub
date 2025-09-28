@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:rnaseq_sequencing_outsource_id",
  "creation": "2025-06-21 08:48:45.134335",
@@ -182,7 +183,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-02 04:44:45.963679",
+ "modified": "2025-09-28 08:56:18.267522",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS RNAseq Sequencing Outsource",

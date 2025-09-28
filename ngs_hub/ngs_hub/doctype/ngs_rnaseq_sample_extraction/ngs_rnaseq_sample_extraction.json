@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:rnaseq_sample_extraction_id",
  "creation": "2025-06-20 22:36:03.670340",
@@ -140,7 +141,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-02 04:44:16.742694",
+ "modified": "2025-09-28 08:55:33.814665",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS RNAseq Sample Extraction",

@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:meta_sample_extraction_id",
  "creation": "2025-06-20 22:30:52.671014",
@@ -146,7 +147,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-02 04:43:45.517315",
+ "modified": "2025-09-28 08:54:00.865965",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Meta Sample Extraction",

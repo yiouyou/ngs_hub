@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:meta_sequencing_outsource_id",
  "creation": "2025-06-21 08:47:34.844603",
@@ -177,7 +178,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-02 04:44:06.369336",
+ "modified": "2025-09-28 08:54:55.008995",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Meta Sequencing Outsource",

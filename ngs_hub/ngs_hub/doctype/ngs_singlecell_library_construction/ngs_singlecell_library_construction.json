@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:singlecell_library_construction_id",
  "creation": "2025-06-19 00:37:16.762325",
@@ -185,7 +186,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-02 04:45:15.283037",
+ "modified": "2025-09-28 08:57:13.565932",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS SingleCell Library Construction",
