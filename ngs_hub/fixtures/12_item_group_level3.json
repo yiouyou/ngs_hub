@@ -1,0 +1,79 @@
+[
+  {
+    "doctype": "Item Group",
+    "name": "SingleCell",
+    "item_group_name": "SingleCell",
+    "parent_item_group": "External Packages",
+    "is_group": 0
+  },
+  {
+    "doctype": "Item Group",
+    "name": "Meta",
+    "item_group_name": "Meta",
+    "parent_item_group": "External Packages",
+    "is_group": 0
+  },
+  {
+    "doctype": "Item Group",
+    "name": "RNAseq",
+    "item_group_name": "RNAseq",
+    "parent_item_group": "External Packages",
+    "is_group": 0
+  },
+  {
+    "doctype": "Item Group",
+    "name": "Customized Data Analysis",
+    "item_group_name": "Customized Data Analysis",
+    "parent_item_group": "External Packages",
+    "is_group": 0
+  },
+  {
+    "doctype": "Item Group",
+    "name": "Sequencing Outsource",
+    "item_group_name": "Sequencing Outsource",
+    "parent_item_group": "Internal Workflow",
+    "is_group": 0
+  },
+  {
+    "doctype": "Item Group",
+    "name": "SingleCell Wetlab",
+    "item_group_name": "SingleCell Wetlab",
+    "parent_item_group": "Internal Workflow",
+    "is_group": 0
+  },
+  {
+    "doctype": "Item Group",
+    "name": "Meta Wetlab",
+    "item_group_name": "Meta Wetlab",
+    "parent_item_group": "Internal Workflow",
+    "is_group": 0
+  },
+  {
+    "doctype": "Item Group",
+    "name": "RNAseq Wetlab",
+    "item_group_name": "RNAseq Wetlab",
+    "parent_item_group": "Internal Workflow",
+    "is_group": 0
+  },
+  {
+    "doctype": "Item Group",
+    "name": "SingleCell Bioinfo",
+    "item_group_name": "SingleCell Bioinfo",
+    "parent_item_group": "Internal Workflow",
+    "is_group": 0
+  },
+  {
+    "doctype": "Item Group",
+    "name": "Meta Bioinfo",
+    "item_group_name": "Meta Bioinfo",
+    "parent_item_group": "Internal Workflow",
+    "is_group": 0
+  },
+  {
+    "doctype": "Item Group",
+    "name": "RNAseq Bioinfo",
+    "item_group_name": "RNAseq Bioinfo",
+    "parent_item_group": "Internal Workflow",
+    "is_group": 0
+  }
+]

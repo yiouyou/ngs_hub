@@ -47,7 +47,6 @@ fixtures = [
 				"name",
 				"in",
 				[
-					"All Item Groups",
 					"NGS Supplies",
 					"Kits",
 					"NGS Consumables",

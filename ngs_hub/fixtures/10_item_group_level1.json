@@ -1,0 +1,16 @@
+[
+  {
+    "doctype": "Item Group",
+    "name": "NGS Supplies",
+    "item_group_name": "NGS Supplies",
+    "parent_item_group": "All Item Groups",
+    "is_group": 1
+  },
+  {
+    "doctype": "Item Group",
+    "name": "NGS Services",
+    "item_group_name": "NGS Services",
+    "parent_item_group": "All Item Groups",
+    "is_group": 1
+  }
+]

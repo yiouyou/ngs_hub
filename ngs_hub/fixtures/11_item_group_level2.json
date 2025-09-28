@@ -1,0 +1,37 @@
+[
+  {
+    "doctype": "Item Group",
+    "name": "Kits",
+    "item_group_name": "Kits",
+    "parent_item_group": "NGS Supplies",
+    "is_group": 0
+  },
+  {
+    "doctype": "Item Group",
+    "name": "NGS Consumables",
+    "item_group_name": "NGS Consumables",
+    "parent_item_group": "NGS Supplies",
+    "is_group": 0
+  },
+  {
+    "doctype": "Item Group",
+    "name": "Reagents",
+    "item_group_name": "Reagents",
+    "parent_item_group": "NGS Supplies",
+    "is_group": 0
+  },
+  {
+    "doctype": "Item Group",
+    "name": "External Packages",
+    "item_group_name": "External Packages",
+    "parent_item_group": "NGS Services",
+    "is_group": 1
+  },
+  {
+    "doctype": "Item Group",
+    "name": "Internal Workflow",
+    "item_group_name": "Internal Workflow",
+    "parent_item_group": "NGS Services",
+    "is_group": 1
+  }
+]
