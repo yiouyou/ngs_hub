@@ -13,6 +13,7 @@
   "sample_info",
   "urgency",
   "section_break_ecev",
+  "operation_date",
   "start_time",
   "end_time",
   "sop_version",
@@ -71,11 +72,13 @@
   {
    "fieldname": "start_time",
    "fieldtype": "Datetime",
+   "hidden": 1,
    "label": "Start Time"
   },
   {
    "fieldname": "end_time",
    "fieldtype": "Datetime",
+   "hidden": 1,
    "label": "End Time"
   },
   {
@@ -141,13 +144,19 @@
    "in_list_view": 1,
    "label": "Urgency",
    "options": "Standard\nCritical"
+  },
+  {
+   "fieldname": "operation_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Operation Date"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-28 08:54:00.865965",
+ "modified": "2026-01-05 23:27:55.986779",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Meta Sample Extraction",

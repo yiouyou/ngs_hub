@@ -14,14 +14,14 @@
   "sample_transfer",
   "section_break_yrau",
   "sample_name",
-  "sample_wvc",
-  "urgency",
-  "collection_time",
-  "column_break_vbqj",
   "sample_index",
   "storage_condition",
-  "after_project",
+  "collection_time",
   "operator",
+  "column_break_vbqj",
+  "sample_wvc",
+  "urgency",
+  "after_project",
   "section_break_tuyd",
   "note",
   "section_break_scpp",
@@ -49,12 +49,14 @@
   {
    "fieldname": "collection_time",
    "fieldtype": "Datetime",
+   "in_list_view": 1,
    "label": "Collection Time",
    "permlevel": 1
   },
   {
    "fieldname": "operator",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Operator",
    "options": "User",
    "permlevel": 1
@@ -66,18 +68,20 @@
   {
    "fieldname": "sample_wvc",
    "fieldtype": "Data",
-   "in_list_view": 1,
+   "hidden": 1,
    "label": "Sample Weight/Volume/Conc."
   },
   {
    "fieldname": "urgency",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Urgency",
    "options": "Standard\nCritical"
   },
   {
    "fieldname": "after_project",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "After Project",
    "options": "Discard after standard storage time\nSend back after standard storage time (charge required)\nExtended storage (charge required)"
   },
@@ -178,7 +182,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-28 08:52:16.302277",
+ "modified": "2026-01-05 23:10:51.727451",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Sample Info",

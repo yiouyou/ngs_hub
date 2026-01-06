@@ -119,6 +119,7 @@
   {
    "fieldname": "sequencing_platform",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Sequencing Platform"
   },
   {
@@ -130,6 +131,7 @@
   {
    "fieldname": "qc_status",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "QC Status",
    "options": "\nPASS\nFAIL"
   },
@@ -141,6 +143,7 @@
   {
    "fieldname": "library_index_sequence",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Library Index Sequence"
   },
   {
@@ -183,7 +186,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-28 08:56:18.267522",
+ "modified": "2026-01-05 23:13:51.349121",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS RNAseq Sequencing Outsource",

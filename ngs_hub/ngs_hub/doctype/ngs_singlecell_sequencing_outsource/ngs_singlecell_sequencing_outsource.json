@@ -58,6 +58,7 @@
   {
    "fieldname": "qc_status",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "QC Status",
    "options": "\nPASS\nFAIL"
   },
@@ -69,6 +70,7 @@
   {
    "fieldname": "library_index_sequence",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Library Index Sequence"
   },
   {
@@ -147,6 +149,7 @@
   {
    "fieldname": "sequencing_platform",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Sequencing Platform"
   },
   {
@@ -183,7 +186,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-28 08:57:24.736655",
+ "modified": "2026-01-05 23:13:02.858224",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS SingleCell Sequencing Outsource",

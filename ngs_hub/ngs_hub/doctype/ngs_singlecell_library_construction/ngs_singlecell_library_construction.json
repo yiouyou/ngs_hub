@@ -15,6 +15,7 @@
   "singlecell_10x_preprocess",
   "singlecell_10x_chromium",
   "section_break_rohn",
+  "operation_date",
   "start_time",
   "end_time",
   "sop_version",
@@ -49,11 +50,13 @@
   {
    "fieldname": "start_time",
    "fieldtype": "Datetime",
+   "hidden": 1,
    "label": "Start Time"
   },
   {
    "fieldname": "end_time",
    "fieldtype": "Datetime",
+   "hidden": 1,
    "label": "End Time"
   },
   {
@@ -76,6 +79,7 @@
   {
    "fieldname": "qc_result",
    "fieldtype": "Attach",
+   "hidden": 1,
    "label": "QC Result"
   },
   {
@@ -180,13 +184,19 @@
    "in_list_view": 1,
    "label": "Urgency",
    "options": "Standard\nCritical"
+  },
+  {
+   "fieldname": "operation_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Operation Date"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-28 08:57:13.565932",
+ "modified": "2026-01-05 23:29:56.255624",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS SingleCell Library Construction",
