@@ -17,7 +17,7 @@ class NGSDNAseqSequencingOutsource(Document):
 			frappe.throw(_("Sample Transfer is required to generate DNAseq Sequencing Outsource"))
 		if not self.sample_info:
 			frappe.throw(_("Sample Info is required to generate DNAseq Sequencing Outsource"))
-		if not self.dnaseq_sample_extraction:
+		# if not self.dnaseq_sample_extraction:
 		# 	frappe.throw(_("DNAseq Sample Extraction is required to generate DNAseq Sequencing Outsource"))
 		# if not self.dnaseq_library_construction:
 		# 	frappe.throw(_("DNAseq Library Construction is required to generate DNAseq Sequencing Outsource"))
