@@ -2,8 +2,8 @@
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
- "autoname": "field:rnaseq_sample_extraction_id",
- "creation": "2025-06-20 22:36:03.670340",
+ "autoname": "field:dnaseq_sample_extraction_id",
+ "creation": "2026-01-06 05:23:35.167228",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -12,23 +12,21 @@
   "sample_transfer",
   "sample_info",
   "urgency",
-  "section_break_qzst",
+  "section_break_kkag",
   "operation_date",
-  "start_time",
-  "end_time",
   "sop_version",
   "operator",
   "qc_status",
   "qc_result",
   "sample_final_volume",
   "sample_final_concentration",
-  "section_break_iiau",
-  "rnaseq_sample_extraction_id",
+  "section_break_uebt",
+  "dnaseq_sample_extraction_id",
   "amended_from"
  ],
  "fields": [
   {
-   "fieldname": "section_break_iiau",
+   "fieldname": "section_break_uebt",
    "fieldtype": "Section Break"
   },
   {
@@ -36,49 +34,27 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "NGS RNAseq Sample Extraction",
+   "options": "NGS DNAseq Sample Extraction",
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
   },
   {
-   "fieldname": "customer",
-   "fieldtype": "Link",
-   "label": "Customer",
-   "no_copy": 1,
-   "options": "NGS Customer",
-   "print_hide": 1,
-   "search_index": 1
+   "fieldname": "section_break_kkag",
+   "fieldtype": "Section Break"
   },
   {
-   "fieldname": "sample_transfer",
-   "fieldtype": "Link",
-   "label": "Sample Transfer",
-   "no_copy": 1,
-   "options": "NGS Sample Transfer",
-   "print_hide": 1,
-   "search_index": 1
+   "fieldname": "operation_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Operation Date"
   },
   {
-   "fieldname": "sample_info",
-   "fieldtype": "Link",
-   "label": "Sample Info",
-   "no_copy": 1,
-   "options": "NGS Sample Info",
-   "print_hide": 1,
-   "search_index": 1
-  },
-  {
-   "fieldname": "start_time",
-   "fieldtype": "Datetime",
-   "hidden": 1,
-   "label": "Start Time"
-  },
-  {
-   "fieldname": "end_time",
-   "fieldtype": "Datetime",
-   "hidden": 1,
-   "label": "End Time"
+   "fieldname": "dnaseq_sample_extraction_id",
+   "fieldtype": "Data",
+   "label": "DNAseq Sample Extraction ID",
+   "read_only": 1,
+   "unique": 1
   },
   {
    "fieldname": "sop_version",
@@ -103,21 +79,13 @@
    "label": "QC Result"
   },
   {
-   "fieldname": "sample_final_volume",
-   "fieldtype": "Data",
-   "label": "Sample FInal Volume (uL)"
-  },
-  {
-   "fieldname": "sample_final_concentration",
-   "fieldtype": "Data",
-   "label": "Sample Final Concentration (ng/uL)"
-  },
-  {
-   "fieldname": "rnaseq_sample_extraction_id",
-   "fieldtype": "Data",
-   "label": "RNAseq Sample Extraction ID",
-   "read_only": 1,
-   "unique": 1
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "no_copy": 1,
+   "options": "NGS Customer",
+   "print_hide": 1,
+   "search_index": 1
   },
   {
    "fieldname": "project",
@@ -129,8 +97,22 @@
    "search_index": 1
   },
   {
-   "fieldname": "section_break_qzst",
-   "fieldtype": "Section Break"
+   "fieldname": "sample_transfer",
+   "fieldtype": "Link",
+   "label": "Sample Transfer",
+   "no_copy": 1,
+   "options": "NGS Sample Transfer",
+   "print_hide": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "sample_info",
+   "fieldtype": "Link",
+   "label": "Sample Info",
+   "no_copy": 1,
+   "options": "NGS Sample Info",
+   "print_hide": 1,
+   "search_index": 1
   },
   {
    "fieldname": "urgency",
@@ -140,20 +122,24 @@
    "options": "Standard\nCritical"
   },
   {
-   "fieldname": "operation_date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Operation Date"
+   "fieldname": "sample_final_volume",
+   "fieldtype": "Data",
+   "label": "Sample FInal Volume (uL)"
+  },
+  {
+   "fieldname": "sample_final_concentration",
+   "fieldtype": "Data",
+   "label": "Sample Final Concentration (ng/uL)"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-06 05:44:07.708445",
+ "modified": "2026-01-06 05:57:50.989513",
  "modified_by": "Administrator",
  "module": "NGS Hub",
- "name": "NGS RNAseq Sample Extraction",
+ "name": "NGS DNAseq Sample Extraction",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [

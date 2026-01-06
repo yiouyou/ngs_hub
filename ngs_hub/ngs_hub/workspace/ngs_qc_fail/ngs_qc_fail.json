@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"V7pjRMpZPH\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">NGS QC FAIL</span>\",\"col\":12}},{\"id\":\"cuATd84edE\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"0v6-YWZtXP\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>SingleCell</b></span>\",\"col\":12}},{\"id\":\"jyBssxxfYt\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS SingleCell 10x Preprocess\",\"col\":4}},{\"id\":\"8t48VPyXkB\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS SingleCell Library Construction\",\"col\":4}},{\"id\":\"LqFsSlwEz4\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"tSzXuxtO9l\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>RNAseq</b></span>\",\"col\":12}},{\"id\":\"CBJtZjH82C\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS RNAseq Sample Extraction\",\"col\":4}},{\"id\":\"54_EK2f9z1\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS RNAseq Library Construction\",\"col\":4}},{\"id\":\"RHTm95ub3F\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"GGapK07Jud\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Meta</b></span>\",\"col\":12}},{\"id\":\"EAmIO_-FNC\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Meta Sample Extraction\",\"col\":4}},{\"id\":\"DHtTRLxLze\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Meta Library Construction\",\"col\":4}},{\"id\":\"k7sSXSDtvb\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"ZgY46tfXZ0\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Sequencing Outsource</b></span>\",\"col\":12}},{\"id\":\"B5yBsPiqzD\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS SingleCell Sequencing Outsource\",\"col\":4}},{\"id\":\"7lP3951QKG\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS RNAseq Sequencing Outsource\",\"col\":4}},{\"id\":\"Fobz6RmdnA\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Meta Sequencing Outsource\",\"col\":4}}]",
+ "content": "[{\"id\":\"V7pjRMpZPH\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">NGS QC FAIL</span>\",\"col\":12}},{\"id\":\"cuATd84edE\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"0v6-YWZtXP\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>SingleCell</b></span>\",\"col\":12}},{\"id\":\"jyBssxxfYt\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SingleCell 10x Preprocess\",\"col\":4}},{\"id\":\"8t48VPyXkB\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SingleCell Library Construction\",\"col\":4}},{\"id\":\"LqFsSlwEz4\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"tSzXuxtO9l\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>RNAseq</b></span>\",\"col\":12}},{\"id\":\"CBJtZjH82C\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"RNAseq Sample Extraction\",\"col\":4}},{\"id\":\"54_EK2f9z1\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"RNAseq Library Construction\",\"col\":4}},{\"id\":\"RHTm95ub3F\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"7EJ-ethvuf\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>DNAseq</b></span>\",\"col\":12}},{\"id\":\"i1eVQ3lNqK\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"DNAseq Sample Extraction\",\"col\":4}},{\"id\":\"A52TdIxoyd\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"DNAseq Library Construction\",\"col\":4}},{\"id\":\"oXeqzGA-h-\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"GGapK07Jud\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Meta</b></span>\",\"col\":12}},{\"id\":\"EAmIO_-FNC\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Meta Sample Extraction\",\"col\":4}},{\"id\":\"DHtTRLxLze\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Meta Library Construction\",\"col\":4}}]",
  "creation": "2025-12-25 01:10:02.271885",
  "custom_blocks": [],
  "docstatus": 0,
@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "NGS QC FAIL",
  "links": [],
- "modified": "2026-01-06 01:53:56.587378",
+ "modified": "2026-01-06 07:18:32.100105",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS QC FAIL",
@@ -24,48 +24,43 @@
  "quick_lists": [
   {
    "document_type": "NGS SingleCell 10x Preprocess",
-   "label": "NGS SingleCell 10x Preprocess",
+   "label": "SingleCell 10x Preprocess",
    "quick_list_filter": "[[\"NGS SingleCell 10x Preprocess\",\"qc_status\",\"=\",\"FAIL\",false]]"
   },
   {
-   "document_type": "NGS RNAseq Sample Extraction",
-   "label": "NGS RNAseq Sample Extraction",
-   "quick_list_filter": "[[\"NGS RNAseq Sample Extraction\",\"qc_status\",\"=\",\"FAIL\",false]]"
+   "document_type": "NGS DNAseq Sample Extraction",
+   "label": "DNAseq Sample Extraction",
+   "quick_list_filter": "[[\"NGS DNAseq Sample Extraction\",\"qc_status\",\"=\",\"FAIL\",false]]"
   },
   {
    "document_type": "NGS SingleCell Library Construction",
-   "label": "NGS SingleCell Library Construction",
+   "label": "SingleCell Library Construction",
    "quick_list_filter": "[[\"NGS SingleCell Library Construction\",\"qc_status\",\"=\",\"FAIL\",false]]"
   },
   {
+   "document_type": "NGS DNAseq Library Construction",
+   "label": "DNAseq Library Construction",
+   "quick_list_filter": "[[\"NGS DNAseq Library Construction\",\"qc_status\",\"=\",\"FAIL\",false]]"
+  },
+  {
+   "document_type": "NGS RNAseq Sample Extraction",
+   "label": "RNAseq Sample Extraction",
+   "quick_list_filter": "[[\"NGS RNAseq Sample Extraction\",\"qc_status\",\"=\",\"FAIL\",false]]"
+  },
+  {
    "document_type": "NGS RNAseq Library Construction",
-   "label": "NGS RNAseq Library Construction",
+   "label": "RNAseq Library Construction",
    "quick_list_filter": "[[\"NGS RNAseq Library Construction\",\"qc_status\",\"=\",\"FAIL\",false]]"
   },
   {
    "document_type": "NGS Meta Sample Extraction",
-   "label": "NGS Meta Sample Extraction",
+   "label": "Meta Sample Extraction",
    "quick_list_filter": "[[\"NGS Meta Sample Extraction\",\"qc_status\",\"=\",\"FAIL\",false]]"
   },
   {
    "document_type": "NGS Meta Library Construction",
-   "label": "NGS Meta Library Construction",
+   "label": "Meta Library Construction",
    "quick_list_filter": "[[\"NGS Meta Library Construction\",\"qc_status\",\"=\",\"FAIL\",false]]"
-  },
-  {
-   "document_type": "NGS SingleCell Sequencing Outsource",
-   "label": "NGS SingleCell Sequencing Outsource",
-   "quick_list_filter": "[[\"NGS SingleCell Sequencing Outsource\",\"qc_status\",\"=\",\"FAIL\",false]]"
-  },
-  {
-   "document_type": "NGS RNAseq Sequencing Outsource",
-   "label": "NGS RNAseq Sequencing Outsource",
-   "quick_list_filter": "[[\"NGS RNAseq Sequencing Outsource\",\"qc_status\",\"=\",\"FAIL\",false]]"
-  },
-  {
-   "document_type": "NGS Meta Sequencing Outsource",
-   "label": "NGS Meta Sequencing Outsource",
-   "quick_list_filter": "[[\"NGS Meta Sequencing Outsource\",\"qc_status\",\"=\",\"FAIL\",false]]"
   }
  ],
  "roles": [

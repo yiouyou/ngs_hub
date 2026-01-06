@@ -17,6 +17,27 @@ frappe.ui.form.on('NGS Sample Info', {
     }
   },
   refresh(frm) {
+    setTimeout(() => {
+      const type = frm.doc.class_type;
+      // hide all of them first
+      $("[data-doctype='NGS SingleCell 10x Preprocess']").parent().hide();
+      $("[data-doctype='NGS RNAseq Sample Extraction']").parent().hide();
+      $("[data-doctype='NGS DNAseq Sample Extraction']").parent().hide();
+      $("[data-doctype='NGS Meta Sample Extraction']").parent().hide();
+      // show the one that matches
+      if (type === 'SingleCell') {
+        $("[data-doctype='NGS SingleCell 10x Preprocess']").parent().show();
+      }
+      if (type === 'RNAseq') {
+        $("[data-doctype='NGS RNAseq Sample Extraction']").parent().show();
+      }
+      if (type === 'DNAseq') {
+        $("[data-doctype='NGS DNAseq Sample Extraction']").parent().show();
+      }
+      if (type === 'Meta') {
+        $("[data-doctype='NGS Meta Sample Extraction']").parent().show();
+      }
+    }, 100);
     frm.add_custom_button(__('→ Sample Transfer'), () => {
       if (frm.doc.sample_transfer) {
         frappe.set_route('Form', 'NGS Sample Transfer', frm.doc.sample_transfer);
@@ -40,6 +61,18 @@ frappe.ui.form.on('NGS Sample Info', {
     if (frm.doc.class_type === 'RNAseq') {
       frm.add_custom_button(__('+ RNAseq Sample Ext'), () => {
         frappe.new_doc('NGS RNAseq Sample Extraction', {}, (doc) => {
+          doc.customer = frm.doc.customer
+          doc.project = frm.doc.project
+          doc.sample_transfer = frm.doc.sample_transfer;
+          doc.sample_info = frm.doc.sample_info_id;
+          doc.urgency = frm.doc.urgency;
+          doc.save();
+        });
+      });
+    }
+    if (frm.doc.class_type === 'DNAseq') {
+      frm.add_custom_button(__('+ DNAseq Sample Ext'), () => {
+        frappe.new_doc('NGS DNAseq Sample Extraction', {}, (doc) => {
           doc.customer = frm.doc.customer
           doc.project = frm.doc.project
           doc.sample_transfer = frm.doc.sample_transfer;

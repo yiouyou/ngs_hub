@@ -2,8 +2,8 @@
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
- "autoname": "field:rnaseq_sample_extraction_id",
- "creation": "2025-06-20 22:36:03.670340",
+ "autoname": "field:dnaseq_library_construction_id",
+ "creation": "2026-01-06 05:41:00.863706",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -12,23 +12,25 @@
   "sample_transfer",
   "sample_info",
   "urgency",
-  "section_break_qzst",
+  "dnaseq_sample_extraction",
+  "section_break_lvny",
   "operation_date",
-  "start_time",
-  "end_time",
   "sop_version",
   "operator",
   "qc_status",
   "qc_result",
-  "sample_final_volume",
-  "sample_final_concentration",
-  "section_break_iiau",
-  "rnaseq_sample_extraction_id",
+  "library_index_sequence",
+  "library_insert_size",
+  "library_final_volume",
+  "library_final_concentration",
+  "note",
+  "section_break_trpi",
+  "dnaseq_library_construction_id",
   "amended_from"
  ],
  "fields": [
   {
-   "fieldname": "section_break_iiau",
+   "fieldname": "section_break_trpi",
    "fieldtype": "Section Break"
   },
   {
@@ -36,10 +38,17 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "NGS RNAseq Sample Extraction",
+   "options": "NGS DNAseq Library Construction",
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "dnaseq_library_construction_id",
+   "fieldtype": "Data",
+   "label": "DNAseq Library Construction ID",
+   "read_only": 1,
+   "unique": 1
   },
   {
    "fieldname": "customer",
@@ -47,6 +56,15 @@
    "label": "Customer",
    "no_copy": 1,
    "options": "NGS Customer",
+   "print_hide": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "no_copy": 1,
+   "options": "NGS Project",
    "print_hide": 1,
    "search_index": 1
   },
@@ -60,6 +78,13 @@
    "search_index": 1
   },
   {
+   "fieldname": "urgency",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Urgency",
+   "options": "Standard\nCritical"
+  },
+  {
    "fieldname": "sample_info",
    "fieldtype": "Link",
    "label": "Sample Info",
@@ -69,16 +94,23 @@
    "search_index": 1
   },
   {
-   "fieldname": "start_time",
-   "fieldtype": "Datetime",
-   "hidden": 1,
-   "label": "Start Time"
+   "fieldname": "dnaseq_sample_extraction",
+   "fieldtype": "Link",
+   "label": "DNAseq Sample Extraction",
+   "no_copy": 1,
+   "options": "NGS DNAseq Sample Extraction",
+   "print_hide": 1,
+   "search_index": 1
   },
   {
-   "fieldname": "end_time",
-   "fieldtype": "Datetime",
-   "hidden": 1,
-   "label": "End Time"
+   "fieldname": "section_break_lvny",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "operation_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Operation Date"
   },
   {
    "fieldname": "sop_version",
@@ -103,57 +135,39 @@
    "label": "QC Result"
   },
   {
-   "fieldname": "sample_final_volume",
+   "fieldname": "library_index_sequence",
    "fieldtype": "Data",
-   "label": "Sample FInal Volume (uL)"
+   "label": "Library Index Sequence"
   },
   {
-   "fieldname": "sample_final_concentration",
+   "fieldname": "library_insert_size",
    "fieldtype": "Data",
-   "label": "Sample Final Concentration (ng/uL)"
+   "label": "Library Insert Size"
   },
   {
-   "fieldname": "rnaseq_sample_extraction_id",
+   "fieldname": "library_final_volume",
    "fieldtype": "Data",
-   "label": "RNAseq Sample Extraction ID",
-   "read_only": 1,
-   "unique": 1
+   "label": "Library Final Volume (uL)"
   },
   {
-   "fieldname": "project",
-   "fieldtype": "Link",
-   "label": "Project",
-   "no_copy": 1,
-   "options": "NGS Project",
-   "print_hide": 1,
-   "search_index": 1
+   "fieldname": "library_final_concentration",
+   "fieldtype": "Data",
+   "label": "Library Final Concentration (ng/uL)"
   },
   {
-   "fieldname": "section_break_qzst",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "urgency",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Urgency",
-   "options": "Standard\nCritical"
-  },
-  {
-   "fieldname": "operation_date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Operation Date"
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-06 05:44:07.708445",
+ "modified": "2026-01-06 05:57:09.565734",
  "modified_by": "Administrator",
  "module": "NGS Hub",
- "name": "NGS RNAseq Sample Extraction",
+ "name": "NGS DNAseq Library Construction",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [

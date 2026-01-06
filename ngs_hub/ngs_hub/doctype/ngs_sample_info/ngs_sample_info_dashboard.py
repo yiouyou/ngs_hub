@@ -10,6 +10,7 @@ def get_data():
 				"items": [
 					"NGS SingleCell 10x Preprocess",
 					"NGS RNAseq Sample Extraction",
+					"NGS DNAseq Sample Extraction",
 					"NGS Meta Sample Extraction",
 				],
 			}

@@ -127,10 +127,12 @@
    "unique": 1
   },
   {
+   "fetch_from": "project.class_type",
    "fieldname": "class_type",
-   "fieldtype": "Data",
+   "fieldtype": "Select",
    "in_list_view": 1,
-   "label": "Class Type"
+   "label": "Class Type",
+   "options": "\nSingleCell\nRNAseq\nDNAseq\nMeta"
   },
   {
    "fieldname": "project",
@@ -167,7 +169,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-28 08:53:14.972195",
+ "modified": "2026-01-06 08:28:40.778833",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Sample Transfer",

@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"fWiA_WyOq2\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">NGS Hub</span>\",\"col\":12}},{\"id\":\"FSiiSFl-3F\",\"type\":\"card\",\"data\":{\"card_name\":\"Customer\",\"col\":4}},{\"id\":\"xLQYJac_XB\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"AI Chat\",\"col\":4}},{\"id\":\"jfnJrSBLN2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Md To Docx\",\"col\":4}},{\"id\":\"suszacyYif\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Customer\",\"col\":4}},{\"id\":\"6EG3K86a6g\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Project\",\"col\":4}},{\"id\":\"gSw8rqKPBF\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Contact\",\"col\":4}},{\"id\":\"Yomp25TdU1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"KQr6o_VdE9\",\"type\":\"card\",\"data\":{\"card_name\":\"Sample\",\"col\":4}},{\"id\":\"diw8nITQS1\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"Dwwurd5wjX\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Sample Transfer\",\"col\":4}},{\"id\":\"6ERCr24bsj\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Sample Info\",\"col\":4}},{\"id\":\"P_eKzDM9eb\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"nGc4i_z9hJ\",\"type\":\"card\",\"data\":{\"card_name\":\"SingleCell\",\"col\":3}},{\"id\":\"1ZD3GRo--y\",\"type\":\"spacer\",\"data\":{\"col\":9}},{\"id\":\"j1AvXgYX-T\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SingleCell 10x Preprocess\",\"col\":4}},{\"id\":\"PLBDWQo0do\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SingleCell Library Construction\",\"col\":4}},{\"id\":\"5PDN2F04LD\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"YwKWSwiBWF\",\"type\":\"card\",\"data\":{\"card_name\":\"RNAseq\",\"col\":3}},{\"id\":\"VLRTRYFy7H\",\"type\":\"spacer\",\"data\":{\"col\":9}},{\"id\":\"I6Ry_Rn3BT\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"RNAseq Sample Extraction\",\"col\":4}},{\"id\":\"SFCtlP6hZm\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"RNAseq Library Construction\",\"col\":4}},{\"id\":\"ga2SBIrxGN\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"JCUX5G-5wr\",\"type\":\"card\",\"data\":{\"card_name\":\"Meta\",\"col\":4}},{\"id\":\"NKHGr-pK0c\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"tvXXasC1Af\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Meta Sample Extraction\",\"col\":4}},{\"id\":\"XTJA9FZj1b\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Meta Library Construction\",\"col\":4}},{\"id\":\"qwn7MSJKS3\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"ALrLHqIeCT\",\"type\":\"card\",\"data\":{\"card_name\":\"Sequencing Outsource\",\"col\":4}},{\"id\":\"s9i7VvEMhN\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"3oJDDkijCK\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SingleCell Sequencing Outsource\",\"col\":4}},{\"id\":\"T66XNrJxCB\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"RNAseq Sequencing Outsource\",\"col\":4}},{\"id\":\"Baozem5Rb_\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Meta Sequencing Outsource\",\"col\":4}}]",
+ "content": "[{\"id\":\"fWiA_WyOq2\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">NGS Hub</span>\",\"col\":12}},{\"id\":\"FSiiSFl-3F\",\"type\":\"card\",\"data\":{\"card_name\":\"Customer\",\"col\":4}},{\"id\":\"xLQYJac_XB\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"AI Chat\",\"col\":4}},{\"id\":\"s9vqkoC7wg\",\"type\":\"spacer\",\"data\":{\"col\":4}},{\"id\":\"suszacyYif\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Customer\",\"col\":4}},{\"id\":\"6EG3K86a6g\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Project\",\"col\":4}},{\"id\":\"gSw8rqKPBF\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Contact\",\"col\":4}},{\"id\":\"Yomp25TdU1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"KQr6o_VdE9\",\"type\":\"card\",\"data\":{\"card_name\":\"Sample\",\"col\":4}},{\"id\":\"diw8nITQS1\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"Dwwurd5wjX\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Sample Transfer\",\"col\":4}},{\"id\":\"6ERCr24bsj\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Sample Info\",\"col\":4}},{\"id\":\"P_eKzDM9eb\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"nGc4i_z9hJ\",\"type\":\"card\",\"data\":{\"card_name\":\"SingleCell\",\"col\":3}},{\"id\":\"1ZD3GRo--y\",\"type\":\"spacer\",\"data\":{\"col\":9}},{\"id\":\"j1AvXgYX-T\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SingleCell 10x Preprocess\",\"col\":4}},{\"id\":\"PLBDWQo0do\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SingleCell Library Construction\",\"col\":4}},{\"id\":\"5PDN2F04LD\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"YwKWSwiBWF\",\"type\":\"card\",\"data\":{\"card_name\":\"RNAseq\",\"col\":3}},{\"id\":\"VLRTRYFy7H\",\"type\":\"spacer\",\"data\":{\"col\":9}},{\"id\":\"I6Ry_Rn3BT\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"RNAseq Sample Extraction\",\"col\":4}},{\"id\":\"SFCtlP6hZm\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"RNAseq Library Construction\",\"col\":4}},{\"id\":\"o9zkb8-w4I\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"sJkMKxU70T\",\"type\":\"card\",\"data\":{\"card_name\":\"DNAseq\",\"col\":4}},{\"id\":\"hVaeulljwq\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"sqAo-4pVUW\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\" DNAseq Sample Extraction\",\"col\":4}},{\"id\":\"AaQ2KHb_-F\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\" DNAseq Library Construction\",\"col\":4}},{\"id\":\"5nPkJm8w7k\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"JCUX5G-5wr\",\"type\":\"card\",\"data\":{\"card_name\":\"Meta\",\"col\":4}},{\"id\":\"NKHGr-pK0c\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"tvXXasC1Af\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Meta Sample Extraction\",\"col\":4}},{\"id\":\"XTJA9FZj1b\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Meta Library Construction\",\"col\":4}},{\"id\":\"qwn7MSJKS3\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"ALrLHqIeCT\",\"type\":\"card\",\"data\":{\"card_name\":\"Sequencing Outsource\",\"col\":4}},{\"id\":\"s9i7VvEMhN\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"3oJDDkijCK\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SingleCell Sequencing Outsource\",\"col\":4}},{\"id\":\"T66XNrJxCB\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"RNAseq Sequencing Outsource\",\"col\":4}},{\"id\":\"yYCW9DNeFk\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"DNAseq Sequencing Outsource\",\"col\":4}},{\"id\":\"Baozem5Rb_\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Meta Sequencing Outsource\",\"col\":4}}]",
  "creation": "2025-12-25 01:10:02.381759",
  "custom_blocks": [],
  "docstatus": 0,
@@ -13,45 +13,6 @@
  "is_hidden": 0,
  "label": "NGS Hub",
  "links": [
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Sequencing Outsource",
-   "link_count": 3,
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "NGS SingleCell Sequencing Outsource",
-   "link_count": 0,
-   "link_to": "NGS SingleCell Sequencing Outsource",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "NGS RNAseq Sequencing Outsource",
-   "link_count": 0,
-   "link_to": "NGS RNAseq Sequencing Outsource",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "NGS Meta Sequencing Outsource",
-   "link_count": 0,
-   "link_to": "NGS Meta Sequencing Outsource",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
   {
    "hidden": 0,
    "is_query_report": 0,
@@ -196,9 +157,87 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "DNAseq",
+   "link_count": 2,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "DNAseq Sample Extraction",
+   "link_count": 0,
+   "link_to": "NGS DNAseq Sample Extraction",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "DNAseq Library Construction",
+   "link_count": 0,
+   "link_to": "NGS DNAseq Library Construction",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sequencing Outsource",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "SingleCell Sequencing Outsource",
+   "link_count": 0,
+   "link_to": "NGS SingleCell Sequencing Outsource",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "RNAseq Sequencing Outsource",
+   "link_count": 0,
+   "link_to": "NGS RNAseq Sequencing Outsource",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "DNAseq Sequencing Outsource",
+   "link_count": 0,
+   "link_to": "NGS DNAseq Sequencing Outsource",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Meta Sequencing Outsource",
+   "link_count": 0,
+   "link_to": "NGS Meta Sequencing Outsource",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2026-01-06 01:59:49.571626",
+ "modified": "2026-01-06 07:13:09.595061",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Hub",
@@ -208,8 +247,23 @@
  "public": 1,
  "quick_lists": [
   {
+   "document_type": "NGS DNAseq Sample Extraction",
+   "label": " DNAseq Sample Extraction",
+   "quick_list_filter": "[]"
+  },
+  {
    "document_type": "NGS Contact Form",
    "label": "NGS Contact",
+   "quick_list_filter": "[]"
+  },
+  {
+   "document_type": "NGS DNAseq Sequencing Outsource",
+   "label": "DNAseq Sequencing Outsource",
+   "quick_list_filter": "[]"
+  },
+  {
+   "document_type": "NGS DNAseq Library Construction",
+   "label": " DNAseq Library Construction",
    "quick_list_filter": "[]"
   },
   {
@@ -282,14 +336,6 @@
  "roles": [],
  "sequence_id": 1.0,
  "shortcuts": [
-  {
-   "color": "Grey",
-   "doc_view": "New",
-   "label": "Md To Docx",
-   "link_to": "MD To Docx",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
   {
    "color": "Grey",
    "doc_view": "New",

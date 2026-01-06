@@ -2,8 +2,8 @@
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
- "autoname": "field:rnaseq_sample_extraction_id",
- "creation": "2025-06-20 22:36:03.670340",
+ "autoname": "field:dnaseq_sequencing_outsource_id",
+ "creation": "2026-01-06 05:58:50.100502",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -12,23 +12,23 @@
   "sample_transfer",
   "sample_info",
   "urgency",
-  "section_break_qzst",
-  "operation_date",
+  "dnaseq_sample_extraction",
+  "dnaseq_library_construction",
+  "section_break_iyyj",
   "start_time",
   "end_time",
-  "sop_version",
-  "operator",
-  "qc_status",
+  "supplier",
   "qc_result",
-  "sample_final_volume",
-  "sample_final_concentration",
-  "section_break_iiau",
-  "rnaseq_sample_extraction_id",
+  "planned_raw_data_output",
+  "actual_raw_data_output",
+  "note",
+  "section_break_qm8u",
+  "dnaseq_sequencing_outsource_id",
   "amended_from"
  ],
  "fields": [
   {
-   "fieldname": "section_break_iiau",
+   "fieldname": "section_break_qm8u",
    "fieldtype": "Section Break"
   },
   {
@@ -36,10 +36,17 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "NGS RNAseq Sample Extraction",
+   "options": "NGS DNAseq Sequencing Outsource",
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "dnaseq_sequencing_outsource_id",
+   "fieldtype": "Data",
+   "label": "DNAseq Sequencing Outsource ID",
+   "read_only": 1,
+   "unique": 1
   },
   {
    "fieldname": "customer",
@@ -47,6 +54,15 @@
    "label": "Customer",
    "no_copy": 1,
    "options": "NGS Customer",
+   "print_hide": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "no_copy": 1,
+   "options": "NGS Project",
    "print_hide": 1,
    "search_index": 1
   },
@@ -69,70 +85,6 @@
    "search_index": 1
   },
   {
-   "fieldname": "start_time",
-   "fieldtype": "Datetime",
-   "hidden": 1,
-   "label": "Start Time"
-  },
-  {
-   "fieldname": "end_time",
-   "fieldtype": "Datetime",
-   "hidden": 1,
-   "label": "End Time"
-  },
-  {
-   "fieldname": "sop_version",
-   "fieldtype": "Data",
-   "label": "SOP Version"
-  },
-  {
-   "fieldname": "operator",
-   "fieldtype": "Link",
-   "label": "Operator",
-   "options": "User"
-  },
-  {
-   "fieldname": "qc_status",
-   "fieldtype": "Select",
-   "label": "QC Status",
-   "options": "PASS\nFAIL"
-  },
-  {
-   "fieldname": "qc_result",
-   "fieldtype": "Attach",
-   "label": "QC Result"
-  },
-  {
-   "fieldname": "sample_final_volume",
-   "fieldtype": "Data",
-   "label": "Sample FInal Volume (uL)"
-  },
-  {
-   "fieldname": "sample_final_concentration",
-   "fieldtype": "Data",
-   "label": "Sample Final Concentration (ng/uL)"
-  },
-  {
-   "fieldname": "rnaseq_sample_extraction_id",
-   "fieldtype": "Data",
-   "label": "RNAseq Sample Extraction ID",
-   "read_only": 1,
-   "unique": 1
-  },
-  {
-   "fieldname": "project",
-   "fieldtype": "Link",
-   "label": "Project",
-   "no_copy": 1,
-   "options": "NGS Project",
-   "print_hide": 1,
-   "search_index": 1
-  },
-  {
-   "fieldname": "section_break_qzst",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "urgency",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -140,20 +92,72 @@
    "options": "Standard\nCritical"
   },
   {
-   "fieldname": "operation_date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Operation Date"
+   "fieldname": "dnaseq_sample_extraction",
+   "fieldtype": "Link",
+   "label": "DNAseq Sample Extraction",
+   "no_copy": 1,
+   "options": "NGS DNAseq Sample Extraction",
+   "print_hide": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "dnaseq_library_construction",
+   "fieldtype": "Link",
+   "label": "DNAseq Library Construction",
+   "no_copy": 1,
+   "options": "NGS DNAseq Library Construction",
+   "print_hide": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "section_break_iyyj",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "start_time",
+   "fieldtype": "Datetime",
+   "label": "Start Time"
+  },
+  {
+   "fieldname": "end_time",
+   "fieldtype": "Datetime",
+   "label": "End Time"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "qc_result",
+   "fieldtype": "Attach",
+   "label": "QC Result"
+  },
+  {
+   "fieldname": "planned_raw_data_output",
+   "fieldtype": "Data",
+   "label": "Planned Raw Data Output"
+  },
+  {
+   "fieldname": "actual_raw_data_output",
+   "fieldtype": "Data",
+   "label": "Actual Raw Data Output"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-06 05:44:07.708445",
+ "modified": "2026-01-06 06:40:10.625741",
  "modified_by": "Administrator",
  "module": "NGS Hub",
- "name": "NGS RNAseq Sample Extraction",
+ "name": "NGS DNAseq Sequencing Outsource",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
