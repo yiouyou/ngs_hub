@@ -17,11 +17,11 @@ class NGSSingleCellSequencingOutsource(Document):
 			frappe.throw(_("Sample Transfer is required to generate SingCell Sequencing Outsource"))
 		if not self.sample_info:
 			frappe.throw(_("Sample Info is required to generate SingCell Sequencing Outsource"))
-		if not self.singlecell_10x_preprocess:
-			frappe.throw(_("SingCell 10x Preprocess is required to generate SingCell Sequencing Outsource"))
-		if not self.singlecell_library_construction:
-			frappe.throw(
-				_("SingCell Library Construction is required to generate SingCell Sequencing Outsource")
-			)
+		# if not self.singlecell_10x_preprocess:
+		# 	frappe.throw(_("SingCell 10x Preprocess is required to generate SingCell Sequencing Outsource"))
+		# if not self.singlecell_library_construction:
+		# 	frappe.throw(
+		# 		_("SingCell Library Construction is required to generate SingCell Sequencing Outsource")
+		# 	)
 		self.singlecell_sequencing_outsource_id = make_autoname("SingleCell-SEQ-.YY.-.MM.-.DD.-.###")
 		self.name = self.singlecell_sequencing_outsource_id

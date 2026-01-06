@@ -18,8 +18,8 @@ class NGSDNAseqSequencingOutsource(Document):
 		if not self.sample_info:
 			frappe.throw(_("Sample Info is required to generate DNAseq Sequencing Outsource"))
 		if not self.dnaseq_sample_extraction:
-			frappe.throw(_("DNAseq Sample Extraction is required to generate DNAseq Sequencing Outsource"))
-		if not self.dnaseq_library_construction:
-			frappe.throw(_("DNAseq Library Construction is required to generate DNAseq Sequencing Outsource"))
+		# 	frappe.throw(_("DNAseq Sample Extraction is required to generate DNAseq Sequencing Outsource"))
+		# if not self.dnaseq_library_construction:
+		# 	frappe.throw(_("DNAseq Library Construction is required to generate DNAseq Sequencing Outsource"))
 		self.dnaseq_sequencing_outsource_id = make_autoname("DNAseq-SEQ-.YY.-.MM.-.DD.-.###")
 		self.name = self.dnaseq_sequencing_outsource_id

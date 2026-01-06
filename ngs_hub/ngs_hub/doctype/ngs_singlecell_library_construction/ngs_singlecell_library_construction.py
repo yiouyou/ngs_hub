@@ -17,7 +17,7 @@ class NGSSingleCellLibraryConstruction(Document):
 			frappe.throw(_("Sample Transfer is required to generate SingCell Library Construction"))
 		if not self.sample_info:
 			frappe.throw(_("Sample Info is required to generate SingCell Library Construction"))
-		if not self.singlecell_10x_preprocess:
-			frappe.throw(_("SingCell 10x Preprocess is required to generate SingCell Library Construction"))
+		# if not self.singlecell_10x_preprocess:
+		# 	frappe.throw(_("SingCell 10x Preprocess is required to generate SingCell Library Construction"))
 		self.singlecell_library_construction_id = make_autoname("SingleCell-LIB-.YY.-.MM.-.DD.-.###")
 		self.name = self.singlecell_library_construction_id

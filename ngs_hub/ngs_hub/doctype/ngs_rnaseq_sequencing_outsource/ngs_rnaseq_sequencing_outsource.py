@@ -17,9 +17,9 @@ class NGSRNAseqSequencingOutsource(Document):
 			frappe.throw(_("Sample Transfer is required to generate RNAseq Sequencing Outsource"))
 		if not self.sample_info:
 			frappe.throw(_("Sample Info is required to generate RNAseq Sequencing Outsource"))
-		if not self.rnaseq_sample_extraction:
-			frappe.throw(_("RNAseq Sample Extraction is required to generate RNAseq Sequencing Outsource"))
-		if not self.rnaseq_library_construction:
-			frappe.throw(_("RNAseq Library Construction is required to generate RNAseq Sequencing Outsource"))
+		# if not self.rnaseq_sample_extraction:
+		# 	frappe.throw(_("RNAseq Sample Extraction is required to generate RNAseq Sequencing Outsource"))
+		# if not self.rnaseq_library_construction:
+		# 	frappe.throw(_("RNAseq Library Construction is required to generate RNAseq Sequencing Outsource"))
 		self.rnaseq_sequencing_outsource_id = make_autoname("RNAseq-SEQ-.YY.-.MM.-.DD.-.###")
 		self.name = self.rnaseq_sequencing_outsource_id
