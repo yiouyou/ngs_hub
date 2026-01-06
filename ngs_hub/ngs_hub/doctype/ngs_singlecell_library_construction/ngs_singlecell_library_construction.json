@@ -74,7 +74,7 @@
    "fieldname": "qc_status",
    "fieldtype": "Select",
    "label": "QC Status",
-   "options": "\nPASS\nFAIL"
+   "options": "PASS\nFAIL"
   },
   {
    "fieldname": "qc_result",
@@ -197,7 +197,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-06 01:47:05.208283",
+ "modified": "2026-01-06 02:12:11.902187",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS SingleCell Library Construction",

@@ -63,7 +63,7 @@
    "fieldname": "qc_status",
    "fieldtype": "Select",
    "label": "QC Status",
-   "options": "\nPASS\nFAIL"
+   "options": "PASS\nFAIL"
   },
   {
    "fieldname": "qc_result",
@@ -195,7 +195,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-05 23:30:36.133578",
+ "modified": "2026-01-06 02:12:55.428145",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Meta Library Construction",
