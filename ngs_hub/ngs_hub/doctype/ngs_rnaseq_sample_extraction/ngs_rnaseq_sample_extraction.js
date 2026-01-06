@@ -15,9 +15,9 @@ frappe.ui.form.on('NGS RNAseq Sample Extraction', {
         frappe.msgprint(__('No associated Sample Info found.'));
       }
     });
-    frm.add_custom_button(__('+ RNAseq Enrichment'), () => {
+    frm.add_custom_button(__('+ RNAseq Lib Constr'), () => {
       if (frm.doc.qc_status === 'PASS') {
-        frappe.new_doc('NGS RNAseq Enrichment', {}, (doc) => {
+        frappe.new_doc('NGS RNAseq Library Construction', {}, (doc) => {
           doc.customer = frm.doc.customer
           doc.project = frm.doc.project
           doc.sample_transfer = frm.doc.sample_transfer;

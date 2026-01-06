@@ -15,13 +15,6 @@ frappe.ui.form.on('NGS RNAseq Sequencing Outsource', {
         }
       };
     });
-    frm.set_query('rnaseq_enrichment', () => {
-      return {
-        filters: {
-          'qc_status': ['!=', 'FAIL']
-        }
-      };
-    });
     frm.set_query('rnaseq_library_construction', () => {
       return {
         filters: {

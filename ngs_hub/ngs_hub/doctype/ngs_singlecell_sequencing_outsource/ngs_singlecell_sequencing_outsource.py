@@ -19,8 +19,6 @@ class NGSSingleCellSequencingOutsource(Document):
 			frappe.throw(_("Sample Info is required to generate SingCell Sequencing Outsource"))
 		if not self.singlecell_10x_preprocess:
 			frappe.throw(_("SingCell 10x Preprocess is required to generate SingCell Sequencing Outsource"))
-		if not self.singlecell_10x_chromium:
-			frappe.throw(_("SingCell 10x Chromium is required to generate SingCell Sequencing Outsource"))
 		if not self.singlecell_library_construction:
 			frappe.throw(
 				_("SingCell Library Construction is required to generate SingCell Sequencing Outsource")

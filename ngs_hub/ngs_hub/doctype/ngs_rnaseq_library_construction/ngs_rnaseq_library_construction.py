@@ -19,7 +19,5 @@ class NGSRNAseqLibraryConstruction(Document):
 			frappe.throw(_("Sample Info is required to generate RNAseq Library Construction"))
 		if not self.rnaseq_sample_extraction:
 			frappe.throw(_("RNAseq Sample Extraction is required to generate RNAseq Library Construction"))
-		if not self.rnaseq_enrichment:
-			frappe.throw(_("RNAseq enrichment is required to generate RNAseq Library Construction"))
 		self.rnaseq_library_construction_id = make_autoname("RNAseq-LIB-.YY.-.MM.-.DD.-.###")
 		self.name = self.rnaseq_library_construction_id

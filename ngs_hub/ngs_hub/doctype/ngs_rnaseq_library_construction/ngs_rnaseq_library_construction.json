@@ -159,6 +159,7 @@
   {
    "fieldname": "rnaseq_enrichment",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "RNAseq Enrichment",
    "no_copy": 1,
    "options": "NGS RNAseq Enrichment",
@@ -196,7 +197,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-05 23:28:56.942479",
+ "modified": "2026-01-06 01:48:48.640301",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS RNAseq Library Construction",

@@ -15,20 +15,13 @@ frappe.ui.form.on('NGS RNAseq Library Construction', {
         }
       };
     });
-    frm.set_query('rnaseq_enrichment', () => {
-      return {
-        filters: {
-          'qc_status': ['!=', 'FAIL']
-        }
-      };
-    });
   },
   refresh(frm) {
-    frm.add_custom_button(__('→ RNAseq Enrichment'), () => {
-      if (frm.doc.rnaseq_enrichment) {
-        frappe.set_route('Form', 'NGS RNAseq Enrichment', frm.doc.rnaseq_enrichment);
+    frm.add_custom_button(__('→ RNAseq Sample Ext'), () => {
+      if (frm.doc.rnaseq_sample_extraction) {
+        frappe.set_route('Form', 'RNAseq Sample Extraction', frm.doc.rnaseq_sample_extraction);
       } else {
-        frappe.msgprint(__('No associated RNAseq Enrichment found.'));
+        frappe.msgprint(__('No associated RNAseq Sample Extraction found.'));
       }
     });
     frm.add_custom_button(__('+ RNAseq Sequencing Out'), () => {
@@ -40,7 +33,6 @@ frappe.ui.form.on('NGS RNAseq Library Construction', {
           doc.sample_info = frm.doc.sample_info;
           doc.urgency = frm.doc.urgency;
           doc.rnaseq_sample_extraction = frm.doc.rnaseq_sample_extraction;
-          doc.rnaseq_enrichment = frm.doc.rnaseq_enrichment;
           doc.rnaseq_library_construction = frm.doc.rnaseq_library_construction_id;
           doc.save();
         });

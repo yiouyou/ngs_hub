@@ -15,9 +15,9 @@ frappe.ui.form.on('NGS SingleCell 10x Preprocess', {
         frappe.msgprint(__('No associated Sample Info found.'));
       }
     });
-    frm.add_custom_button(__('+ SingleCell 10x Chromium'), () => {
+    frm.add_custom_button(__('+ SingleCell Lib Constr'), () => {
       if (frm.doc.qc_status === 'PASS') {
-        frappe.new_doc('NGS SingleCell 10x Chromium', {}, (doc) => {
+        frappe.new_doc('NGS SingleCell Library Construction', {}, (doc) => {
           doc.customer = frm.doc.customer
           doc.project = frm.doc.project
           doc.sample_transfer = frm.doc.sample_transfer;

@@ -127,6 +127,7 @@
   {
    "fieldname": "singlecell_10x_chromium",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "SingleCell 10x Chromium",
    "no_copy": 1,
    "options": "NGS SingleCell 10x Chromium",
@@ -186,7 +187,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-05 23:13:02.858224",
+ "modified": "2026-01-06 01:43:26.239706",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS SingleCell Sequencing Outsource",

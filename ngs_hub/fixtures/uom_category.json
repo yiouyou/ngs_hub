@@ -1,0 +1,23 @@
+[
+ {
+  "category_name": "Quantity",
+  "docstatus": 0,
+  "doctype": "UOM Category",
+  "modified": "2025-06-30 11:39:32.968762",
+  "name": "Quantity"
+ },
+ {
+  "category_name": "Data Volume",
+  "docstatus": 0,
+  "doctype": "UOM Category",
+  "modified": "2025-06-30 13:07:02.840039",
+  "name": "Data Volume"
+ },
+ {
+  "category_name": "Volume",
+  "docstatus": 0,
+  "doctype": "UOM Category",
+  "modified": "2025-05-28 11:45:00.309049",
+  "name": "Volume"
+ }
+]

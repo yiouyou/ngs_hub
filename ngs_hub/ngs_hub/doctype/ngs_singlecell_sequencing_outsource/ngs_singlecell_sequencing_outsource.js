@@ -15,13 +15,6 @@ frappe.ui.form.on('NGS SingleCell Sequencing Outsource', {
         }
       };
     });
-    frm.set_query('singlecell_10x_chromium', () => {
-      return {
-        filters: {
-          'qc_status': ['!=', 'FAIL']
-        }
-      };
-    });
     frm.set_query('singlecell_library_construction', () => {
       return {
         filters: {
