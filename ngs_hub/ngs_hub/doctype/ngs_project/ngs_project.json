@@ -8,6 +8,7 @@
  "field_order": [
   "customer",
   "class_type",
+  "attachments",
   "notes",
   "section_break_tpzy",
   "project_id",
@@ -59,13 +60,19 @@
    "fieldname": "notes",
    "fieldtype": "Small Text",
    "label": "Notes"
+  },
+  {
+   "fieldname": "attachments",
+   "fieldtype": "Table",
+   "label": "Attachments",
+   "options": "NGS Project Attached File"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-06 07:20:04.887523",
+ "modified": "2026-01-06 20:12:23.617485",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Project",
