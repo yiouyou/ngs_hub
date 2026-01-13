@@ -5,3 +5,6 @@
 tags
 node_modules
 __pycache__
+.aider*
+.env
+16.1.0/
