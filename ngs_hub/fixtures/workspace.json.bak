@@ -1,17 +1,20 @@
 [
  {
+  "app": "ngs_hub",
   "charts": [],
   "content": "[{\"id\":\"V7pjRMpZPH\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">NGS QC FAIL</span>\",\"col\":12}},{\"id\":\"cuATd84edE\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"0v6-YWZtXP\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>SingleCell</b></span>\",\"col\":12}},{\"id\":\"jyBssxxfYt\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SingleCell 10x Preprocess\",\"col\":4}},{\"id\":\"8t48VPyXkB\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SingleCell Library Construction\",\"col\":4}},{\"id\":\"LqFsSlwEz4\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"tSzXuxtO9l\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>RNAseq</b></span>\",\"col\":12}},{\"id\":\"CBJtZjH82C\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"RNAseq Sample Extraction\",\"col\":4}},{\"id\":\"54_EK2f9z1\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"RNAseq Library Construction\",\"col\":4}},{\"id\":\"RHTm95ub3F\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"7EJ-ethvuf\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>DNAseq</b></span>\",\"col\":12}},{\"id\":\"i1eVQ3lNqK\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"DNAseq Sample Extraction\",\"col\":4}},{\"id\":\"A52TdIxoyd\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"DNAseq Library Construction\",\"col\":4}},{\"id\":\"oXeqzGA-h-\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"GGapK07Jud\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Meta</b></span>\",\"col\":12}},{\"id\":\"EAmIO_-FNC\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Meta Sample Extraction\",\"col\":4}},{\"id\":\"DHtTRLxLze\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Meta Library Construction\",\"col\":4}}]",
   "custom_blocks": [],
   "docstatus": 0,
   "doctype": "Workspace",
-  "type": "Module",
+  "external_link": null,
   "for_user": "",
   "hide_custom": 0,
   "icon": "unhide",
   "indicator_color": "green",
   "is_hidden": 0,
   "label": "NGS QC FAIL",
+  "link_to": null,
+  "link_type": null,
   "links": [],
   "modified": "2026-01-06 07:18:32.100105",
   "module": "NGS Hub",
@@ -23,94 +26,71 @@
    {
     "document_type": "NGS SingleCell 10x Preprocess",
     "label": "SingleCell 10x Preprocess",
-    "parent": "NGS QC FAIL",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS SingleCell 10x Preprocess\",\"qc_status\",\"=\",\"FAIL\",false]]"
    },
    {
     "document_type": "NGS DNAseq Sample Extraction",
     "label": "DNAseq Sample Extraction",
-    "parent": "NGS QC FAIL",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS DNAseq Sample Extraction\",\"qc_status\",\"=\",\"FAIL\",false]]"
    },
    {
     "document_type": "NGS SingleCell Library Construction",
     "label": "SingleCell Library Construction",
-    "parent": "NGS QC FAIL",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS SingleCell Library Construction\",\"qc_status\",\"=\",\"FAIL\",false]]"
    },
    {
     "document_type": "NGS DNAseq Library Construction",
     "label": "DNAseq Library Construction",
-    "parent": "NGS QC FAIL",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS DNAseq Library Construction\",\"qc_status\",\"=\",\"FAIL\",false]]"
    },
    {
     "document_type": "NGS RNAseq Sample Extraction",
     "label": "RNAseq Sample Extraction",
-    "parent": "NGS QC FAIL",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS RNAseq Sample Extraction\",\"qc_status\",\"=\",\"FAIL\",false]]"
    },
    {
     "document_type": "NGS RNAseq Library Construction",
     "label": "RNAseq Library Construction",
-    "parent": "NGS QC FAIL",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS RNAseq Library Construction\",\"qc_status\",\"=\",\"FAIL\",false]]"
    },
    {
     "document_type": "NGS Meta Sample Extraction",
     "label": "Meta Sample Extraction",
-    "parent": "NGS QC FAIL",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS Meta Sample Extraction\",\"qc_status\",\"=\",\"FAIL\",false]]"
    },
    {
     "document_type": "NGS Meta Library Construction",
     "label": "Meta Library Construction",
-    "parent": "NGS QC FAIL",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[[\"NGS Meta Library Construction\",\"qc_status\",\"=\",\"FAIL\",false]]"
    }
   ],
   "restrict_to_domain": null,
   "roles": [
    {
-    "parent": "NGS QC FAIL",
-    "parentfield": "roles",
-    "parenttype": "Workspace",
     "role": "NGS Internal Staff"
    }
   ],
   "sequence_id": 2.0,
   "shortcuts": [],
-  "title": "NGS QC FAIL"
+  "title": "NGS QC FAIL",
+  "type": "Module"
  },
  {
+  "app": "ngs_hub",
   "charts": [],
   "content": "[{\"id\":\"fWiA_WyOq2\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">NGS Hub</span>\",\"col\":12}},{\"id\":\"FSiiSFl-3F\",\"type\":\"card\",\"data\":{\"card_name\":\"Customer\",\"col\":4}},{\"id\":\"xLQYJac_XB\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"AI Chat\",\"col\":4}},{\"id\":\"s9vqkoC7wg\",\"type\":\"spacer\",\"data\":{\"col\":4}},{\"id\":\"suszacyYif\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Customer\",\"col\":4}},{\"id\":\"6EG3K86a6g\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Project\",\"col\":4}},{\"id\":\"gSw8rqKPBF\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Contact\",\"col\":4}},{\"id\":\"Yomp25TdU1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"KQr6o_VdE9\",\"type\":\"card\",\"data\":{\"card_name\":\"Sample\",\"col\":4}},{\"id\":\"diw8nITQS1\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"Dwwurd5wjX\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Sample Transfer\",\"col\":4}},{\"id\":\"6ERCr24bsj\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Sample Info\",\"col\":4}},{\"id\":\"P_eKzDM9eb\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"nGc4i_z9hJ\",\"type\":\"card\",\"data\":{\"card_name\":\"SingleCell\",\"col\":3}},{\"id\":\"1ZD3GRo--y\",\"type\":\"spacer\",\"data\":{\"col\":9}},{\"id\":\"j1AvXgYX-T\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SingleCell 10x Preprocess\",\"col\":4}},{\"id\":\"PLBDWQo0do\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SingleCell Library Construction\",\"col\":4}},{\"id\":\"5PDN2F04LD\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"YwKWSwiBWF\",\"type\":\"card\",\"data\":{\"card_name\":\"RNAseq\",\"col\":3}},{\"id\":\"VLRTRYFy7H\",\"type\":\"spacer\",\"data\":{\"col\":9}},{\"id\":\"I6Ry_Rn3BT\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"RNAseq Sample Extraction\",\"col\":4}},{\"id\":\"SFCtlP6hZm\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"RNAseq Library Construction\",\"col\":4}},{\"id\":\"o9zkb8-w4I\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"sJkMKxU70T\",\"type\":\"card\",\"data\":{\"card_name\":\"DNAseq\",\"col\":4}},{\"id\":\"hVaeulljwq\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"sqAo-4pVUW\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\" DNAseq Sample Extraction\",\"col\":4}},{\"id\":\"AaQ2KHb_-F\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\" DNAseq Library Construction\",\"col\":4}},{\"id\":\"5nPkJm8w7k\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"JCUX5G-5wr\",\"type\":\"card\",\"data\":{\"card_name\":\"Meta\",\"col\":4}},{\"id\":\"NKHGr-pK0c\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"tvXXasC1Af\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Meta Sample Extraction\",\"col\":4}},{\"id\":\"XTJA9FZj1b\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Meta Library Construction\",\"col\":4}},{\"id\":\"qwn7MSJKS3\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"ALrLHqIeCT\",\"type\":\"card\",\"data\":{\"card_name\":\"Sequencing Outsource\",\"col\":4}},{\"id\":\"s9i7VvEMhN\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"3oJDDkijCK\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SingleCell Sequencing Outsource\",\"col\":4}},{\"id\":\"T66XNrJxCB\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"RNAseq Sequencing Outsource\",\"col\":4}},{\"id\":\"yYCW9DNeFk\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"DNAseq Sequencing Outsource\",\"col\":4}},{\"id\":\"Baozem5Rb_\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Meta Sequencing Outsource\",\"col\":4}}]",
   "custom_blocks": [],
   "docstatus": 0,
   "doctype": "Workspace",
-  "type": "Module",
+  "external_link": null,
   "for_user": "",
   "hide_custom": 0,
   "icon": "crop",
   "indicator_color": "",
   "is_hidden": 0,
   "label": "NGS Hub",
+  "link_to": null,
+  "link_type": null,
   "links": [
    {
     "dependencies": null,
@@ -124,9 +104,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Card Break"
    },
@@ -142,9 +119,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
    },
@@ -160,9 +134,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
    },
@@ -178,9 +149,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Card Break"
    },
@@ -196,9 +164,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
    },
@@ -214,9 +179,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
    },
@@ -232,9 +194,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Card Break"
    },
@@ -250,9 +209,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
    },
@@ -268,9 +224,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
    },
@@ -286,9 +239,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Card Break"
    },
@@ -304,9 +254,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
    },
@@ -322,9 +269,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
    },
@@ -340,9 +284,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Card Break"
    },
@@ -358,9 +299,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
    },
@@ -376,9 +314,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
    },
@@ -394,9 +329,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Card Break"
    },
@@ -412,9 +344,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
    },
@@ -430,9 +359,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
    },
@@ -448,9 +374,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Card Break"
    },
@@ -466,9 +389,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
    },
@@ -484,9 +404,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
    },
@@ -502,9 +419,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
    },
@@ -520,9 +434,6 @@
     "link_type": "DocType",
     "onboard": 0,
     "only_for": null,
-    "parent": "NGS Hub",
-    "parentfield": "links",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "type": "Link"
    }
@@ -537,137 +448,86 @@
    {
     "document_type": "NGS DNAseq Sample Extraction",
     "label": " DNAseq Sample Extraction",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    },
    {
     "document_type": "NGS Contact Form",
     "label": "NGS Contact",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    },
    {
     "document_type": "NGS DNAseq Sequencing Outsource",
     "label": "DNAseq Sequencing Outsource",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    },
    {
     "document_type": "NGS DNAseq Library Construction",
     "label": " DNAseq Library Construction",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    },
    {
     "document_type": "NGS Meta Sample Extraction",
     "label": "Meta Sample Extraction",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    },
    {
     "document_type": "NGS RNAseq Sample Extraction",
     "label": "RNAseq Sample Extraction",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    },
    {
     "document_type": "NGS SingleCell 10x Preprocess",
     "label": "SingleCell 10x Preprocess",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    },
    {
     "document_type": "NGS Project",
     "label": "NGS Project",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    },
    {
     "document_type": "NGS Customer",
     "label": "NGS Customer",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    },
    {
     "document_type": "NGS Meta Library Construction",
     "label": "Meta Library Construction",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    },
    {
     "document_type": "NGS Sample Transfer",
     "label": "NGS Sample Transfer",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    },
    {
     "document_type": "NGS Meta Sequencing Outsource",
     "label": "Meta Sequencing Outsource",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    },
    {
     "document_type": "NGS RNAseq Library Construction",
     "label": "RNAseq Library Construction",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    },
    {
     "document_type": "NGS SingleCell Library Construction",
     "label": "SingleCell Library Construction",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    },
    {
     "document_type": "NGS Sample Info",
     "label": "NGS Sample Info",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    },
    {
     "document_type": "NGS RNAseq Sequencing Outsource",
     "label": "RNAseq Sequencing Outsource",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    },
    {
     "document_type": "NGS SingleCell Sequencing Outsource",
     "label": "SingleCell Sequencing Outsource",
-    "parent": "NGS Hub",
-    "parentfield": "quick_lists",
-    "parenttype": "Workspace",
     "quick_list_filter": "[]"
    }
   ],
@@ -683,9 +543,6 @@
     "kanban_board": null,
     "label": "AI Chat",
     "link_to": "NGS LLM Chat Session",
-    "parent": "NGS Hub",
-    "parentfield": "shortcuts",
-    "parenttype": "Workspace",
     "report_ref_doctype": null,
     "restrict_to_domain": null,
     "stats_filter": "[]",
@@ -693,6 +550,7 @@
     "url": null
    }
   ],
-  "title": "NGS Hub"
+  "title": "NGS Hub",
+  "type": "Module"
  }
 ]

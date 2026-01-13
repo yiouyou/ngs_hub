@@ -5,6 +5,7 @@
   "address_line_2": null,
   "city": null,
   "company": "Athenomics",
+  "customer": null,
   "default_in_transit_warehouse": null,
   "disabled": 0,
   "docstatus": 0,

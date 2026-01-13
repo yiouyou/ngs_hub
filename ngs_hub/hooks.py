@@ -9,8 +9,8 @@ app_license = "mit"
 before_install = "ngs_hub.install.create_default_uoms"
 
 fixtures = [
+	# 权限与用户配置
 	{"dt": "Role", "filters": [["name", "in", ["NGS Internal Staff", "NGS External Customer"]]]},
-	{"dt": "Workspace", "filters": [["name", "in", ["NGS Hub", "NGS QC FAIL"]]]},
 	{
 		"dt": "Server Script",
 		"filters": [
@@ -27,6 +27,9 @@ fixtures = [
 			]
 		],
 	},
+	# 工作区和仪表盘
+	# {"dt": "Workspace", "filters": [["name", "in", ["NGS Boot", "NGS QC FAIL"]]]},
+	# 物料与库存
 	{
 		"dt": "UOM",
 		"filters": [
