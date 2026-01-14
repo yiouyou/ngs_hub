@@ -39,9 +39,26 @@
     "show_arrow": 0,
     "type": "Link",
     "url": null
+   },
+   {
+    "child": 0,
+    "collapsible": 1,
+    "display_depends_on": null,
+    "filters": null,
+    "icon": "solid-warning",
+    "indent": 0,
+    "keep_closed": 0,
+    "label": "NGS QC Fail",
+    "link_to": "NGS QC FAIL",
+    "link_type": "Workspace",
+    "navigate_to_tab": null,
+    "route_options": null,
+    "show_arrow": 0,
+    "type": "Link",
+    "url": null
    }
   ],
-  "modified": "2026-01-14 02:49:58.538803",
+  "modified": "2026-01-14 03:41:19.298492",
   "module": "NGS Hub",
   "name": "NGS Boot",
   "standard": 0,
@@ -70,12 +87,77 @@
     "show_arrow": 0,
     "type": "Link",
     "url": null
+   },
+   {
+    "child": 0,
+    "collapsible": 1,
+    "display_depends_on": null,
+    "filters": null,
+    "icon": "solid-success",
+    "indent": 0,
+    "keep_closed": 0,
+    "label": "NGS Boot",
+    "link_to": "NGS Boot",
+    "link_type": "Workspace",
+    "navigate_to_tab": null,
+    "route_options": null,
+    "show_arrow": 0,
+    "type": "Link",
+    "url": null
    }
   ],
-  "modified": "2026-01-14 02:50:10.184654",
+  "modified": "2026-01-14 03:40:32.250243",
   "module": "NGS Hub",
   "name": "NGS QC FAIL",
   "standard": 0,
   "title": "NGS QC FAIL"
+ },
+ {
+  "app": null,
+  "docstatus": 0,
+  "doctype": "Workspace Sidebar",
+  "for_user": null,
+  "header_icon": "solid-info",
+  "items": [
+   {
+    "child": 0,
+    "collapsible": 1,
+    "display_depends_on": null,
+    "filters": null,
+    "icon": "solid-success",
+    "indent": 0,
+    "keep_closed": 0,
+    "label": "NGS Boot",
+    "link_to": "NGS Boot",
+    "link_type": "Workspace",
+    "navigate_to_tab": null,
+    "route_options": null,
+    "show_arrow": 0,
+    "type": "Link",
+    "url": null
+   },
+   {
+    "child": 0,
+    "collapsible": 1,
+    "display_depends_on": null,
+    "filters": null,
+    "icon": "solid-warning",
+    "indent": 0,
+    "keep_closed": 0,
+    "label": "NGS QC Fail",
+    "link_to": "NGS QC FAIL",
+    "link_type": "Workspace",
+    "navigate_to_tab": null,
+    "route_options": null,
+    "show_arrow": 0,
+    "type": "Link",
+    "url": null
+   }
+  ],
+  "modified": "2026-01-14 03:26:44.584356",
+  "module": "NGS Hub",
+  "name": "NGS Hub",
+  "standard": 0,
+  "title": "NGS Hub"
  }
 ]

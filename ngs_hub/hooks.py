@@ -28,8 +28,8 @@ fixtures = [
 		],
 	},
 	# 工作区和仪表盘
-	{"dt": "Workspace", "filters": [["name", "in", ["NGS Boot", "NGS QC FAIL"]]]},
-	{"dt": "Workspace Sidebar", "filters": [["name", "in", ["NGS Boot", "NGS QC FAIL"]]]},
+	{"dt": "Workspace", "filters": [["name", "in", ["NGS Hub", "NGS Boot", "NGS QC FAIL"]]]},
+	{"dt": "Workspace Sidebar", "filters": [["name", "in", ["NGS Hub", "NGS Boot", "NGS QC FAIL"]]]},
 	# 物料与库存
 	{
 		"dt": "UOM",
