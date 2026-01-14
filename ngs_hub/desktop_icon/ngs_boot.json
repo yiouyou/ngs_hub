@@ -1,6 +1,6 @@
 {
  "app": "ngs_hub",
- "creation": "2026-01-14 04:57:53.719296",
+ "creation": "2026-01-14 05:09:56.621326",
  "docstatus": 0,
  "doctype": "Desktop Icon",
  "hidden": 0,
@@ -10,11 +10,11 @@
  "label": "NGS Boot",
  "link_to": "NGS Boot",
  "link_type": "Workspace Sidebar",
- "modified": "2026-01-14 05:05:17.097896",
+ "modified": "2026-01-14 05:11:52.224745",
  "modified_by": "Administrator",
  "name": "NGS Boot",
  "owner": "Administrator",
- "parent_icon": "",
+ "parent_icon": "NGS Hub",
  "restrict_removal": 0,
  "roles": [],
  "standard": 1
