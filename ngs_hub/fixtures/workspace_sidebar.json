@@ -1,0 +1,81 @@
+[
+ {
+  "app": null,
+  "docstatus": 0,
+  "doctype": "Workspace Sidebar",
+  "for_user": null,
+  "header_icon": "solid-success",
+  "items": [
+   {
+    "child": 0,
+    "collapsible": 1,
+    "display_depends_on": null,
+    "filters": null,
+    "icon": "home",
+    "indent": 0,
+    "keep_closed": 0,
+    "label": "Home",
+    "link_to": "NGS Boot",
+    "link_type": "Workspace",
+    "navigate_to_tab": null,
+    "route_options": null,
+    "show_arrow": 0,
+    "type": "Link",
+    "url": null
+   },
+   {
+    "child": 0,
+    "collapsible": 1,
+    "display_depends_on": null,
+    "filters": null,
+    "icon": "bot-message-square",
+    "indent": 0,
+    "keep_closed": 0,
+    "label": "AI Chat",
+    "link_to": "NGS LLM Chat Session",
+    "link_type": "DocType",
+    "navigate_to_tab": null,
+    "route_options": null,
+    "show_arrow": 0,
+    "type": "Link",
+    "url": null
+   }
+  ],
+  "modified": "2026-01-14 02:49:58.538803",
+  "module": "NGS Hub",
+  "name": "NGS Boot",
+  "standard": 0,
+  "title": "NGS Boot"
+ },
+ {
+  "app": null,
+  "docstatus": 0,
+  "doctype": "Workspace Sidebar",
+  "for_user": null,
+  "header_icon": "solid-warning",
+  "items": [
+   {
+    "child": 0,
+    "collapsible": 1,
+    "display_depends_on": null,
+    "filters": null,
+    "icon": "home",
+    "indent": 0,
+    "keep_closed": 0,
+    "label": "Home",
+    "link_to": "NGS QC FAIL",
+    "link_type": "Workspace",
+    "navigate_to_tab": null,
+    "route_options": null,
+    "show_arrow": 0,
+    "type": "Link",
+    "url": null
+   }
+  ],
+  "modified": "2026-01-14 02:50:10.184654",
+  "module": "NGS Hub",
+  "name": "NGS QC FAIL",
+  "standard": 0,
+  "title": "NGS QC FAIL"
+ }
+]

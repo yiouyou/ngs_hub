@@ -2,25 +2,24 @@
  "app": "ngs_hub",
  "charts": [],
  "content": "[{\"id\":\"V7pjRMpZPH\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">NGS QC FAIL</span>\",\"col\":12}},{\"id\":\"cuATd84edE\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"0v6-YWZtXP\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>SingleCell</b></span>\",\"col\":12}},{\"id\":\"jyBssxxfYt\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SingleCell 10x Preprocess\",\"col\":4}},{\"id\":\"8t48VPyXkB\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SingleCell Library Construction\",\"col\":4}},{\"id\":\"LqFsSlwEz4\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"tSzXuxtO9l\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>RNAseq</b></span>\",\"col\":12}},{\"id\":\"CBJtZjH82C\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"RNAseq Sample Extraction\",\"col\":4}},{\"id\":\"54_EK2f9z1\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"RNAseq Library Construction\",\"col\":4}},{\"id\":\"RHTm95ub3F\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"7EJ-ethvuf\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>DNAseq</b></span>\",\"col\":12}},{\"id\":\"i1eVQ3lNqK\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"DNAseq Sample Extraction\",\"col\":4}},{\"id\":\"A52TdIxoyd\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"DNAseq Library Construction\",\"col\":4}},{\"id\":\"oXeqzGA-h-\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"GGapK07Jud\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Meta</b></span>\",\"col\":12}},{\"id\":\"EAmIO_-FNC\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Meta Sample Extraction\",\"col\":4}},{\"id\":\"DHtTRLxLze\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Meta Library Construction\",\"col\":4}}]",
- "creation": "2026-01-13 13:24:48.204137",
  "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
+ "external_link": null,
  "for_user": "",
  "hide_custom": 0,
  "icon": "unhide",
- "idx": 0,
  "indicator_color": "green",
  "is_hidden": 0,
  "label": "NGS QC FAIL",
+ "link_to": null,
+ "link_type": null,
  "links": [],
- "modified": "2026-01-13 13:26:34.663659",
- "modified_by": "Administrator",
+ "modified": "2026-01-13 14:03:20.917114",
  "module": "NGS Hub",
  "name": "NGS QC FAIL",
  "number_cards": [],
- "owner": "Administrator",
- "parent_page": "",
+ "parent_page": "Home",
  "public": 1,
  "quick_lists": [
   {
@@ -64,6 +63,7 @@
    "quick_list_filter": "[[\"NGS Meta Library Construction\",\"qc_status\",\"=\",\"FAIL\",false]]"
   }
  ],
+ "restrict_to_domain": null,
  "roles": [
   {
    "role": "NGS Internal Staff"
