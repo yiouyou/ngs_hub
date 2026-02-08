@@ -28,9 +28,9 @@ fixtures = [
 		],
 	},
 	# 工作区和仪表盘
-	{"dt": "Workspace", "filters": [["name", "in", ["NGS Hub", "NGS Boot", "NGS QC FAIL"]]]},
-	{"dt": "Workspace Sidebar", "filters": [["name", "in", ["NGS Hub", "NGS Boot", "NGS QC FAIL"]]]},
-	{"dt": "Desktop Icon", "filters": [["name", "in", ["NGS Hub", "NGS Boot", "NGS QC FAIL"]]]},
+	{"dt": "Workspace", "filters": [["name", "in", ["NGS Hub", "NGS Boot", "NGS QC Fail"]]]},
+	{"dt": "Workspace Sidebar", "filters": [["name", "in", ["NGS Hub", "NGS Boot", "NGS QC Fail"]]]},
+	{"dt": "Desktop Icon", "filters": [["name", "in", ["NGS Hub", "NGS Boot", "NGS QC Fail"]]]},
 	# 物料与库存
 	{
 		"dt": "UOM",
