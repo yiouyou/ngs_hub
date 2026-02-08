@@ -19,6 +19,7 @@
   "operator",
   "qc_status",
   "qc_result",
+  "qc_fig",
   "library_index_sequence",
   "library_insert_size",
   "library_final_volume",
@@ -158,13 +159,18 @@
    "fieldname": "note",
    "fieldtype": "Small Text",
    "label": "Note"
+  },
+  {
+   "fieldname": "qc_fig",
+   "fieldtype": "Attach Image",
+   "label": "QC Fig"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-06 05:57:09.565734",
+ "modified": "2026-02-08 12:26:13.163195",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS DNAseq Library Construction",

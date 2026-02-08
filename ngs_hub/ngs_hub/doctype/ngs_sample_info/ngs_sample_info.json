@@ -22,6 +22,7 @@
   "sample_wvc",
   "urgency",
   "after_project",
+  "qc_fig",
   "section_break_tuyd",
   "note",
   "section_break_scpp",
@@ -178,13 +179,18 @@
    "fieldname": "inside_section",
    "fieldtype": "Section Break",
    "label": "inside_section"
+  },
+  {
+   "fieldname": "qc_fig",
+   "fieldtype": "Attach Image",
+   "label": "QC Fig"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-06 11:14:30.964904",
+ "modified": "2026-02-08 12:20:26.210048",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Sample Info",

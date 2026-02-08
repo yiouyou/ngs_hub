@@ -20,6 +20,7 @@
   "operator",
   "qc_status",
   "qc_result",
+  "qc_fig",
   "sample_final_volume",
   "sample_final_concentration",
   "section_break_iiau",
@@ -144,13 +145,18 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Operation Date"
+  },
+  {
+   "fieldname": "qc_fig",
+   "fieldtype": "Attach Image",
+   "label": "QC Fig"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-06 05:44:07.708445",
+ "modified": "2026-02-08 12:25:01.589727",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS RNAseq Sample Extraction",

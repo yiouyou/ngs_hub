@@ -18,6 +18,7 @@
   "operator",
   "qc_status",
   "qc_result",
+  "qc_fig",
   "sample_final_volume",
   "sample_final_concentration",
   "section_break_uebt",
@@ -130,13 +131,18 @@
    "fieldname": "sample_final_concentration",
    "fieldtype": "Data",
    "label": "Sample Final Concentration (ng/uL)"
+  },
+  {
+   "fieldname": "qc_fig",
+   "fieldtype": "Attach Image",
+   "label": "QC Fig"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-06 05:57:50.989513",
+ "modified": "2026-02-08 12:24:44.852455",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS DNAseq Sample Extraction",

@@ -20,6 +20,7 @@
   "operator",
   "qc_status",
   "qc_result",
+  "qc_fig",
   "sample_final_volume",
   "sample_final_concentration",
   "note",
@@ -150,13 +151,18 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Operation Date"
+  },
+  {
+   "fieldname": "qc_fig",
+   "fieldtype": "Attach Image",
+   "label": "QC Fig"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-06 06:43:03.883802",
+ "modified": "2026-02-08 12:25:23.179581",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Meta Sample Extraction",
