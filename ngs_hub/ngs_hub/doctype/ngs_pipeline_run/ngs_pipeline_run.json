@@ -1,0 +1,61 @@
+{
+  "doctype": "DocType",
+  "name": "NGS Pipeline Run",
+  "module": "NGS Hub",
+  "fields": [
+    {
+      "fieldname": "project",
+      "fieldtype": "Link",
+      "options": "NGS Project"
+    },
+    {
+      "fieldname": "customer",
+      "fieldtype": "Link",
+      "options": "NGS Customer"
+    },
+    {
+      "fieldname": "class_type",
+      "fieldtype": "Select",
+      "options": "\nSingleCell\nRNAseq\nDNAseq\nMeta"
+    },
+    {
+      "fieldname": "species_type",
+      "fieldtype": "Select",
+      "options": "\nHuman\nMouse"
+    },
+    {
+      "fieldname": "input_csv",
+      "fieldtype": "Attach"
+    },
+    {
+      "fieldname": "input_s3_path",
+      "fieldtype": "Data"
+    },
+    {
+      "fieldname": "output_s3_path",
+      "fieldtype": "Data"
+    },
+    {
+      "fieldname": "role_arn",
+      "fieldtype": "Data"
+    },
+    {
+      "fieldname": "access_key_id",
+      "fieldtype": "Data"
+    },
+    {
+      "fieldname": "secret_access_key",
+      "fieldtype": "Data"
+    },
+    {
+      "fieldname": "session_token",
+      "fieldtype": "Data"
+    },
+    {
+      "fieldname": "additional_params",
+      "fieldtype": "Table",
+      "options": "NGS Pipeline Run Param"
+    }
+  ],
+  "permissions": []
+}
