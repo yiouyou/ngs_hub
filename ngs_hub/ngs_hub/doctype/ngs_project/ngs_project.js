@@ -17,7 +17,12 @@ frappe.ui.form.on("NGS Project", {
 		});
 		if (frm.doc.class_type === "RNAseq") {
 			frm.add_custom_button(__("Sequencing"), () => {
-				frappe.set_route("Form", "NGS Pipeline Run", frm.doc.name);
+				frappe.new_doc("NGS Pipeline Run", {
+					project: frm.doc.name,
+					customer: frm.doc.customer,
+					class_type: frm.doc.class_type,
+					species_type: frm.doc.species_type,
+				});
 			});
 		}
 		frm.add_custom_button(__("+ Sample Transfer"), () => {
