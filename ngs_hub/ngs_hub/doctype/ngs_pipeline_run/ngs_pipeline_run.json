@@ -50,11 +50,6 @@
     {
       "fieldname": "session_token",
       "fieldtype": "Data"
-    },
-    {
-      "fieldname": "additional_params",
-      "fieldtype": "Table",
-      "options": "NGS Pipeline Run Param"
     }
   ],
   "permissions": []
