@@ -1,4 +1,6 @@
 {
+ "actions": [],
+ "allow_rename": 1,
   "doctype": "DocType",
   "name": "NGS Pipeline Run",
   "module": "NGS Hub",
@@ -6,30 +8,66 @@
     {
       "fieldname": "project",
       "fieldtype": "Link",
-      "options": "NGS Project"
+      "label": "Project ID",
+      "no_copy": 1,
+      "options": "NGS Project",
+      "permlevel": 1,
+      "print_hide": 1,
+      "read_only": 1,
+      "search_index": 1
     },
     {
       "fieldname": "customer",
       "fieldtype": "Link",
-      "options": "NGS Customer"
+      "label": "Customer",
+      "no_copy": 1,
+      "options": "NGS Customer",
+      "permlevel": 1,
+      "print_hide": 1,
+      "read_only": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "project_id",
+      "fieldtype": "Data",
+      "label": "Project ID",
+      "permlevel": 1,
+      "print_hide": 1,
+      "read_only": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "section_break_tpzy",
+      "fieldtype": "Section Break"
     },
     {
       "fieldname": "class_type",
       "fieldtype": "Select",
-      "options": "\nSingleCell\nRNAseq\nDNAseq\nMeta"
+      "in_list_view": 1,
+      "label": "Class Type",
+      "options": "\nRNAseq",
+      "permlevel": 1
     },
     {
       "fieldname": "species_type",
       "fieldtype": "Select",
-      "options": "\nHuman\nMouse"
+      "in_list_view": 1,
+      "label": "Species Type",
+      "options": "\nHuman\nMouse",
+      "permlevel": 1
+    },
+    {
+      "fieldname": "section_break_tpzy",
+      "fieldtype": "Section Break"
     },
     {
       "fieldname": "input_csv",
-      "fieldtype": "Attach"
+      "fieldtype": "Attach",
+      "label": "Samplesheet"
     },
     {
-      "fieldname": "input_s3_path",
-      "fieldtype": "Data"
+      "fieldname": "section_break_tpzy",
+      "fieldtype": "Section Break"
     },
     {
       "fieldname": "output_s3_path",
@@ -37,19 +75,23 @@
     },
     {
       "fieldname": "role_arn",
-      "fieldtype": "Data"
+      "fieldtype": "Data",
+      "label": "Role Arn"
     },
     {
       "fieldname": "access_key_id",
-      "fieldtype": "Data"
+      "fieldtype": "Data",
+      "label": "Access Key ID"
     },
     {
       "fieldname": "secret_access_key",
-      "fieldtype": "Data"
+      "fieldtype": "Data",
+      "label": "Secret Access Key"
     },
     {
       "fieldname": "session_token",
-      "fieldtype": "Data"
+      "fieldtype": "Data",
+      "label": "Session Token"
     }
   ],
   "permissions": [
