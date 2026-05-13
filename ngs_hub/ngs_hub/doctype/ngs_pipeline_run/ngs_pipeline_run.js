@@ -1,6 +1,10 @@
 frappe.ui.form.on("NGS Pipeline Run", {
 	setup(frm) {
-		// any client‐side setup (e.g. hide fields until CSV or S3)
+		// filter the existing_attachment link by the selected project
+		frm.set_query("existing_attachment", () => {
+			if (!frm.doc.project) return {};
+			return { filters: { parent: frm.doc.project } };
+		});
 	},
 	refresh(frm) {
 		frm.add_custom_button(__("Validate"), () => {
@@ -31,5 +35,16 @@ frappe.ui.form.on("NGS Pipeline Run", {
 				},
 			});
 		});
+		frm.refresh_field("existing_attachment");
+		frm.refresh_field("upload_csv");
+		frm.refresh_field("s3_input_path");
+	},
+
+	project(frm) {
+		frm.refresh();
+	},
+
+	source_type(frm) {
+		frm.refresh();
 	},
 });

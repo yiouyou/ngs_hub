@@ -17,3 +17,10 @@ class TestNGSPipelineRun(FrappeTestCase):
 		# call your wrapper
 		result = frappe.get_doc("NGS Pipeline Run").run_validate(run.name)
 		self.assertIn("command", result)
+
+	def test_resolve_input_path(self):
+		# S3 Path
+		run = frappe.get_doc(
+			{"doctype": "NGS Pipeline Run", "source_type": "S3 Path", "s3_input_path": "s3://my-bucket/x.csv"}
+		)
+		self.assertEqual(run.resolve_input_path(), "s3://my-bucket/x.csv")

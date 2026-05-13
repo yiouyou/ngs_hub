@@ -1,6 +1,6 @@
 {
- "actions": [],
- "allow_rename": 1,
+  "actions": [],
+  "allow_rename": 1,
   "doctype": "DocType",
   "name": "NGS Pipeline Run",
   "module": "NGS Hub",
@@ -61,9 +61,33 @@
       "fieldtype": "Section Break"
     },
     {
-      "fieldname": "input_csv",
+      "fieldname": "source_type",
+      "fieldtype": "Select",
+      "label": "Samplesheet Source",
+      "options": "\nExisting Attachment\nUpload File\nS3 Path",
+      "reqd": 1
+    },
+    {
+      "fieldname": "existing_attachment",
+      "fieldtype": "Link",
+      "options": "NGS Project Attached File",
+      "label": "Choose Existing Attachment",
+      "depends_on": "eval:doc.source_type==='Existing Attachment'",
+      "mandatory_depends_on": "eval:doc.source_type==='Existing Attachment'"
+    },
+    {
+      "fieldname": "upload_csv",
       "fieldtype": "Attach",
-      "label": "Samplesheet"
+      "label": "Upload New Samplesheet",
+      "depends_on": "eval:doc.source_type==='Upload File'",
+      "mandatory_depends_on": "eval:doc.source_type==='Upload File'"
+    },
+    {
+      "fieldname": "s3_input_path",
+      "fieldtype": "Data",
+      "label": "S3 Samplesheet Path",
+      "depends_on": "eval:doc.source_type==='S3 Path'",
+      "mandatory_depends_on": "eval:doc.source_type==='S3 Path'"
     },
     {
       "fieldname": "section_break_tpzy",
@@ -71,7 +95,8 @@
     },
     {
       "fieldname": "output_s3_path",
-      "fieldtype": "Data"
+      "fieldtype": "Data",
+      "label": "Output_s3_path"
     },
     {
       "fieldname": "role_arn",
