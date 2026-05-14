@@ -80,11 +80,29 @@ function buildPayload(frm) {
 		region: frm.doc.output_bucket_region,
 	};
 
+	const pipeline_types = new Map([
+		["RNAseq", "nextflow"],
+		["rnaseq", "nextflow"],
+		["cellranger", "cellranger"],
+		["difference_analysis", "difference_analysis"],
+	]);
+
+	const params = {
+		"--input": "", // Based on the SampleSheet Source, we need to select either 'existing_attachment' or 'upload_csv' or 's3_input_path'.
+		// If existing_attachment is selected, we need to read the contents of the csv and convert it to a
+		// text string. If upload_csv, we need to also read the contents of the csv and convert it to a
+		// text string.
+		// If s3_input_path, use directly.
+
+		"--output": "", // Needs to be populated and an s3 bucket
+		"species_type": frm.doc.species_type,
+	};
+
 	// pipeline config
 	const pipeline_config = {
-		pipeline_type: frm.doc.pipeline_type,
+		pipeline_type: pipeline_types[frm.doc.pipeline_type],
 		sample_id: frm.doc.sample_id,
-		params: JSON.parse(frm.doc.params_json || "{}"),
+		params: params,
 		time_limit_hours: frm.doc.time_limit_hours,
 	};
 
