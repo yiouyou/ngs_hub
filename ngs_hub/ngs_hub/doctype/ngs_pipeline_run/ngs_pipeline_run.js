@@ -7,7 +7,8 @@ frappe.ui.form.on("NGS Pipeline Run", {
 			}
 			return {
 				filters: {
-					parent: frm.doc.project,
+					attached_to_name: frm.dock.project,
+					attached_to_doctype: "NGS Project",
 				},
 			};
 		});
@@ -52,7 +53,7 @@ frappe.ui.form.on("NGS Pipeline Run", {
 
 	project(frm) {
 		frm.set();
-		frm.refresh();
+		frm.refresh_fields("existing_attachment");
 	},
 
 	source_type(frm) {

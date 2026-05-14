@@ -25,26 +25,24 @@ def run(doc):
 
 @frappe.whitelist()
 def get_csv_text(file_docname):
-	"""
-	Given the name of a File or a child record (NGS Project Attached File),
-	return the contents of that CSV as a string.
-	"""
-	# 1) Try loading as a File
-	try:
-		file_doc = frappe.get_doc("File", file_docname)
-	except frappe.DoesNotExistError:
-		# 2) Otherwise assume it's your child doctype
-		attached = frappe.get_doc("NGS Project Attached File", file_docname)
-		file_doc = frappe.get_doc("File", attached.attached_file)
+	# If we got a URL (Attach field), find the File record by file_url
+	if file_docname.startswith("/"):
+		urls = frappe.get_all("File", filters={"file_url": file_docname}, pluck="name")
+		if not urls:
+			frappe.throw(f"File not found in File doctype: {file_docname}")
+		file_name = urls[0]
+	else:
+		# it’s already the File.name
+		file_name = file_docname
 
-	# file_doc.file_url is something like '/private/files/x.csv' or '/files/x.csv'
-	# strip leading slash and build site path
-	url = file_doc.file_url.lstrip("/")
-	# bench/sites/<site_name>/<url>
-	full_path = frappe.get_site_path(*url.split("/"))
+	# Load the File document
+	file_doc = frappe.get_doc("File", file_name)
 
+	# Use the built‐in helper to get the full disk path
+	full_path = file_doc.get_full_path()
 	if not os.path.exists(full_path):
-		frappe.throw(f"File not found: {full_path}")
+		frappe.throw(f"File not found on disk: {full_path}")
 
-	with open(full_path, "r") as f:
+	# Read and return
+	with open(full_path, "r", encoding="utf-8") as f:
 		return f.read()
