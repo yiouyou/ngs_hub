@@ -70,7 +70,7 @@
     {
       "fieldname": "existing_attachment",
       "fieldtype": "Link",
-      "options": "NGS Project Attached File",
+      "options": "File",
       "label": "Choose Existing Attachment",
       "depends_on": "eval:doc.source_type==='Existing Attachment'",
       "mandatory_depends_on": "eval:doc.source_type==='Existing Attachment'"

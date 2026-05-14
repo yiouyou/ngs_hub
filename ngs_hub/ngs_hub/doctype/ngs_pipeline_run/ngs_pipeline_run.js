@@ -2,8 +2,14 @@ frappe.ui.form.on("NGS Pipeline Run", {
 	setup(frm) {
 		// filter the existing_attachment link by the selected project
 		frm.set_query("existing_attachment", () => {
-			if (!frm.doc.project) return {};
-			return { filters: { parent: frm.doc.project } };
+			if (!frm.doc.project) {
+				return {};
+			}
+			return {
+				filters: {
+					parent: frm.doc.project,
+				},
+			};
 		});
 	},
 	refresh(frm) {
@@ -45,6 +51,7 @@ frappe.ui.form.on("NGS Pipeline Run", {
 	},
 
 	project(frm) {
+		frm.set();
 		frm.refresh();
 	},
 
