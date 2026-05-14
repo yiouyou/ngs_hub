@@ -22,6 +22,7 @@ frappe.ui.form.on("NGS Project", {
 					doc.customer = frm.doc.customer;
 					doc.class_type = frm.doc.class_type;
 					doc.species_type = frm.doc.species_type;
+					doc.project_id = frm.project_id;
 					doc.save();
 				});
 			});

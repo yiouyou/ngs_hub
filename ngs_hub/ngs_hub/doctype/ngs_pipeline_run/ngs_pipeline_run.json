@@ -37,16 +37,16 @@
       "unique": 1
     },
     {
-      "fieldname": "section_break_tpzy",
-      "fieldtype": "Section Break"
+      "fieldname": "class_type",
+      "fieldtype": "Data",
+      "label": "Class Type",
+      "in_list_view": 1,
+      "read_only": 1,
+      "permlevel": 1
     },
     {
-      "fieldname": "class_type",
-      "fieldtype": "Select",
-      "in_list_view": 1,
-      "label": "Class Type",
-      "options": "\nRNAseq",
-      "permlevel": 1
+      "fieldname": "section_break_read_only_to_required_fields",
+      "fieldtype": "Section Break"
     },
     {
       "fieldname": "species_type",
@@ -90,13 +90,14 @@
       "mandatory_depends_on": "eval:doc.source_type==='S3 Path'"
     },
     {
-      "fieldname": "section_break_tpzy",
-      "fieldtype": "Section Break"
-    },
-    {
       "fieldname": "output_s3_path",
       "fieldtype": "Data",
-      "label": "Output_s3_path"
+      "label": "Output_s3_path",
+      "reqd": 1
+    },
+    {
+      "fieldname": "section_break_required_fields_to_optional_fields",
+      "fieldtype": "Section Break"
     },
     {
       "fieldname": "role_arn",

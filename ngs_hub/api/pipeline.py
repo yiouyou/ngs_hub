@@ -1,5 +1,6 @@
 import frappe, httpx
 from frappe import _
+from frappe.utils.file_manager import get_full_path
 
 
 @frappe.whitelist()
@@ -24,12 +25,22 @@ def run(doc):
 @frappe.whitelist()
 def get_csv_text(file_docname):
 	"""
-	Given the name of a File or NGS Project Attached File, return
-	the contents of that CSV as a string.
+	Given the name of a File or a child record (NGS Project Attached File),
+	return the contents of that CSV as a string.
 	"""
-	# If you store attachments as File docs:
-	file_record = frappe.get_doc("File", file_docname)
-	# get_full_path works for private/public files
-	path = file_record.get_full_path()
-	with open(path, "r") as f:
+	# 1) Try to load it as a File
+	try:
+		file_doc = frappe.get_doc("File", file_docname)
+	except frappe.DoesNotExistError:
+		# 2) If that fails, assume it's your child doctype
+		attached = frappe.get_doc("NGS Project Attached File", file_docname)
+		# adjust this field name if your child table uses a different field
+		file_doc = frappe.get_doc("File", attached.attached_file)
+
+	# file_doc.file_url might be "/private/files/xyz.csv" or "/files/xyz.csv"
+	# get_full_path will strip the leading slash and prepend your site path
+	full_path = get_full_path(file_doc.file_url)
+
+	# now this opens bench/sites/<sitename>/private/files/xyz.csv
+	with open(full_path, "r") as f:
 		return f.read()
