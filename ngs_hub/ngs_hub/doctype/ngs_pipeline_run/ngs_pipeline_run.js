@@ -7,8 +7,8 @@ frappe.ui.form.on("NGS Pipeline Run", {
 		});
 	},
 	refresh(frm) {
-		frm.add_custom_button(__("Validate"), () => {
-			const payload = buildPayload(frm);
+		frm.add_custom_button(__("Validate"), async () => {
+			const payload = await buildPayload(frm);
 			console.log("Run payload:", payload);
 			// frappe.call({
 			// 	method: "ngs_hub.api.pipeline.validate_run",
@@ -23,8 +23,8 @@ frappe.ui.form.on("NGS Pipeline Run", {
 			// 	},
 			// });
 		});
-		frm.add_custom_button(__("Run"), () => {
-			const payload = buildPayload(frm);
+		frm.add_custom_button(__("Run"), async () => {
+			const payload = await buildPayload(frm);
 			console.log("Run payload:", payload);
 			// frappe.call({
 			// 	method: "ngs_hub.api.pipeline.run",
@@ -56,7 +56,7 @@ frappe.ui.form.on("NGS Pipeline Run", {
 /**
  * Gather all the bits from frm.doc and return a WorkflowRequest‐shaped dict
  */
-function buildPayload(frm) {
+async function buildPayload(frm) {
 	// example: grab S3 creds off the form
 	console.log("Current Form:", frm.doc);
 	const s3_credentials = {
@@ -88,22 +88,36 @@ function buildPayload(frm) {
 	]);
 
 	const params = {
-		"--input": "", // Based on the SampleSheet Source, we need to select either 'existing_attachment' or 'upload_csv' or 's3_input_path'.
-		// If existing_attachment is selected, we need to read the contents of the csv and convert it to a
-		// text string. If upload_csv, we need to also read the contents of the csv and convert it to a
-		// text string.
-		// If s3_input_path, use directly.
-
-		"--output": "", // Needs to be populated and an s3 bucket
+		"--input": "",
+		"--output": frm.doc.output_s3_path,
 		"species_type": frm.doc.species_type,
 	};
+
+	// Choose source_type
+	if (frm.doc.source_type === "Existing Attachment") {
+		// existing_attachment is a Link to NGS Project Attached File or File
+		const fileDocname = frm.doc.existing_attachment;
+		params["--input"] = await frappe.call({
+			method: "ngs_hub.api.pipeline.get_csv_text",
+			args: { file_docname: fileDocname },
+		}).then((r) => r.message);
+	} else if (frm.doc.source_type === "Upload File") {
+		// upload_csv is an Attach field, its value is the File docname too
+		const fileDocname = frm.doc.upload_csv;
+		params["--input"] = await frappe.call({
+			method: "ngs_hub.api.pipeline.get_csv_text",
+			args: { file_docname: fileDocname },
+		}).then((r) => r.message);
+	} else if (frm.doc.source_type === "S3 Path") {
+		// user typed in the path themselves
+		params["--input"] = frm.doc.s3_input_path;
+	}
 
 	// pipeline config
 	const pipeline_config = {
 		pipeline_type: pipeline_types[frm.doc.pipeline_type],
 		sample_id: frm.doc.sample_id,
 		params: params,
-		time_limit_hours: frm.doc.time_limit_hours,
 	};
 
 	return {
