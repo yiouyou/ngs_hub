@@ -21,7 +21,7 @@ def run(doc):
 	return resp.json()
 
 
-@frappe.whitelist()
+@frappe.whitelist(allowed_roles=["*"])
 def get_csv_text(file_docname):
 	"""
 	Given the name of a File or NGS Project Attached File, return
