@@ -7,7 +7,7 @@ frappe.ui.form.on("NGS Pipeline Run", {
 			}
 			return {
 				filters: {
-					attached_to_name: frm.dock.project,
+					attached_to_name: frm.doc.project,
 					attached_to_doctype: "NGS Project",
 				},
 			};
