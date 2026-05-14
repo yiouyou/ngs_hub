@@ -58,6 +58,7 @@ frappe.ui.form.on("NGS Pipeline Run", {
  */
 function buildPayload(frm) {
 	// example: grab S3 creds off the form
+	console.log("Current Form:", frm.doc);
 	const s3_credentials = {
 		role_arn: frm.doc.role_arn,
 		access_key_id: frm.doc.access_key_id,
