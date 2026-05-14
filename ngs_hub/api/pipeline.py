@@ -2,7 +2,7 @@ import frappe, httpx
 from frappe import _
 
 
-@frappe.whitelist(allowed_roles=["*"])
+@frappe.whitelist()
 def validate_run(doc):
 	"""doc will be passed as JSON from client."""
 	payload = frappe._dict(doc)
@@ -12,7 +12,7 @@ def validate_run(doc):
 	return resp.json()
 
 
-@frappe.whitelist(allowed_roles=["*"])
+@frappe.whitelist()
 def run(doc):
 	payload = frappe._dict(doc)
 	url = frappe.get_conf().pipeline_api_url or "http://localhost:8080"
@@ -21,7 +21,7 @@ def run(doc):
 	return resp.json()
 
 
-@frappe.whitelist(allowed_roles=["*"])
+@frappe.whitelist()
 def get_csv_text(file_docname):
 	"""
 	Given the name of a File or NGS Project Attached File, return
