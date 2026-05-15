@@ -8,7 +8,9 @@ from frappe import _
 def validate_run(**payload):
 	"""doc will be passed as JSON from client."""
 	payload = frappe._dict(payload)
-	url = frappe.get_conf().pipeline_api_url or "http://localhost:8080"
+	print("frappe config: ", frappe.get_conf().pipeline_api_url)
+	url = frappe.get_conf().pipeline_api_url or "http://api:8080"
+	print(f"{url=}")
 	resp = httpx.post(f"{url}/pipelines/{payload.class_type}/validate", json=payload)
 	resp.raise_for_status()
 	return resp.json()
@@ -17,7 +19,9 @@ def validate_run(**payload):
 @frappe.whitelist()
 def run(**payload):
 	payload = frappe._dict(payload)
-	url = frappe.get_conf().pipeline_api_url or "http://localhost:8080"
+	print("frappe config: ", frappe.get_conf().pipeline_api_url)
+	url = frappe.get_conf().pipeline_api_url or "http://api:8080"
+	print(f"{url=}")
 	resp = httpx.post(f"{url}/pipelines/{payload.class_type}/run", json=payload)
 	resp.raise_for_status()
 	return resp.json()
