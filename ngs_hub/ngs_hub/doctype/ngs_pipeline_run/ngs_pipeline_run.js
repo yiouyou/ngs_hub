@@ -19,7 +19,7 @@ frappe.ui.form.on("NGS Pipeline Run", {
 			console.log("Run payload:", payload);
 			frappe.call({
 				method: "ngs_hub.api.pipeline.validate_run",
-				args: { request_data: payload },
+				args: { doc: payload },
 				freeze: true,
 				callback: (r) => {
 					if (!r.exc) {
@@ -35,7 +35,7 @@ frappe.ui.form.on("NGS Pipeline Run", {
 			console.log("Run payload:", payload);
 			frappe.call({
 				method: "ngs_hub.api.pipeline.run",
-				args: { request_data: payload },
+				args: { doc: payload },
 				freeze: true,
 				callback: (r) => {
 					if (!r.exc) {
