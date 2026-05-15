@@ -124,7 +124,7 @@ async function buildPayload(frm) {
 	// pipeline config
 	const pipeline_config = {
 		pipeline_type: pipeline_types.get(frm.doc.class_type),
-		sample_id: frm.doc.sample_id,
+		sample_id: frm.doc.project_id,
 		params: params,
 	};
 
