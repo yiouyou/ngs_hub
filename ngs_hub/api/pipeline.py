@@ -11,7 +11,7 @@ def validate_run(**payload):
 	print("frappe config: ", frappe.get_conf().pipeline_api_url)
 	url = frappe.get_conf().pipeline_api_url or "http://api:8080"
 	print(f"{url=}")
-	resp = httpx.post(f"{url}/pipelines/{payload.class_type}/validate", json=payload)
+	resp = httpx.post(f"{url}/pipelines/{payload.pipeline_type}/validate", json=payload)
 	resp.raise_for_status()
 	return resp.json()
 
@@ -22,7 +22,7 @@ def run(**payload):
 	print("frappe config: ", frappe.get_conf().pipeline_api_url)
 	url = frappe.get_conf().pipeline_api_url or "http://api:8080"
 	print(f"{url=}")
-	resp = httpx.post(f"{url}/pipelines/{payload.class_type}/run", json=payload)
+	resp = httpx.post(f"{url}/pipelines/{payload.pipeline_type}/run", json=payload)
 	resp.raise_for_status()
 	return resp.json()
 
