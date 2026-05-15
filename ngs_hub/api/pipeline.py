@@ -5,7 +5,7 @@ from frappe import _
 
 
 @frappe.whitelist()
-def validate_run(payload):
+def validate_run(**payload):
 	"""doc will be passed as JSON from client."""
 	payload = frappe._dict(payload)
 	url = frappe.get_conf().pipeline_api_url or "http://localhost:8080"
@@ -15,7 +15,7 @@ def validate_run(payload):
 
 
 @frappe.whitelist()
-def run(payload):
+def run(**payload):
 	payload = frappe._dict(payload)
 	url = frappe.get_conf().pipeline_api_url or "http://localhost:8080"
 	resp = httpx.post(f"{url}/pipelines/{payload.class_type}/run", json=payload)
