@@ -19,7 +19,7 @@ frappe.ui.form.on("NGS Pipeline Run", {
 			console.log("Payload:", payload);
 			const r = await frappe.call({
 				method: "ngs_hub.api.pipeline.validate_run",
-				args: { payload },
+				args: payload,
 				freeze: true,
 			});
 			frappe.msgprint(
@@ -31,7 +31,7 @@ frappe.ui.form.on("NGS Pipeline Run", {
 			console.log("Payload:", payload);
 			const r = await frappe.call({
 				method: "ngs_hub.api.pipeline.run",
-				args: { payload },
+				args: payload,
 				freeze: true,
 			});
 			frappe.msgprint(
