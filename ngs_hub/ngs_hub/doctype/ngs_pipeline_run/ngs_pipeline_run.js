@@ -16,33 +16,27 @@ frappe.ui.form.on("NGS Pipeline Run", {
 	refresh(frm) {
 		frm.add_custom_button(__("Validate"), async () => {
 			const payload = await buildPayload(frm);
-			console.log("Run payload:", payload);
-			frm.add_custom_button(__("Validate"), async () => {
-				const payload = await buildPayload(frm);
-				const r = await frappe.call({
-					method: "ngs_hub.api.pipeline.validate_run",
-					args: { payload },
-					freeze: true,
-				});
-				frappe.msgprint(
-					__("Validate result: {0}", [r.message.command]),
-				);
+			console.log("Payload:", payload);
+			const r = await frappe.call({
+				method: "ngs_hub.api.pipeline.validate_run",
+				args: { payload },
+				freeze: true,
 			});
+			frappe.msgprint(
+				__("Validate result: {0}", [r.message.command]),
+			);
 		});
-		frm.add_custom_button(__("Run"), async () => {
+		frm.add_custom_button(__("Validate"), async () => {
 			const payload = await buildPayload(frm);
-			console.log("Run payload:", payload);
-			frm.add_custom_button(__("Validate"), async () => {
-				const payload = await buildPayload(frm);
-				const r = await frappe.call({
-					method: "ngs_hub.api.pipeline.run",
-					args: { payload },
-					freeze: true,
-				});
-				frappe.msgprint(
-					__("Workflow queued: {0}", [r.message.workflow_id]),
-				);
+			console.log("Payload:", payload);
+			const r = await frappe.call({
+				method: "ngs_hub.api.pipeline.run",
+				args: { payload },
+				freeze: true,
 			});
+			frappe.msgprint(
+				__("Workflow queued: {0}", [r.message.workflow_id]),
+			);
 		});
 		frm.refresh_field("existing_attachment");
 		frm.refresh_field("upload_csv");
