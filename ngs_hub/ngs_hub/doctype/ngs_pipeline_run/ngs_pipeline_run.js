@@ -17,34 +17,34 @@ frappe.ui.form.on("NGS Pipeline Run", {
 		frm.add_custom_button(__("Validate"), async () => {
 			const payload = await buildPayload(frm);
 			console.log("Run payload:", payload);
-			// frappe.call({
-			// 	method: "ngs_hub.api.pipeline.validate_run",
-			// 	args: { request_data: payload },
-			// 	freeze: true,
-			// 	callback: (r) => {
-			// 		if (!r.exc) {
-			// 			frappe.msgprint(
-			// 				__("Validate result: {0}", [r.message.command]),
-			// 			);
-			// 		}
-			// 	},
-			// });
+			frappe.call({
+				method: "ngs_hub.api.pipeline.validate_run",
+				args: { request_data: payload },
+				freeze: true,
+				callback: (r) => {
+					if (!r.exc) {
+						frappe.msgprint(
+							__("Validate result: {0}", [r.message.command]),
+						);
+					}
+				},
+			});
 		});
 		frm.add_custom_button(__("Run"), async () => {
 			const payload = await buildPayload(frm);
 			console.log("Run payload:", payload);
-			// frappe.call({
-			// 	method: "ngs_hub.api.pipeline.run",
-			// 	args: { request_data: payload },
-			// 	freeze: true,
-			// 	callback: (r) => {
-			// 		if (!r.exc) {
-			// 			frappe.msgprint(
-			// 				__("Workflow queued: {0}", [r.message.workflow_id]),
-			// 			);
-			// 		}
-			// 	},
-			// });
+			frappe.call({
+				method: "ngs_hub.api.pipeline.run",
+				args: { request_data: payload },
+				freeze: true,
+				callback: (r) => {
+					if (!r.exc) {
+						frappe.msgprint(
+							__("Workflow queued: {0}", [r.message.workflow_id]),
+						);
+					}
+				},
+			});
 		});
 		frm.refresh_field("existing_attachment");
 		frm.refresh_field("upload_csv");
@@ -124,7 +124,7 @@ async function buildPayload(frm) {
 	// pipeline config
 	const pipeline_config = {
 		pipeline_type: pipeline_types.get(frm.doc.class_type),
-		sample_id: frm.doc.project_id,
+		sample_id: frm.doc.project,
 		params: params,
 	};
 
