@@ -26,7 +26,7 @@ frappe.ui.form.on("NGS Pipeline Run", {
 				__("Validate result: {0}", [r.message.command]),
 			);
 		});
-		frm.add_custom_button(__("Validate"), async () => {
+		frm.add_custom_button(__("Run"), async () => {
 			const payload = await buildPayload(frm);
 			console.log("Payload:", payload);
 			const r = await frappe.call({
