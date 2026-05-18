@@ -7,6 +7,8 @@ from frappe import _
 @frappe.whitelist()
 def validate_run(**payload):
 	"""doc will be passed as JSON from client."""
+	print(f"Before dict conversion: {payload=} | {payload.pipeline_config.pipeline_type}")
+	pipeline_type = payload.pipeline_config.pipeline_type or "nextflow"
 	payload = frappe._dict(payload)
 	print("frappe config: ", frappe.get_conf().pipeline_api_url)
 	url = frappe.get_conf().pipeline_api_url or "http://api:8080"
@@ -19,6 +21,8 @@ def validate_run(**payload):
 
 @frappe.whitelist()
 def run(**payload):
+	print(f"Before dict conversion: {payload=} | {payload.pipeline_config.pipeline_type}")
+	pipeline_type = payload.pipeline_config.pipeline_type or "nextflow"
 	payload = frappe._dict(payload)
 	print("frappe config: ", frappe.get_conf().pipeline_api_url)
 	url = frappe.get_conf().pipeline_api_url or "http://api:8080"
