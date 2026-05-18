@@ -20,6 +20,9 @@ frappe.ui.form.on("NGS Pipeline Run", {
 			const r = await frappe.call({
 				method: "ngs_hub.api.pipeline.validate_run",
 				args: payload,
+				headers: {
+					"Authorization": "Bearer " + frappe.get_cookie("token"),
+				},
 				freeze: true,
 			});
 			frappe.msgprint(
@@ -32,6 +35,9 @@ frappe.ui.form.on("NGS Pipeline Run", {
 			const r = await frappe.call({
 				method: "ngs_hub.api.pipeline.run",
 				args: payload,
+				headers: {
+					"Authorization": "Bearer " + frappe.get_cookie("token"),
+				},
 				freeze: true,
 			});
 			frappe.msgprint(
