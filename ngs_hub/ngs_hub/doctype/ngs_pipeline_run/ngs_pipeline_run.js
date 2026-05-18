@@ -24,6 +24,7 @@ frappe.ui.form.on("NGS Pipeline Run", {
 					"Authorization": "Bearer " + frappe.get_cookie("token"),
 				},
 				freeze: true,
+				xhrFields: { withCredentials: true },
 			});
 			frappe.msgprint(
 				__("Validate result: {0}", [r.message.command]),
