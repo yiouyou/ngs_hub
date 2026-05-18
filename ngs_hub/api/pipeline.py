@@ -1,35 +1,55 @@
-import os
+import json
 import frappe
 import httpx
+import os
 from frappe import _
+
+
+def extract_api_config(**payload):
+	payload = frappe._dict(payload)
+
+	# Normalize JSON string fields into Python objects
+	payload.pipeline_config = json.loads(payload.pipeline_config)
+
+	if payload.get("s3_credentials"):
+		payload.s3_credentials = json.loads(payload.s3_credentials)
+
+	if payload.get("s3_input_config"):
+		payload.s3_input_config = json.loads(payload.s3_input_config)
+
+	if payload.get("s3_output_config"):
+		payload.s3_output_config = json.loads(payload.s3_output_config)
+
+	pipeline_type = payload.pipeline_config.get("pipeline_type", "nextflow")
+
+	url = frappe.get_conf().pipeline_api_url or "http://api:8080"
+
+	print(f"{url=}")
+	print(f"{pipeline_type=}")
+	print(f"{payload=}")
+
+	return payload, pipeline_type, url
 
 
 @frappe.whitelist()
 def validate_run(**payload):
-	"""doc will be passed as JSON from client."""
-	print(f"Before dict conversion: {payload=} | {payload.pipeline_config.pipeline_type}")
-	pipeline_type = payload.pipeline_config.pipeline_type or "nextflow"
-	payload = frappe._dict(payload)
-	print("frappe config: ", frappe.get_conf().pipeline_api_url)
-	url = frappe.get_conf().pipeline_api_url or "http://api:8080"
-	print(f"{url=}")
-	print(f"{payload=}")
-	resp = httpx.post(f"{url}/pipelines/{payload.pipeline_config.pipeline_type}/validate", json=payload)
+	payload, pipeline_type, url = extract_api_config(**payload)
+
+	resp = httpx.post(f"{url}/pipelines/{pipeline_type}/validate", json=payload)
+
 	resp.raise_for_status()
+
 	return resp.json()
 
 
 @frappe.whitelist()
 def run(**payload):
-	print(f"Before dict conversion: {payload=} | {payload.pipeline_config.pipeline_type}")
-	pipeline_type = payload.pipeline_config.pipeline_type or "nextflow"
-	payload = frappe._dict(payload)
-	print("frappe config: ", frappe.get_conf().pipeline_api_url)
-	url = frappe.get_conf().pipeline_api_url or "http://api:8080"
-	print(f"{url=}")
-	print(f"{payload=}")
-	resp = httpx.post(f"{url}/pipelines/{payload.pipeline_config.pipeline_type}/run", json=payload)
+	payload, pipeline_type, url = extract_api_config(**payload)
+
+	resp = httpx.post(f"{url}/pipelines/{pipeline_type}/run", json=payload)
+
 	resp.raise_for_status()
+
 	return resp.json()
 
 
