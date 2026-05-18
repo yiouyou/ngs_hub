@@ -28,14 +28,20 @@ def extract_api_config(**payload):
 	print(f"{pipeline_type=}")
 	print(f"{payload=}")
 
-	return payload, pipeline_type, url
+	# grab the header Frappe received
+	incoming_auth = frappe.request.headers.get("Authorization")
+	headers = {}
+	if incoming_auth:
+		headers["Authorization"] = incoming_auth
+
+	return payload, pipeline_type, url, headers
 
 
 @frappe.whitelist()
 def validate_run(**payload):
-	payload, pipeline_type, url = extract_api_config(**payload)
+	payload, pipeline_type, url, headers = extract_api_config(**payload)
 
-	resp = httpx.post(f"{url}/pipelines/{pipeline_type}/validate", json=payload)
+	resp = httpx.post(f"{url}/pipelines/{pipeline_type}/validate", json=payload, headers=headers)
 
 	resp.raise_for_status()
 
@@ -44,9 +50,9 @@ def validate_run(**payload):
 
 @frappe.whitelist()
 def run(**payload):
-	payload, pipeline_type, url = extract_api_config(**payload)
+	payload, pipeline_type, url, headers = extract_api_config(**payload)
 
-	resp = httpx.post(f"{url}/pipelines/{pipeline_type}/run", json=payload)
+	resp = httpx.post(f"{url}/pipelines/{pipeline_type}/run", json=payload, headers=headers)
 
 	resp.raise_for_status()
 
