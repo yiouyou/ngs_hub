@@ -33,6 +33,9 @@ def extract_api_config(**payload):
 	headers = {}
 	if incoming_auth:
 		headers["Authorization"] = incoming_auth
+	incoming_cookie = frappe.request.headers.get("cookie")
+	if incoming_cookie:
+		headers["Cookie"] = incoming_cookie
 
 	return payload, pipeline_type, url, headers
 
