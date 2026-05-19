@@ -96,7 +96,7 @@ async function buildPayload(frm) {
 
 	const params = {
 		"--input": "",
-		"--output": frm.doc.output_s3_path,
+		"--outdir": frm.doc.output_s3_path,
 		"species_type": frm.doc.species_type,
 	};
 
