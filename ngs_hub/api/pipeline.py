@@ -29,6 +29,10 @@ def extract_api_config(**payload):
     print(f"{pipeline_type=}")
     print(f"{payload=}")
 
+    payload.pop("cmd", None)
+    if payload.get("s3_output_config") == {}:
+        payload["s3_output_config"] = None
+
     # grab the header Frappe received
     incoming_auth = frappe.request.headers.get("Authorization")
     headers = {}
