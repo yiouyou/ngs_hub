@@ -52,6 +52,8 @@ def validate_run(**payload):
     resp = httpx.post(
         f"{url}/pipelines/{pipeline_type}/validate", json=payload, headers=headers
     )
+    print(f"{resp.status_code=}")
+    print(f"{resp.text=}")
 
     resp.raise_for_status()
 
