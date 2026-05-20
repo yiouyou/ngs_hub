@@ -14,35 +14,18 @@ frappe.ui.form.on("NGS Pipeline Run", {
 		});
 	},
 	refresh(frm) {
-		frm.add_custom_button(__("Validate"), async () => {
-			const payload = await buildPayload(frm);
-			console.log("Payload:", payload);
-			const r = await frappe.call({
-				method: "ngs_hub.api.pipeline.validate_run",
-				args: payload,
-				headers: {
-					"Authorization": "Bearer " + frappe.get_cookie("token"),
-				},
-				freeze: true,
-				xhrFields: { withCredentials: true },
-			});
-			frappe.msgprint(
-				__("Validate result: {0}", [r.message.command]),
+		frm.add_custom_button(__("Validate"), () => {
+			callPipelineApi(
+				frm,
+				"ngs_hub.api.pipeline.validate_run",
+				__("Validate Result"),
 			);
 		});
-		frm.add_custom_button(__("Run"), async () => {
-			const payload = await buildPayload(frm);
-			console.log("Payload:", payload);
-			const r = await frappe.call({
-				method: "ngs_hub.api.pipeline.run",
-				args: payload,
-				headers: {
-					"Authorization": "Bearer " + frappe.get_cookie("token"),
-				},
-				freeze: true,
-			});
-			frappe.msgprint(
-				__("Workflow queued: {0}", [r.message.workflow_id]),
+		frm.add_custom_button(__("Run"), () => {
+			callPipelineApi(
+				frm,
+				"ngs_hub.api.pipeline.run",
+				__("Run Result"),
 			);
 		});
 		frm.refresh_field("existing_attachment");
@@ -133,4 +116,74 @@ async function buildPayload(frm) {
 		s3_output_config,
 		pipeline_config,
 	};
+}
+
+async function callPipelineApi(frm, method, title) {
+	let payload;
+	try {
+		payload = await buildPayload(frm);
+	} catch (e) {
+		console.error("Failed to build payload:", e);
+		frappe.msgprint({
+			title: __("Error"),
+			message: __("Failed to build request payload: {0}", [
+				e && e.message ? e.message : String(e),
+			]),
+			indicator: "red",
+		});
+		return;
+	}
+
+	console.log("Payload:", payload);
+
+	try {
+		const r = await frappe.call({
+			method,
+			args: payload,
+			headers: {
+				"Authorization": "Bearer " + frappe.get_cookie("token"),
+			},
+			freeze: true,
+			xhrFields: { withCredentials: true },
+		});
+		showApiResult(title, r && r.message);
+	} catch (e) {
+		// frappe.call already surfaces the server-side error dialog from
+		// frappe.throw; swallow here so the rejection is not unhandled.
+		console.error(`${title} failed:`, e);
+	} finally {
+		// Defensive unfreeze: on error paths frappe.call has been observed
+		// to leave the freeze overlay up, which made the custom buttons
+		// un-clickable until reload.
+		if (frappe.dom && typeof frappe.dom.unfreeze === "function") {
+			try { frappe.dom.unfreeze(); } catch (_) { /* ignore */ }
+		}
+	}
+}
+
+function showApiResult(title, message) {
+	const data = message || {};
+	const esc = (s) => frappe.utils.escape_html(String(s));
+	const parts = [];
+	if (data.status) parts.push(`<p><b>Status:</b> ${esc(data.status)}</p>`);
+	if (data.message) parts.push(`<p><b>Message:</b> ${esc(data.message)}</p>`);
+	if (data.command) parts.push(`<p><b>Command:</b></p><pre>${esc(data.command)}</pre>`);
+	if (data.workflow_id) parts.push(`<p><b>Workflow ID:</b> ${esc(data.workflow_id)}</p>`);
+	if (Array.isArray(data.s3_files_ls) && data.s3_files_ls.length) {
+		parts.push(
+			`<p><b>S3 Files:</b></p><pre>${esc(JSON.stringify(data.s3_files_ls, null, 2))}</pre>`,
+		);
+	}
+	if (!parts.length) {
+		parts.push(`<pre>${esc(JSON.stringify(data, null, 2))}</pre>`);
+	}
+
+	const status = String(data.status || "").toLowerCase();
+	const indicator = status.includes("error") || status.includes("fail") ? "red" : "green";
+
+	frappe.msgprint({
+		title,
+		message: parts.join(""),
+		indicator,
+	});
 }

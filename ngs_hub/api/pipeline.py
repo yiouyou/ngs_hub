@@ -45,32 +45,43 @@ def extract_api_config(**payload):
     return payload, pipeline_type, url, headers
 
 
-@frappe.whitelist()
-def validate_run(**payload):
-    payload, pipeline_type, url, headers = extract_api_config(**payload)
+def _post_pipeline_api(endpoint, payload, headers):
+    try:
+        resp = httpx.post(endpoint, json=payload, headers=headers, timeout=60.0)
+    except httpx.RequestError as e:
+        frappe.throw(_("Failed to reach pipeline API: {0}").format(str(e)))
 
-    resp = httpx.post(
-        f"{url}/pipelines/{pipeline_type}/validate", json=payload, headers=headers
-    )
     print(f"{resp.status_code=}")
     print(f"{resp.text=}")
 
-    resp.raise_for_status()
+    if resp.is_error:
+        try:
+            detail = resp.json().get("detail", resp.text)
+        except Exception:
+            detail = resp.text
+        if isinstance(detail, (list, dict)):
+            detail = json.dumps(detail, indent=2)
+        frappe.throw(
+            _("Pipeline API error ({0}): {1}").format(resp.status_code, detail)
+        )
 
     return resp.json()
+
+
+@frappe.whitelist()
+def validate_run(**payload):
+    payload, pipeline_type, url, headers = extract_api_config(**payload)
+    return _post_pipeline_api(
+        f"{url}/pipelines/{pipeline_type}/validate", payload, headers
+    )
 
 
 @frappe.whitelist()
 def run(**payload):
     payload, pipeline_type, url, headers = extract_api_config(**payload)
-
-    resp = httpx.post(
-        f"{url}/pipelines/{pipeline_type}/run", json=payload, headers=headers
+    return _post_pipeline_api(
+        f"{url}/pipelines/{pipeline_type}/run", payload, headers
     )
-
-    resp.raise_for_status()
-
-    return resp.json()
 
 
 @frappe.whitelist()
