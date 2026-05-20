@@ -79,9 +79,7 @@ def validate_run(**payload):
 @frappe.whitelist()
 def run(**payload):
     payload, pipeline_type, url, headers = extract_api_config(**payload)
-    return _post_pipeline_api(
-        f"{url}/pipelines/{pipeline_type}/run", payload, headers
-    )
+    return _post_pipeline_api(f"{url}/pipelines/{pipeline_type}/run", payload, headers)
 
 
 @frappe.whitelist()

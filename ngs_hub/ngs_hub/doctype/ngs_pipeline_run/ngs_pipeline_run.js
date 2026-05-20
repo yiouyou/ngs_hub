@@ -80,7 +80,7 @@ async function buildPayload(frm) {
 	const params = {
 		"--input": "",
 		"--outdir": frm.doc.output_s3_path,
-		"species_type": frm.doc.species_type,
+		"species_type": frm.doc.species_type?.toLowerCase(),
 	};
 
 	// Choose source_type
@@ -156,7 +156,9 @@ async function callPipelineApi(frm, method, title) {
 		// to leave the freeze overlay up, which made the custom buttons
 		// un-clickable until reload.
 		if (frappe.dom && typeof frappe.dom.unfreeze === "function") {
-			try { frappe.dom.unfreeze(); } catch (_) { /* ignore */ }
+			try {
+				frappe.dom.unfreeze();
+			} catch (_) { /* ignore */ }
 		}
 	}
 }
@@ -167,11 +169,16 @@ function showApiResult(title, message) {
 	const parts = [];
 	if (data.status) parts.push(`<p><b>Status:</b> ${esc(data.status)}</p>`);
 	if (data.message) parts.push(`<p><b>Message:</b> ${esc(data.message)}</p>`);
-	if (data.command) parts.push(`<p><b>Command:</b></p><pre>${esc(data.command)}</pre>`);
-	if (data.workflow_id) parts.push(`<p><b>Workflow ID:</b> ${esc(data.workflow_id)}</p>`);
+	if (data.command) {
+		parts.push(`<p><b>Command:</b></p><pre>${esc(data.command)}</pre>`);
+	}
+	if (data.workflow_id) {
+		parts.push(`<p><b>Workflow ID:</b> ${esc(data.workflow_id)}</p>`);
+	}
 	if (Array.isArray(data.s3_files_ls) && data.s3_files_ls.length) {
 		parts.push(
-			`<p><b>S3 Files:</b></p><pre>${esc(JSON.stringify(data.s3_files_ls, null, 2))}</pre>`,
+			`<p><b>S3 Files:</b></p><pre>${esc(JSON.stringify(data.s3_files_ls, null, 2))
+			}</pre>`,
 		);
 	}
 	if (!parts.length) {
@@ -179,7 +186,9 @@ function showApiResult(title, message) {
 	}
 
 	const status = String(data.status || "").toLowerCase();
-	const indicator = status.includes("error") || status.includes("fail") ? "red" : "green";
+	const indicator = status.includes("error") || status.includes("fail")
+		? "red"
+		: "green";
 
 	frappe.msgprint({
 		title,
