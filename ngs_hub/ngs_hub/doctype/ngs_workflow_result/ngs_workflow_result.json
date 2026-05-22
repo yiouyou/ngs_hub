@@ -1,0 +1,118 @@
+{
+  "actions": [],
+  "allow_rename": 0,
+  "autoname": "field:workflow_id",
+  "doctype": "DocType",
+  "name": "NGS Workflow Result",
+  "module": "NGS Hub",
+  "field_order": [
+    "project",
+    "workflow_id",
+    "pipeline_name",
+    "status",
+    "created_at",
+    "completed_at",
+    "section_break_output",
+    "output_path",
+    "error_message"
+  ],
+  "fields": [
+    {
+      "fieldname": "project",
+      "fieldtype": "Link",
+      "label": "Project",
+      "options": "NGS Project",
+      "in_list_view": 1,
+      "read_only": 1,
+      "search_index": 1
+    },
+    {
+      "fieldname": "workflow_id",
+      "fieldtype": "Data",
+      "label": "Workflow ID",
+      "in_list_view": 1,
+      "read_only": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "pipeline_name",
+      "fieldtype": "Data",
+      "label": "Pipeline",
+      "in_list_view": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "\npending\nrunning\ncompleted\nfailed\nterminated",
+      "in_list_view": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "created_at",
+      "fieldtype": "Datetime",
+      "label": "Started At",
+      "read_only": 1
+    },
+    {
+      "fieldname": "completed_at",
+      "fieldtype": "Datetime",
+      "label": "Completed At",
+      "read_only": 1
+    },
+    {
+      "fieldname": "section_break_output",
+      "fieldtype": "Section Break",
+      "label": "Output"
+    },
+    {
+      "fieldname": "output_path",
+      "fieldtype": "Data",
+      "label": "Output Path",
+      "read_only": 1
+    },
+    {
+      "fieldname": "error_message",
+      "fieldtype": "Small Text",
+      "label": "Error Message",
+      "read_only": 1
+    }
+  ],
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "select": 1,
+      "share": 1,
+      "write": 1
+    },
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "NGS Internal Staff",
+      "select": 1,
+      "share": 1,
+      "write": 1
+    },
+    {
+      "read": 1,
+      "report": 1,
+      "role": "NGS External Customer",
+      "select": 1
+    }
+  ],
+  "sort_field": "created_at",
+  "sort_order": "DESC"
+}

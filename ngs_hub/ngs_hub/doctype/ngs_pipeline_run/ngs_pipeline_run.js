@@ -1,6 +1,5 @@
 frappe.ui.form.on("NGS Pipeline Run", {
 	setup(frm) {
-		// filter the existing_attachment link by the selected project
 		frm.set_query("existing_attachment", () => {
 			if (!frm.doc.project) {
 				return {};
@@ -26,6 +25,7 @@ frappe.ui.form.on("NGS Pipeline Run", {
 				frm,
 				"ngs_hub.api.pipeline.run",
 				__("Run Result"),
+				{ saveResult: true },
 			);
 		});
 		frm.refresh_field("existing_attachment");
@@ -34,7 +34,7 @@ frappe.ui.form.on("NGS Pipeline Run", {
 	},
 
 	project(frm) {
-		frm.set();
+		frm.set_query();
 		frm.refresh_fields("existing_attachment");
 	},
 
@@ -47,7 +47,6 @@ frappe.ui.form.on("NGS Pipeline Run", {
  * Gather all the bits from frm.doc and return a WorkflowRequest‐shaped dict
  */
 async function buildPayload(frm) {
-	// example: grab S3 creds off the form
 	console.log("Current Form:", frm.doc);
 	const s3_credentials = {
 		role_arn: frm.doc.role_arn,
@@ -56,7 +55,6 @@ async function buildPayload(frm) {
 		session_token: frm.doc.session_token,
 	};
 
-	// build input buckets (you may have one or many)
 	const s3_input_config = (frm.doc.s3_input_paths || []).map((p) => ({
 		bucket: p.bucket_name,
 		region: p.bucket_region,
@@ -64,7 +62,6 @@ async function buildPayload(frm) {
 		save_dir_name: p.save_to_folder,
 	}));
 
-	// assume a single output bucket section in the form
 	const s3_output_config = {
 		bucket: frm.doc.output_bucket_name,
 		region: frm.doc.output_bucket_region,
@@ -83,27 +80,22 @@ async function buildPayload(frm) {
 		"species_type": frm.doc.species_type?.toLowerCase(),
 	};
 
-	// Choose source_type
 	if (frm.doc.source_type === "Existing Attachment") {
-		// existing_attachment is a Link to NGS Project Attached File or File
 		const fileDocname = frm.doc.existing_attachment;
 		params["--input"] = await frappe.call({
 			method: "ngs_hub.api.pipeline.get_csv_text",
 			args: { file_docname: fileDocname },
 		}).then((r) => r.message);
 	} else if (frm.doc.source_type === "Upload File") {
-		// upload_csv is an Attach field, its value is the File docname too
 		const fileDocname = frm.doc.upload_csv;
 		params["--input"] = await frappe.call({
 			method: "ngs_hub.api.pipeline.get_csv_text",
 			args: { file_docname: fileDocname },
 		}).then((r) => r.message);
 	} else if (frm.doc.source_type === "S3 Path") {
-		// user typed in the path themselves
 		params["--input"] = frm.doc.s3_input_path;
 	}
 
-	// pipeline config
 	const pipeline_config = {
 		pipeline_type: pipeline_types.get(frm.doc.class_type),
 		sample_id: frm.doc.project,
@@ -118,7 +110,7 @@ async function buildPayload(frm) {
 	};
 }
 
-async function callPipelineApi(frm, method, title) {
+async function callPipelineApi(frm, method, title, opts = {}) {
 	let payload;
 	try {
 		payload = await buildPayload(frm);
@@ -136,6 +128,7 @@ async function callPipelineApi(frm, method, title) {
 
 	console.log("Payload:", payload);
 
+	let result;
 	try {
 		const r = await frappe.call({
 			method,
@@ -146,21 +139,35 @@ async function callPipelineApi(frm, method, title) {
 			freeze: true,
 			xhrFields: { withCredentials: true },
 		});
-		showApiResult(title, r && r.message);
+		result = r && r.message;
 	} catch (e) {
-		// frappe.call already surfaces the server-side error dialog from
-		// frappe.throw; swallow here so the rejection is not unhandled.
 		console.error(`${title} failed:`, e);
+		return;
 	} finally {
-		// Defensive unfreeze: on error paths frappe.call has been observed
-		// to leave the freeze overlay up, which made the custom buttons
-		// un-clickable until reload.
 		if (frappe.dom && typeof frappe.dom.unfreeze === "function") {
-			try {
-				frappe.dom.unfreeze();
-			} catch (_) { /* ignore */ }
+			try { frappe.dom.unfreeze(); } catch (_) { /* ignore */ }
 		}
 	}
+
+	if (opts.saveResult && result && result.workflow_id && frm.doc.project) {
+		try {
+			const docName = await frappe.call({
+				method: "ngs_hub.api.pipeline.save_workflow_result",
+				args: {
+					project: frm.doc.project,
+					workflow_id: result.workflow_id,
+					pipeline_name: result.pipeline_name || payload.pipeline_config.pipeline_type,
+					status: result.status || "pending",
+					created_at: result.created_at || frappe.datetime.now_datetime(),
+				},
+			}).then((r) => r.message);
+			result._saved_doc = docName;
+		} catch (e) {
+			console.error("Failed to save workflow result:", e);
+		}
+	}
+
+	showApiResult(title, result);
 }
 
 function showApiResult(title, message) {
@@ -173,7 +180,10 @@ function showApiResult(title, message) {
 		parts.push(`<p><b>Command:</b></p><pre>${esc(data.command)}</pre>`);
 	}
 	if (data.workflow_id) {
-		parts.push(`<p><b>Workflow ID:</b> ${esc(data.workflow_id)}</p>`);
+		const link = data._saved_doc
+			? `<a href="/app/ngs-workflow-result/${encodeURIComponent(data._saved_doc)}">${esc(data.workflow_id)}</a>`
+			: esc(data.workflow_id);
+		parts.push(`<p><b>Workflow ID:</b> ${link}</p>`);
 	}
 	if (Array.isArray(data.s3_files_ls) && data.s3_files_ls.length) {
 		parts.push(
