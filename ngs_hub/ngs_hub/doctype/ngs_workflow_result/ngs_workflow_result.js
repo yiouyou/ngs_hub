@@ -2,7 +2,6 @@ frappe.ui.form.on("NGS Workflow Result", {
 	refresh(frm) {
 		if (frm.doc.workflow_id && !frm.doc.__islocal) {
 			frm.add_custom_button(__("Refresh Status"), () => fetchAndSync(frm));
-			fetchAndSync(frm);
 		}
 	},
 });
@@ -41,6 +40,8 @@ async function fetchAndSync(frm) {
 		method: "frappe.client.set_value",
 		args: { doctype: "NGS Workflow Result", name: frm.doc.name, fieldname: updates },
 	});
-	frm.reload_doc();
+	for (const [k, v] of Object.entries(updates)) {
+		frm.set_value(k, v);
+	}
 	frappe.show_alert({ message: __("Status updated"), indicator: "green" });
 }
