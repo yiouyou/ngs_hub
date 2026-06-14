@@ -13,7 +13,7 @@ from ngs_hub.api.erpnext_sync import sync_ngs_quote_to_quotation
 from ngs_hub.api.frappe_crm_sync import sync_ngs_quote_to_frappe_crm_deal
 
 
-GREATER_BOSTON_ZIP_PREFIXES = ("021", "022", "024")
+MASSACHUSETTS_SERVICE_AREA_ZIP_PREFIXES = ("018", "020", "021", "022", "024")
 TENX_TISSUE_DISSOCIATION_SAMPLE_TYPES = {"Fresh Tissue or Organoid"}
 TENX_NUCLEI_EXTRACTION_SAMPLE_TYPES = {"Frozen Cells", "Frozen Tissue or Organoid"}
 DNA_EXTRACTION_STANDARD_SAMPLE_TYPES = {"Cells", "Tissue", "Plasma", "Serum"}
@@ -119,11 +119,11 @@ class NGSQuote(Document):
 			if item.onsite_service and not item.onsite_address:
 				notes.append(_("On-site service requires an address."))
 			elif item.onsite_service:
-				if self.is_greater_boston_address(item.onsite_address):
+				if self.is_massachusetts_service_area_address(item.onsite_address):
 					unit_price += self.get_service_price("ONSITE_SERVICE")
-					pricing_notes.append(_("Greater Boston on-site service added."))
+					pricing_notes.append(_("Massachusetts on-site service added."))
 				else:
-					notes.append(_("On-site service outside Greater Boston will be quoted based on actual expenses and is not included in this total."))
+					notes.append(_("On-site service outside Massachusetts service ZIPs will be quoted based on actual expenses and is not included in this total."))
 
 		if project_type.startswith("Sequencing Only"):
 			item.library_qc = 1
@@ -161,8 +161,8 @@ class NGSQuote(Document):
 	def get_service_price(self, service_code):
 		return flt(frappe.db.get_value("NGS Service Catalog", service_code, "unit_price"))
 
-	def is_greater_boston_address(self, address):
+	def is_massachusetts_service_area_address(self, address):
 		match = re.search(r"\b(\d{5})(?:-\d{4})?\b", address or "")
 		if not match:
 			return False
-		return match.group(1).startswith(GREATER_BOSTON_ZIP_PREFIXES)
+		return match.group(1).startswith(MASSACHUSETTS_SERVICE_AREA_ZIP_PREFIXES)
