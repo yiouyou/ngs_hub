@@ -20,6 +20,7 @@ def create_ngs_customer_user(email, full_name):
 			"doctype": "User",
 			"email": email,
 			"first_name": full_name or "NGS Customer",
+			"user_type": "Website User",
 			"send_welcome_email": 0,
 			"enabled": 1,
 		}
