@@ -8,6 +8,8 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.model.naming import make_autoname
 
+from ngs_hub.api.crm_sync import sync_ngs_customer_to_crm
+from ngs_hub.api.frappe_crm_sync import sync_ngs_customer_to_frappe_crm
 from ngs_hub.api.user_utils import create_ngs_customer_user
 
 
@@ -15,13 +17,21 @@ class NGSCustomer(Document):
 	def before_insert(self):
 		if not self.email:
 			frappe.throw(_("Email is required to generate Customer"))
+		if not self.full_name and (self.first_name or self.last_name):
+			self.full_name = " ".join(part for part in [self.first_name, self.last_name] if part)
 		if not self.full_name:
 			frappe.throw(_("Full Name is required to generate Customer ID"))
+		if not self.organization and self.company_institution:
+			self.organization = self.company_institution
+		if not self.adress and self.address:
+			self.adress = self.address
 		safe_name = re.sub(r"[^\w\s-]", "", self.full_name).replace(" ", "_")
 		self.customer_id = make_autoname(f"CUST-{safe_name}-.###")
 		self.name = self.customer_id
 
 	def on_submit(self):
+		sync_ngs_customer_to_crm(self)
+		sync_ngs_customer_to_frappe_crm(self)
 		if not self.email:
 			return
 		user_name, password = create_ngs_customer_user(self.email, self.full_name)

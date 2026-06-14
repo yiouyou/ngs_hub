@@ -1,0 +1,130 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-12 18:30:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "quote_item",
+  "service",
+  "project_type",
+  "sample_type",
+  "description",
+  "quantity",
+  "data_analysis",
+  "onsite_service",
+  "onsite_address",
+  "tissue_dissociation",
+  "nuclei_extraction",
+  "library_qc",
+  "unit_price",
+  "amount",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "quote_item",
+   "fieldtype": "Data",
+   "label": "Quote Item"
+  },
+  {
+   "fieldname": "service",
+   "fieldtype": "Link",
+   "label": "Service",
+   "options": "NGS Service Catalog",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "project_type",
+   "fieldtype": "Select",
+   "label": "Project Type",
+   "options": "\nBulk RNAseq\nWGS\nShotgun Meta\n10x 3' Transcriptome\n10x 5' Transcriptome\n10x 5' VDJ\n10x 5' Transcriptome + VDJ\nSequencing Only - 10B Lane\nSequencing Only - 25B Lane\nSequencing Only - 1M Reads\nCustom Project",
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "sample_type",
+   "fieldtype": "Select",
+   "label": "Sample Type",
+   "options": "\nTotal RNA\nCells\nTissue\nDNA\nSaliva\nBlood\nPlasma\nSerum\nSwabs\nFresh Cells\nFresh Tissue or Organoid\nFrozen Cells\nFrozen Tissue or Organoid\nWater\nSoil\nStool\nLibrary\nOther",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "label": "Quantity",
+   "default": 1,
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "data_analysis",
+   "fieldtype": "Select",
+   "label": "Data Analysis",
+   "options": "\nNo\nStandard Analysis\nDe novo Assembly\nMapping\nCustom Analysis"
+  },
+  {
+   "fieldname": "onsite_service",
+   "fieldtype": "Check",
+   "label": "On-site Service"
+  },
+  {
+   "fieldname": "onsite_address",
+   "fieldtype": "Small Text",
+   "label": "On-site Address"
+  },
+  {
+   "fieldname": "tissue_dissociation",
+   "fieldtype": "Check",
+   "label": "Tissue Dissociation"
+  },
+  {
+   "fieldname": "nuclei_extraction",
+   "fieldtype": "Check",
+   "label": "Nuclei Extraction"
+  },
+  {
+   "fieldname": "library_qc",
+   "fieldtype": "Check",
+   "label": "Library QC"
+  },
+  {
+   "fieldname": "unit_price",
+   "fieldtype": "Currency",
+   "label": "Unit Price",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-12 18:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "NGS Hub",
+ "name": "NGS Order Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "editable_grid": 1,
+ "istable": 1
+}

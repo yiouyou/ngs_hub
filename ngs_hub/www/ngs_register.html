@@ -1,0 +1,138 @@
+{% extends "templates/web.html" %}
+
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block page_content %}
+<div class="ngs-portal ngs-profile-page">
+  {% set active_page = "profile" %}
+  {% include "templates/includes/ngs_topbar.html" %}
+
+  <section class="ngs-hero">
+    <div>
+      <h1 id="ngs-register-title">{% if has_customer %}Customer Profile{% else %}Create Customer Profile{% endif %}</h1>
+    </div>
+    <div class="ngs-profile-summary" id="ngs-profile-summary">Loading profile...</div>
+  </section>
+
+  <form id="ngs-register-form" class="ngs-form ngs-profile-form">
+    <div class="ngs-register-grid">
+      <label>First name
+        <input name="first_name" required autocomplete="given-name">
+      </label>
+      <label>Last name
+        <input name="last_name" required autocomplete="family-name">
+      </label>
+      <label>Email
+        <input name="email" type="email" disabled>
+      </label>
+      <label>Phone
+        <input name="phone" autocomplete="tel">
+      </label>
+      <label>Organization
+        <input name="organization" autocomplete="organization">
+      </label>
+      <label>Lab / Group name
+        <input name="lab_group_name">
+      </label>
+      <label>Address
+        <textarea name="address" rows="3" autocomplete="street-address"></textarea>
+      </label>
+    </div>
+    <label>Notes
+      <textarea name="note" rows="4" placeholder="Include billing contact, preferred project contact, or other account setup details."></textarea>
+    </label>
+    <button type="submit" class="ngs-primary" id="ngs-register-submit">{% if has_customer %}Save NGS customer profile{% else %}Create NGS customer profile{% endif %}</button>
+    <p class="ngs-message" id="ngs-register-message"></p>
+  </form>
+</div>
+
+<style>
+  .ngs-profile-form { padding: 16px; }
+  .ngs-register-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .ngs-register-grid input,
+  .ngs-register-grid textarea {
+    min-height: 44px;
+  }
+  .ngs-register-grid textarea[name="address"] {
+    height: 44px;
+    min-height: 44px;
+  }
+  @media (max-width: 540px) {
+    .ngs-register-grid { grid-template-columns: 1fr; }
+    .ngs-register-grid textarea[name="address"] {
+      height: 88px;
+    }
+  }
+</style>
+
+<script>
+frappe.ready(async () => {
+  const form = document.getElementById('ngs-register-form');
+  const message = document.getElementById('ngs-register-message');
+  const title = document.getElementById('ngs-register-title');
+  const submit = document.getElementById('ngs-register-submit');
+  const summary = document.getElementById('ngs-profile-summary');
+  let existingCustomer = false;
+
+  function setMessage(text, isError = false) {
+    message.textContent = text;
+    message.style.color = isError ? '#9b2c2c' : '#26635b';
+  }
+
+  function values() {
+    const data = Object.fromEntries(new FormData(form).entries());
+    data.full_name = [data.first_name, data.last_name].filter(Boolean).join(' ');
+    return data;
+  }
+
+  try {
+    const response = await frappe.call('ngs_hub.api.portal.get_registration_context');
+    const data = response.message || {};
+    if (data.customer) {
+      existingCustomer = true;
+      title.textContent = 'Customer Profile';
+      submit.textContent = 'Save NGS customer profile';
+      summary.innerHTML = `<strong>${data.customer.full_name || data.user?.full_name || 'Customer profile'}</strong><br><span class="ngs-muted">${data.customer.organization || data.customer.email || ''}</span>`;
+      form.elements.email.value = data.customer.email || data.user?.email || '';
+      form.elements.first_name.value = data.customer.first_name || data.user?.first_name || '';
+      form.elements.last_name.value = data.customer.last_name || data.user?.last_name || '';
+      form.elements.organization.value = data.customer.organization || '';
+      form.elements.phone.value = data.customer.phone || data.user?.phone || '';
+      form.elements.lab_group_name.value = data.customer.lab_group_name || '';
+      form.elements.address.value = data.customer.address || '';
+      form.elements.note.value = data.customer.note || '';
+    } else {
+      summary.innerHTML = `<strong>New customer profile</strong><br><span class="ngs-muted">${data.user?.email || ''}</span>`;
+      form.elements.email.value = data.user?.email || '';
+      form.elements.first_name.value = data.user?.first_name || '';
+      form.elements.last_name.value = data.user?.last_name || '';
+      form.elements.phone.value = data.user?.phone || '';
+    }
+  } catch (error) {
+    summary.textContent = 'Profile unavailable';
+    setMessage(error.message || 'Unable to load registration context.', true);
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    const button = form.querySelector('button[type="submit"]');
+    button.disabled = true;
+    setMessage('Saving your customer profile...');
+    try {
+      await frappe.call('ngs_hub.api.portal.register_ngs_customer', { payload: JSON.stringify(values()) });
+      setMessage('Profile saved.');
+      if (existingCustomer) {
+        button.disabled = false;
+      } else {
+        window.location.href = '/ngs_account';
+      }
+    } catch (error) {
+      button.disabled = false;
+      setMessage(error.message || 'Registration failed.', true);
+    }
+  });
+});
+</script>
+{% endblock %}

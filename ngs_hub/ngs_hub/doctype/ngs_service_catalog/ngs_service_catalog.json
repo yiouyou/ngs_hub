@@ -1,0 +1,184 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-12 18:30:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "service_code",
+  "service_name",
+  "enabled",
+  "service_group",
+  "project_type",
+  "billing_uom",
+  "standard_reads_million",
+  "unit_price",
+  "currency",
+  "integration_section",
+  "erpnext_item",
+  "rules_section",
+  "requires_species",
+  "requires_depth",
+  "requires_library_qc",
+  "requires_onsite_address",
+  "requires_nuclei_extraction",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "service_code",
+   "fieldtype": "Data",
+   "label": "Service Code",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "service_name",
+   "fieldtype": "Data",
+   "label": "Service Name",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled",
+   "default": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "service_group",
+   "fieldtype": "Select",
+   "label": "Service Group",
+   "options": "\nWetlab\nSequencing\nData Analysis\nOn-site Service\nSample Processing\nCustom",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "project_type",
+   "fieldtype": "Select",
+   "label": "Project Type",
+   "options": "\nBulk RNAseq\nWGS\nShotgun Meta\n10x 3' Transcriptome\n10x 5' Transcriptome\n10x 5' VDJ\n10x 5' Transcriptome + VDJ\nSequencing Only - 10B Lane\nSequencing Only - 25B Lane\nSequencing Only - 1M Reads\nCustom Project",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "billing_uom",
+   "fieldtype": "Data",
+   "label": "Billing UOM",
+   "default": "Sample"
+  },
+  {
+   "fieldname": "standard_reads_million",
+   "fieldtype": "Float",
+   "label": "Standard Reads (Million)"
+  },
+  {
+   "fieldname": "unit_price",
+   "fieldtype": "Currency",
+   "label": "Unit Price"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "default": "USD"
+  },
+  {
+   "fieldname": "integration_section",
+   "fieldtype": "Section Break",
+   "label": "Integration"
+  },
+  {
+   "fieldname": "erpnext_item",
+   "fieldtype": "Link",
+   "label": "ERPNext Item",
+   "options": "Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rules_section",
+   "fieldtype": "Section Break",
+   "label": "Rules"
+  },
+  {
+   "fieldname": "requires_species",
+   "fieldtype": "Check",
+   "label": "Requires Species"
+  },
+  {
+   "fieldname": "requires_depth",
+   "fieldtype": "Check",
+   "label": "Requires Depth"
+  },
+  {
+   "fieldname": "requires_library_qc",
+   "fieldtype": "Check",
+   "label": "Requires Library QC"
+  },
+  {
+   "fieldname": "requires_onsite_address",
+   "fieldtype": "Check",
+   "label": "Requires On-site Address"
+  },
+  {
+   "fieldname": "requires_nuclei_extraction",
+   "fieldtype": "Check",
+   "label": "Requires Nuclei Extraction"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-12 18:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "NGS Hub",
+ "name": "NGS Service Catalog",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 1,
+   "cancel": 1,
+   "amend": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1,
+   "select": 1
+  },
+  {
+   "role": "NGS Internal Staff",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 1,
+   "cancel": 1,
+   "amend": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1,
+   "select": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "field:service_code",
+ "naming_rule": "By fieldname"
+}

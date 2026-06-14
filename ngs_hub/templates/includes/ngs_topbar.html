@@ -1,0 +1,9 @@
+<header class="ngs-topbar" aria-label="NGS portal navigation">
+  <a class="ngs-brand" href="/ngs_account">Athenomics</a>
+  <nav>
+    <a href="/ngs_account"{% if active_page == "portal" %} class="is-active"{% endif %}>NGS Portal</a>
+    <a href="/me"{% if active_page == "profile" %} class="is-active"{% endif %}>Profile</a>
+    <a href="/ngs_update_password"{% if active_page == "password" %} class="is-active"{% endif %}>Password</a>
+    <a class="ngs-logout" href="/logout">Log out</a>
+  </nav>
+</header>

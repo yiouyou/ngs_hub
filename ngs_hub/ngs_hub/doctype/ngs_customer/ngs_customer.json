@@ -7,12 +7,22 @@
  "engine": "InnoDB",
  "field_order": [
   "full_name",
+  "first_name",
+  "last_name",
   "organization",
+  "company_institution",
   "phone",
   "email",
+  "address",
   "adress",
+  "lab_group_name",
   "note",
   "section_break_quft",
+  "crm_section",
+  "erpnext_customer",
+  "erpnext_contact",
+  "frappe_crm_organization",
+  "frappe_crm_contact",
   "customer_id",
   "amended_from"
  ],
@@ -82,13 +92,71 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Full Name"
+  },
+  {
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "label": "First Name",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "label": "Last Name",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "company_institution",
+   "fieldtype": "Data",
+   "label": "Company / Institution"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address"
+  },
+  {
+   "fieldname": "lab_group_name",
+   "fieldtype": "Data",
+   "label": "Lab / Group Name"
+  },
+  {
+   "fieldname": "crm_section",
+   "fieldtype": "Section Break",
+   "label": "CRM"
+  },
+  {
+   "fieldname": "erpnext_customer",
+   "fieldtype": "Link",
+   "label": "ERPNext Customer",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "erpnext_contact",
+   "fieldtype": "Link",
+   "label": "ERPNext Contact",
+   "options": "Contact",
+   "read_only": 1
+  },
+  {
+   "fieldname": "frappe_crm_organization",
+   "fieldtype": "Data",
+   "label": "Frappe CRM Organization",
+   "read_only": 1
+  },
+  {
+   "fieldname": "frappe_crm_contact",
+   "fieldtype": "Data",
+   "label": "Frappe CRM Contact",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-29 03:16:58.352887",
+ "modified": "2026-06-12 23:00:00.000000",
  "modified_by": "Administrator",
  "module": "NGS Hub",
  "name": "NGS Customer",

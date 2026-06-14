@@ -20,12 +20,11 @@ def create_ngs_customer_user(email, full_name):
 			"doctype": "User",
 			"email": email,
 			"first_name": full_name or "NGS Customer",
-			"role_profile_name": "NGS Customer",
-			"module_profile": "NGS Customer",
 			"send_welcome_email": 0,
 			"enabled": 1,
 		}
 	)
+	user.append("roles", {"role": "NGS External Customer"})
 	try:
 		user.insert(ignore_permissions=True)
 		update_password(user.name, password)

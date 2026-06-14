@@ -1,0 +1,940 @@
+{% extends "templates/web.html" %}
+
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block page_content %}
+<div class="ngs-portal">
+  {% set active_page = "portal" %}
+  {% include "templates/includes/ngs_topbar.html" %}
+
+  <section class="ngs-hero">
+    <div>
+      <h1>NGS Portal</h1>
+    </div>
+    <div class="ngs-customer" id="ngs-customer">Loading account...</div>
+  </section>
+
+  <nav class="ngs-actions" role="tablist" aria-label="Portal sections">
+    <button type="button" id="tab-quote" role="tab" aria-selected="true" aria-controls="panel-quote" data-panel="quote" class="is-active">Quote</button>
+    <button type="button" id="tab-order" role="tab" aria-selected="false" aria-controls="panel-order" tabindex="-1" data-panel="order">Order</button>
+    <button type="button" id="tab-projects" role="tab" aria-selected="false" aria-controls="panel-projects" tabindex="-1" data-panel="projects">Projects</button>
+  </nav>
+  <p class="ngs-message" id="ngs-account-message" role="status" aria-live="polite"></p>
+
+  <section class="ngs-panel is-active" id="panel-quote" role="tabpanel" aria-labelledby="tab-quote">
+    <div class="ngs-panel-head">
+      <h2>Request a quote</h2>
+      <p>Add one or more project lines. Fields adjust to the selected project type.</p>
+    </div>
+    <div class="ngs-downloads" aria-label="Quote resources">
+      <a href="/assets/ngs_hub/downloads/w9-athenomics.pdf" download aria-label="Download W-9"><span class="ngs-download-icon" aria-hidden="true"></span> W-9</a>
+      <a href="/assets/ngs_hub/downloads/sample-registration-form.xlsx" download aria-label="Download sample registration form"><span class="ngs-download-icon" aria-hidden="true"></span> Sample registration form</a>
+    </div>
+    <form id="ngs-quote-form" class="ngs-form">
+      <div class="ngs-quote-header">
+        <div>
+          <h3>Project lines</h3>
+          <p class="ngs-muted">Each line becomes one item on the saved quote.</p>
+        </div>
+        <button type="button" class="ngs-secondary" id="ngs-add-quote-line">Add line</button>
+      </div>
+      <div id="ngs-quote-lines" class="ngs-quote-lines"></div>
+      <button type="submit" class="ngs-primary">Create quote draft</button>
+    </form>
+    <div id="ngs-quotes" class="ngs-list"></div>
+  </section>
+
+  <section class="ngs-panel" id="panel-order" role="tabpanel" aria-labelledby="tab-order" hidden>
+    <div class="ngs-panel-head">
+      <h2>Place an order</h2>
+      <p>Select an existing quote or start an order for manual review. Provide a PO number or PO file, and upload the sample registration form.</p>
+    </div>
+    <form id="ngs-order-form" class="ngs-form">
+      <div class="ngs-order-grid">
+        <label>Quote
+          <select name="quote"><option value="">No quote / direct order</option></select>
+        </label>
+        <label>PO number
+          <input name="po_number">
+        </label>
+        <label>PO file
+          <input name="po_file" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt">
+        </label>
+        <label>Sample registration form
+          <input name="sample_registration_form" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt" required>
+        </label>
+      </div>
+      <label>Order notes
+        <textarea name="notes" rows="4"></textarea>
+      </label>
+      <button type="submit" class="ngs-primary">Create order draft</button>
+    </form>
+    <div id="ngs-orders" class="ngs-list"></div>
+  </section>
+
+  <section class="ngs-panel" id="panel-projects" role="tabpanel" aria-labelledby="tab-projects" hidden>
+    <div class="ngs-panel-head">
+      <h2>Projects</h2>
+      <p>Recent projects connected to your Athenomics customer record.</p>
+    </div>
+    <div id="ngs-projects" class="ngs-list"></div>
+  </section>
+</div>
+
+<style>
+  .ngs-icon-button { width: 34px; height: 34px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+  .ngs-panel { display: none; }
+  .ngs-panel.is-active { display: block; }
+  .ngs-panel[hidden] { display: none !important; }
+  .ngs-panel-head { margin: 0 0 18px; }
+  .ngs-panel-head h2 { margin: 0 0 6px; font-size: 26px; }
+  .ngs-panel-head p { margin: 0; color: #596772; }
+  .ngs-downloads { display: flex; gap: 10px; flex-wrap: wrap; margin: -4px 0 18px; }
+  .ngs-downloads a { display: inline-flex; align-items: center; min-height: 38px; padding: 8px 12px; border: 1px solid #cfd9df; border-radius: 6px; background: #fff; color: #17352f; font-weight: 650; text-decoration: none; }
+  .ngs-downloads a:hover { background: #f7faf9; text-decoration: none; }
+  .ngs-download-icon { width: 16px; height: 16px; margin-right: 8px; flex: 0 0 auto; background: currentColor; mask: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 2a1 1 0 0 1 1 1v5.6l1.8-1.8a1 1 0 1 1 1.4 1.4l-3.5 3.5a1 1 0 0 1-1.4 0L3.8 8.2a1 1 0 0 1 1.4-1.4L7 8.6V3a1 1 0 0 1 1-1Zm-5 10a1 1 0 0 1 1 1h8a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1Z'/%3E%3C/svg%3E") center / contain no-repeat; }
+  .ngs-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .ngs-order-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 14px; }
+  .ngs-form select { appearance: none; padding-right: 28px; background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5' fill='none' stroke='%2317212b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-position: right 10px center; background-repeat: no-repeat; background-size: 12px 12px; }
+  .ngs-check { display: flex !important; grid-template-columns: auto 1fr; align-items: center; gap: 10px !important; min-width: 0; line-height: 1.2; }
+  .ngs-check input[type="checkbox"] { appearance: none; width: 18px; height: 18px; border: 1px solid #b8c7d1; border-radius: 5px; background-color: #fff; cursor: pointer; flex: 0 0 auto; }
+  .ngs-check input[type="checkbox"]:checked { border-color: #17352f; background-color: #17352f; background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 7.2 5.8 10 11 4' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-position: center; background-repeat: no-repeat; background-size: 14px 14px; }
+  .ngs-check input[type="checkbox"]:disabled { opacity: .8; cursor: not-allowed; }
+  .ngs-check input[type="checkbox"]:focus-visible { outline: 2px solid #6aa79d; outline-offset: 2px; }
+  .ngs-quote-header { display: flex; justify-content: space-between; gap: 16px; align-items: end; }
+  .ngs-quote-header h3 { margin: 0 0 4px; font-size: 18px; color: #17352f; }
+  .ngs-quote-header p { margin: 0; }
+  .ngs-quote-lines { display: grid; gap: 12px; }
+  .ngs-line-card { border: 1px solid #d7e1e8; border-radius: 8px; background: #fff; overflow: hidden; }
+  .ngs-line-head { display: flex; justify-content: space-between; gap: 14px; align-items: center; padding: 12px 14px; background: #eef5f2; border-bottom: 1px solid #d7e1e8; }
+  .ngs-line-title { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .ngs-line-number { width: 28px; height: 28px; border-radius: 50%; background: #17352f; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex: 0 0 auto; }
+  .ngs-line-title strong { color: #17352f; white-space: nowrap; }
+  .ngs-line-summary { color: #667681; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ngs-line-grid { display: grid; grid-template-columns: repeat(30, minmax(0, 1fr)); gap: 12px 8px; padding: 10px; align-items: start; }
+  .ngs-field { grid-column: span 6; }
+  .ngs-field-medium { grid-column: span 6; }
+  .ngs-field-analysis { grid-column: span 4; }
+  .ngs-field-wide { grid-column: span 5; }
+  .ngs-field-small { grid-column: span 2; }
+  .ngs-field-reads { grid-column: span 3; }
+  .ngs-field-preprocess { grid-column: span 5; }
+  .ngs-field-check { grid-column: span 4; }
+  .ngs-field-full { grid-column: 1 / -1; }
+  .ngs-line-note { display: none; grid-column: 1 / -1; margin: -2px 0 2px; color: #64717c; font-size: 12px; line-height: 1.35; }
+  .ngs-label-row { display: inline-flex; align-items: center; gap: 6px; min-width: 0; white-space: nowrap; }
+  .ngs-info-dot { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; padding: 0; border: 1px solid #8aa2af; border-radius: 50%; background: transparent; color: #48616d; font-size: 10px; font-weight: 800; line-height: 1; cursor: help; flex: 0 0 auto; }
+  .ngs-info-dot::before { content: "i"; }
+  .ngs-info-dot::after { content: attr(data-tooltip); position: absolute; left: 50%; top: calc(100% + 6px); width: max-content; max-width: min(260px, calc(100vw - 32px)); transform: translateX(-50%); padding: 7px 9px; border: 1px solid #c7d1d9; border-radius: 6px; background: #17212b; color: #fff; font-size: 12px; font-weight: 500; line-height: 1.35; white-space: normal; opacity: 0; pointer-events: none; z-index: 10; box-shadow: 0 8px 20px rgba(23, 33, 43, .18); }
+  .ngs-info-dot:hover::after, .ngs-info-dot:focus-visible::after { opacity: 1; }
+  .ngs-info-dot:focus-visible { outline: 2px solid #6aa79d; outline-offset: 2px; }
+  .ngs-hidden-field { display: none !important; }
+  .ngs-inline-check { min-height: 68px; align-items: center; padding-top: 24px; }
+  .ngs-field-hint { color: #64717c; font-size: 12px; font-weight: 500; }
+  .ngs-line-card .is-hidden { display: none !important; }
+  .ngs-list { display: grid; gap: 10px; margin-top: 18px; }
+  .ngs-card { border: 1px solid #d9e1e8; border-radius: 8px; padding: 14px 16px; background: #fff; display: flex; justify-content: space-between; gap: 12px; }
+  .ngs-card strong { color: #17212b; }
+  .ngs-existing-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; margin-top: 20px; }
+  .ngs-existing-head h3 { margin: 0; color: #17352f; font-size: 18px; }
+  .ngs-existing-head span { color: #64717c; font-size: 13px; padding-left: 12px; white-space: nowrap; }
+  .ngs-record { border: 1px solid #d9e1e8; border-radius: 8px; background: #fff; overflow: hidden; }
+  .ngs-record-toggle { width: 100%; border: 0; background: #fff; color: #1f2933; padding: 14px 16px; display: grid; grid-template-columns: 1fr auto; gap: 14px; text-align: left; cursor: pointer; }
+  .ngs-record-toggle:hover { background: #f7faf9; }
+  .ngs-record-main { display: grid; gap: 5px; min-width: 0; }
+  .ngs-record-title { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+  .ngs-record-title strong { color: #17212b; }
+  .ngs-status { border-radius: 999px; padding: 2px 8px; background: #e8efec; color: #17352f; font-size: 12px; font-weight: 700; }
+  .ngs-status-draft { background: #eef2f4; color: #4b5963; }
+  .ngs-status-pending { background: #fff3d8; color: #7a4b00; }
+  .ngs-status-active { background: #e1efff; color: #1d4f8f; }
+  .ngs-status-done { background: #e3f5e9; color: #1f6b3a; }
+  .ngs-status-cancelled { background: #fde7e7; color: #9b2c2c; }
+  .ngs-record-meta { color: #64717c; font-size: 13px; }
+  .ngs-record-side { display: grid; justify-items: end; gap: 5px; align-self: center; color: #64717c; }
+  .ngs-record-amount { color: #17352f; font-size: 18px; font-weight: 750; }
+  .ngs-record-chevron { color: #64717c; font-weight: 700; align-self: center; }
+  .ngs-record-detail { display: none; border-top: 1px solid #e4ebef; padding: 12px 16px 16px; }
+  .ngs-record.is-open .ngs-record-detail { display: grid; gap: 12px; }
+  .ngs-detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  .ngs-detail-field { border: 1px solid #edf1f4; border-radius: 6px; padding: 8px 10px; background: #fbfdfc; }
+  .ngs-detail-field.is-total { border-color: #d3e4dd; background: #f2faf6; font-size: 18px; font-weight: 750; color: #17352f; }
+  .ngs-detail-field span { display: block; margin-bottom: 3px; color: #64717c; font-size: 12px; }
+  .ngs-detail-section { display: grid; gap: 8px; }
+  .ngs-detail-section h4 { margin: 0; color: #17352f; font-size: 14px; }
+  .ngs-items { overflow-x: auto; }
+  .ngs-item-table { width: 100%; border-collapse: collapse; border: 1px solid #edf1f4; border-radius: 6px; background: #fbfdfc; overflow: hidden; }
+  .ngs-item-table th, .ngs-item-table td { padding: 8px 10px; border-bottom: 1px solid #edf1f4; text-align: left; vertical-align: top; }
+  .ngs-item-table th { color: #64717c; font-size: 12px; font-weight: 700; background: #f4f8f6; }
+  .ngs-item-table tr:last-child td { border-bottom: 0; }
+  .ngs-item-table .ngs-num { text-align: right; white-space: nowrap; }
+  .ngs-item-extra td { padding-top: 0; color: #64717c; font-size: 13px; }
+  .ngs-project-card { display: grid; gap: 12px; }
+  .ngs-project-detail { gap: 12px; }
+  .ngs-project-head { display: flex; justify-content: space-between; gap: 12px; }
+  .ngs-sample-qc { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  .ngs-sample-qc-item { border: 1px solid #e0e7ec; border-radius: 6px; padding: 10px; background: #fbfdfc; display: grid; gap: 8px; }
+  .ngs-qc-image { width: 100%; aspect-ratio: 16 / 9; object-fit: contain; border: 1px solid #d9e1e8; border-radius: 6px; background: #fff; }
+  .ngs-muted { color: #64717c; }
+  @media (max-width: 900px) {
+    .ngs-line-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+    .ngs-field-wide, .ngs-field, .ngs-field-medium, .ngs-field-analysis { grid-column: span 4; }
+    .ngs-field-small { grid-column: span 1; }
+    .ngs-field-reads { grid-column: span 2; }
+    .ngs-field-check { grid-column: span 2; }
+  }
+  @media (max-width: 640px) {
+    .ngs-record-toggle { grid-template-columns: 1fr; }
+    .ngs-record-side { justify-items: start; }
+    .ngs-item-table, .ngs-item-table thead, .ngs-item-table tbody, .ngs-item-table tr, .ngs-item-table th, .ngs-item-table td { display: block; }
+    .ngs-item-table thead { display: none; }
+    .ngs-item-table tr { border-bottom: 1px solid #edf1f4; }
+    .ngs-item-table tr:last-child { border-bottom: 0; }
+    .ngs-item-table td { display: grid; grid-template-columns: 96px 1fr; gap: 8px; border-bottom: 0; padding: 6px 10px; text-align: left !important; white-space: normal !important; }
+    .ngs-item-table td::before { content: attr(data-label); color: #64717c; font-size: 12px; font-weight: 700; }
+    .ngs-item-extra td { display: block; padding: 4px 10px 10px; }
+    .ngs-item-extra td::before { content: ""; display: none; }
+  }
+  @media (max-width: 540px) { .ngs-grid, .ngs-order-grid { grid-template-columns: 1fr; } .ngs-card { display: block; } .ngs-quote-header { display: grid; } .ngs-line-head { padding: 10px 12px; } .ngs-line-grid { grid-template-columns: 1fr; padding: 12px; gap: 10px; } .ngs-field, .ngs-field-medium, .ngs-field-analysis, .ngs-field-wide, .ngs-field-small, .ngs-field-reads, .ngs-field-preprocess, .ngs-field-check { grid-column: 1 / -1; } .ngs-inline-check { min-height: 40px; padding-top: 0; } .ngs-line-summary { display: none; } .ngs-line-note:not(:empty) { display: block; } }
+</style>
+
+<script>
+frappe.ready(() => {
+  const state = { quotes: [], orders: [], projects: [], services: [] };
+  let accountMessageTimer = null;
+  const projectTypes = ['Bulk RNAseq', '30x WGS', '10x Single Cell', 'Shotgun Meta', 'Sequencing Only', 'Custom Project'];
+  const tenxSubtypes = [
+    { label: "3' transcriptome", projectType: "10x 3' Transcriptome", serviceCode: '10X_3_TRANSCRIPTOME' },
+    { label: "5' transcriptome", projectType: "10x 5' Transcriptome", serviceCode: '10X_5_TRANSCRIPTOME' },
+    { label: "5' VDJ", projectType: "10x 5' VDJ", serviceCode: '10X_5_VDJ' },
+    { label: "5' transcriptome + VDJ", projectType: "10x 5' Transcriptome + VDJ", serviceCode: '10X_5_TRANSCRIPTOME_VDJ' },
+  ];
+  const sequencingOnlySubtypes = [
+    { label: '10B lane', projectType: 'Sequencing Only - 10B Lane', serviceCode: 'SEQ_ONLY_10B_LANE' },
+    { label: '25B lane', projectType: 'Sequencing Only - 25B Lane', serviceCode: 'SEQ_ONLY_25B_LANE' },
+    { label: '1M reads', projectType: 'Sequencing Only - 1M Reads', serviceCode: 'SEQ_ONLY_1M_READS' },
+  ];
+  const rules = {
+    'Bulk RNAseq': {
+      backendProjectType: 'Bulk RNAseq',
+      serviceCode: 'BULK_RNASEQ_20M',
+      samples: ['Total RNA', 'Cells', 'Tissue'],
+      analyses: ['No', 'Standard Analysis', 'De novo Assembly'],
+      reads: true,
+      standardReads: 20,
+      defaultReads: 20,
+    },
+    '30x WGS': {
+      backendProjectType: 'WGS',
+      serviceCode: 'WGS_30X',
+      species: ['human', 'mouse', 'hamster'],
+      samples: ['DNA', 'Cells', 'Tissue', 'Saliva', 'Blood', 'Plasma', 'Serum', 'Swabs'],
+      analyses: ['No', 'Standard Analysis'],
+      reads: false,
+    },
+    '10x Single Cell': {
+      subtypes: tenxSubtypes,
+      samples: ['Fresh Cells', 'Fresh Tissue or Organoid', 'Frozen Cells', 'Frozen Tissue or Organoid'],
+      analyses: ['No', 'Standard Analysis'],
+      reads: true,
+      onsite: true,
+      tissue: true,
+      nuclei: true,
+    },
+    'Shotgun Meta': {
+      backendProjectType: 'Shotgun Meta',
+      serviceCode: 'SHOTGUN_META_20M',
+      samples: ['Water', 'Soil', 'Stool', 'DNA'],
+      analyses: ['No', 'Mapping', 'De novo Assembly'],
+      reads: true,
+      standardReads: 20,
+      defaultReads: 20,
+    },
+    'Sequencing Only': {
+      subtypes: sequencingOnlySubtypes,
+      samples: ['Library'],
+      analyses: ['No'],
+      reads: false,
+      compact: true,
+    },
+    'Custom Project': {
+      samples: ['Other'],
+      analyses: ['Custom Analysis'],
+      reads: false,
+      onsite: true,
+    },
+  };
+
+  function escape(value) {
+    const div = document.createElement('div');
+    div.textContent = value || '';
+    return div.innerHTML;
+  }
+
+  function fillOptions(select, options, selected) {
+    select.innerHTML = options.map((value) => `<option value="${escape(value)}"${value === selected ? ' selected' : ''}>${escape(value)}</option>`).join('');
+  }
+
+  function getRule(projectType) {
+    return rules[projectType] || rules['Custom Project'];
+  }
+
+  function findServiceByCode(serviceCode) {
+    if (!serviceCode) return null;
+    return state.services.find((service) => service.service_code === serviceCode || service.name === serviceCode);
+  }
+
+  function getDefaultReads(rule) {
+    return rule.defaultReads || rule.standardReads || '';
+  }
+
+  function getSubtypeDefaultReads(subtype) {
+    if (subtype === "3' transcriptome" || subtype === "5' transcriptome") return 330;
+    if (subtype === "5' VDJ") return 40;
+    if (subtype === "5' transcriptome + VDJ") return 370;
+    return '';
+  }
+
+  function getLineDefaultReads(projectType, rule, subtype) {
+    if (projectType === '10x Single Cell') return getSubtypeDefaultReads(subtype);
+    return getDefaultReads(rule);
+  }
+
+  function resolveProject(row) {
+    const projectType = row.querySelector('[name="project_type"]').value;
+    const rule = getRule(projectType);
+    const subtype = row.querySelector('[name="project_subtype"]').value;
+    const subtypeRule = (rule.subtypes || []).find((item) => item.label === subtype);
+    return {
+      displayProjectType: projectType,
+      subtype,
+      projectType: subtypeRule ? subtypeRule.projectType : rule.backendProjectType || projectType,
+      serviceCode: subtypeRule ? subtypeRule.serviceCode : rule.serviceCode,
+      isSequencingOnly: projectType === 'Sequencing Only',
+    };
+  }
+
+  function needsOnsiteAddress(projectType, onsite) {
+    return Boolean(onsite && ['10x Single Cell', 'Custom Project'].includes(projectType));
+  }
+
+  function needsNuclei(projectType, sampleType) {
+    return projectType === '10x Single Cell' && ['Frozen Cells', 'Frozen Tissue or Organoid'].includes(sampleType);
+  }
+
+  function needsTissueDissociation(projectType, sampleType) {
+    return projectType === '10x Single Cell' && sampleType === 'Fresh Tissue or Organoid';
+  }
+
+  function getPreprocess(projectType, sampleType) {
+    if (needsTissueDissociation(projectType, sampleType)) return 'Tissue Dissociation';
+    if (needsNuclei(projectType, sampleType)) return 'Nuclei Extraction';
+    return 'None';
+  }
+
+  function createQuoteLine(values = {}) {
+    const list = document.getElementById('ngs-quote-lines');
+    const row = document.createElement('article');
+    row.className = 'ngs-line-card';
+    row.innerHTML = `
+      <header class="ngs-line-head">
+        <div class="ngs-line-title">
+          <span class="ngs-line-number"></span>
+          <strong>Project line</strong>
+          <span class="ngs-line-summary"></span>
+        </div>
+        <button type="button" class="ngs-icon-button" aria-label="Remove line">x</button>
+      </header>
+      <div class="ngs-line-grid">
+        <label class="ngs-field-wide">Project type
+          <select name="project_type" required></select>
+        </label>
+        <label class="ngs-field-medium" data-field="subtype">Subtype
+          <select name="project_subtype"></select>
+        </label>
+        <label class="ngs-field-medium" data-field="species">Species
+          <select name="species"></select>
+        </label>
+        <label class="ngs-field" data-field="sample">Sample type
+          <select name="sample_type"></select>
+        </label>
+        <label class="ngs-field-small">Qty
+          <input name="quantity" type="number" min="1" value="${escape(String(values.quantity || 1))}" required>
+        </label>
+        <label class="ngs-field-reads" data-field="reads">
+          <span class="ngs-label-row">Reads (M)<button class="ngs-info-dot is-hidden" data-field="reads-info" type="button" aria-label=""></button></span>
+          <input name="reads_per_sample_million" type="number" min="0" step="1">
+        </label>
+        <label class="ngs-field-analysis" data-field="analysis">Data analysis
+          <select name="data_analysis"></select>
+        </label>
+        <input class="ngs-hidden-field" name="add_on_sequencing" type="hidden" value="0">
+        <input class="ngs-hidden-field" name="tissue_dissociation" type="hidden" value="0">
+        <input class="ngs-hidden-field" name="nuclei_extraction" type="hidden" value="0">
+        <label class="ngs-field-preprocess" data-field="preprocess">Preprocess
+          <select name="preprocess" disabled>
+            <option value="None">None</option>
+            <option value="Tissue Dissociation">Tissue Dissociation</option>
+            <option value="Nuclei Extraction">Nuclei Extraction</option>
+          </select>
+        </label>
+        <label class="ngs-check ngs-inline-check ngs-field-check" data-field="onsite">
+          <input name="onsite_service" type="checkbox"> <span>On-site service</span>
+        </label>
+        <div class="ngs-line-note" data-field="reads-hint"></div>
+        <label class="ngs-field-full" data-field="address">On-site address
+          <textarea name="onsite_address" rows="2" placeholder="Include ZIP code for Greater Boston pricing."></textarea>
+          <span class="ngs-field-hint">Greater Boston ZIPs add $200. Outside Greater Boston is quoted based on actual expenses.</span>
+        </label>
+        <label class="ngs-field-full" data-field="custom-details">Custom project details
+          <textarea name="custom_project_description" rows="4" placeholder="Include the project goal, sample material/type, organism/species, sample count, library or sequencing needs, read depth, analysis needs, timeline, logistics, and any special handling."></textarea>
+        </label>
+      </div>
+    `;
+    list.appendChild(row);
+    const projectSelect = row.querySelector('[name="project_type"]');
+    fillOptions(projectSelect, projectTypes, values.project_type || 'Bulk RNAseq');
+    row.querySelector('[name="reads_per_sample_million"]').value = values.reads_per_sample_million || '';
+    row.querySelector('[name="onsite_address"]').value = values.onsite_address || '';
+    row.querySelector('[name="custom_project_description"]').value = values.custom_project_description || '';
+    row.querySelector('[name="add_on_sequencing"]').value = values.add_on_sequencing ? '1' : '0';
+    row.querySelector('[name="onsite_service"]').checked = Boolean(values.onsite_service);
+    row.querySelector('[name="tissue_dissociation"]').value = values.tissue_dissociation ? '1' : '0';
+    row.querySelector('[name="nuclei_extraction"]').value = values.nuclei_extraction ? '1' : '0';
+    row.querySelector('.ngs-icon-button').addEventListener('click', () => {
+      if (document.querySelectorAll('#ngs-quote-lines .ngs-line-card').length > 1) {
+        row.remove();
+        renumberQuoteLines();
+      }
+    });
+    row.querySelectorAll('select, input, textarea').forEach((input) => {
+      input.addEventListener('change', () => refreshQuoteLine(row));
+    });
+    row.querySelector('[name="reads_per_sample_million"]').addEventListener('input', () => refreshQuoteLine(row));
+    row.querySelector('[name="custom_project_description"]').addEventListener('input', () => refreshQuoteLine(row));
+    refreshQuoteLine(row);
+    renumberQuoteLines();
+  }
+
+  function refreshQuoteLine(row) {
+    const projectType = row.querySelector('[name="project_type"]').value;
+    const projectChanged = row.dataset.projectType !== projectType;
+    const rule = getRule(projectType);
+    const sampleSelect = row.querySelector('[name="sample_type"]');
+    const analysisSelect = row.querySelector('[name="data_analysis"]');
+    const subtypeSelect = row.querySelector('[name="project_subtype"]');
+    const speciesSelect = row.querySelector('[name="species"]');
+    const previousSample = sampleSelect.value;
+    const previousAnalysis = analysisSelect.value;
+    const previousSubtype = subtypeSelect.value;
+    const previousSpecies = speciesSelect.value;
+    fillOptions(sampleSelect, rule.samples, rule.samples.includes(previousSample) ? previousSample : rule.samples[0]);
+    fillOptions(analysisSelect, rule.analyses, rule.analyses.includes(previousAnalysis) ? previousAnalysis : rule.analyses[0]);
+    fillOptions(subtypeSelect, (rule.subtypes || []).map((item) => item.label), (rule.subtypes || []).some((item) => item.label === previousSubtype) ? previousSubtype : (rule.subtypes || [])[0]?.label);
+    fillOptions(speciesSelect, rule.species || [], (rule.species || []).includes(previousSpecies) ? previousSpecies : (rule.species || [])[0]);
+
+    const sampleType = sampleSelect.value;
+    const readsInput = row.querySelector('[name="reads_per_sample_million"]');
+    const readsHint = row.querySelector('[data-field="reads-hint"]');
+    const readsInfo = row.querySelector('[data-field="reads-info"]');
+    const addOnInput = row.querySelector('[name="add_on_sequencing"]');
+    const onsiteInput = row.querySelector('[name="onsite_service"]');
+    const addressInput = row.querySelector('[name="onsite_address"]');
+    const tissueInput = row.querySelector('[name="tissue_dissociation"]');
+    const nucleiInput = row.querySelector('[name="nuclei_extraction"]');
+    const preprocessSelect = row.querySelector('[name="preprocess"]');
+    const customDetailsInput = row.querySelector('[name="custom_project_description"]');
+    const isCustomProject = projectType === 'Custom Project';
+
+    row.querySelector('[data-field="subtype"]').classList.toggle('is-hidden', isCustomProject || !(rule.subtypes || []).length);
+    row.querySelector('[data-field="species"]').classList.toggle('is-hidden', isCustomProject || !(rule.species || []).length);
+    row.querySelector('[data-field="sample"]').classList.toggle('is-hidden', isCustomProject);
+    row.querySelector('[data-field="analysis"]').classList.toggle('is-hidden', isCustomProject);
+    row.querySelector('[data-field="reads"]').classList.toggle('is-hidden', isCustomProject || !rule.reads);
+    row.classList.toggle('no-reads', !rule.reads);
+    row.querySelector('[data-field="onsite"]').classList.toggle('is-hidden', !rule.onsite);
+    const addressRequired = needsOnsiteAddress(projectType, onsiteInput.checked);
+    row.querySelector('[data-field="address"]').classList.toggle('is-hidden', !addressRequired);
+    addressInput.required = addressRequired;
+    const subtypeKey = `${projectType}|${subtypeSelect.value}`;
+    const subtypeChanged = row.dataset.subtypeKey !== subtypeKey;
+    const sampleKey = `${projectType}|${sampleType}`;
+    const preprocess = getPreprocess(projectType, sampleType);
+    preprocessSelect.value = preprocess;
+    tissueInput.value = preprocess === 'Tissue Dissociation' ? '1' : '0';
+    nucleiInput.value = preprocess === 'Nuclei Extraction' ? '1' : '0';
+    row.querySelector('[data-field="preprocess"]').classList.add('is-hidden');
+    row.querySelector('[data-field="custom-details"]').classList.toggle('is-hidden', !isCustomProject);
+    customDetailsInput.required = isCustomProject;
+    if (rule.reads && !isCustomProject) {
+      const defaultReads = getLineDefaultReads(projectType, rule, subtypeSelect.value);
+      readsInput.required = true;
+      readsInput.min = defaultReads || 0;
+      if (projectChanged || subtypeChanged || !readsInput.value) {
+        readsInput.value = defaultReads;
+      }
+      readsInput.setCustomValidity(defaultReads && Number(readsInput.value || 0) < defaultReads ? `Reads must be at least ${defaultReads}M.` : '');
+      const readsMessage = defaultReads ? `Default included: ${defaultReads}M reads. Extra reads are quoted only above this value.` : '';
+      readsHint.textContent = readsMessage;
+      readsInfo.dataset.tooltip = readsMessage;
+      readsInfo.setAttribute('aria-label', readsMessage);
+      readsInfo.classList.toggle('is-hidden', !readsMessage);
+      addOnInput.value = defaultReads && Number(readsInput.value || 0) > defaultReads ? '1' : '0';
+    } else {
+      readsInput.required = false;
+      readsInput.min = 0;
+      readsInput.value = '';
+      readsInput.setCustomValidity('');
+      readsHint.textContent = '';
+      readsInfo.dataset.tooltip = '';
+      readsInfo.setAttribute('aria-label', '');
+      readsInfo.classList.add('is-hidden');
+      addOnInput.value = '0';
+    }
+    if (!rule.onsite) onsiteInput.checked = false;
+    if (!addressRequired) addressInput.value = '';
+    if (!isCustomProject) customDetailsInput.value = '';
+    row.dataset.projectType = projectType;
+    row.dataset.subtypeKey = subtypeKey;
+    row.dataset.sampleKey = sampleKey;
+    updateQuoteLineSummary(row);
+  }
+
+  function renumberQuoteLines() {
+    const rows = document.querySelectorAll('#ngs-quote-lines .ngs-line-card');
+    rows.forEach((row, index) => {
+      row.querySelector('.ngs-line-number').textContent = index + 1;
+      const removeButton = row.querySelector('.ngs-icon-button');
+      removeButton.hidden = rows.length <= 1;
+      removeButton.disabled = rows.length <= 1;
+      updateQuoteLineSummary(row);
+    });
+  }
+
+  function updateQuoteLineSummary(row) {
+    const resolved = resolveProject(row);
+    const projectType = row.querySelector('[name="project_type"]').value;
+    const sampleType = row.querySelector('[name="sample_type"]').value;
+    const species = row.querySelector('[name="species"]').value;
+    const quantity = row.querySelector('[name="quantity"]').value || 1;
+    if (projectType === 'Custom Project') {
+      row.querySelector('.ngs-line-summary').textContent = `${resolved.displayProjectType} / ${quantity}`;
+      return;
+    }
+    const details = [resolved.displayProjectType, resolved.subtype, species, sampleType, quantity].filter(Boolean);
+    row.querySelector('.ngs-line-summary').textContent = details.join(' / ');
+  }
+
+  function collectQuoteItems() {
+    return Array.from(document.querySelectorAll('#ngs-quote-lines .ngs-line-card')).map((row) => {
+      const resolved = resolveProject(row);
+      const sampleType = row.querySelector('[name="sample_type"]').value;
+      const description = row.querySelector('[name="custom_project_description"]').value.trim();
+      const service = findServiceByCode(resolved.serviceCode);
+      return {
+        service: service ? service.name : null,
+        project_type: resolved.projectType,
+        sample_type: sampleType,
+        description,
+        species: row.querySelector('[name="species"]').value || null,
+        quantity: Number(row.querySelector('[name="quantity"]').value || 1),
+        reads_per_sample_million: Number(row.querySelector('[name="reads_per_sample_million"]').value || 0) || null,
+        add_on_sequencing: row.querySelector('[name="add_on_sequencing"]').value === '1' ? 1 : 0,
+        data_analysis: row.querySelector('[name="data_analysis"]').value,
+        library_qc: resolved.isSequencingOnly ? 1 : 0,
+        onsite_service: row.querySelector('[name="onsite_service"]').checked ? 1 : 0,
+        onsite_address: row.querySelector('[name="onsite_address"]').value,
+        tissue_dissociation: row.querySelector('[name="tissue_dissociation"]').value === '1' ? 1 : 0,
+        nuclei_extraction: row.querySelector('[name="nuclei_extraction"]').value === '1' ? 1 : 0,
+      };
+    });
+  }
+
+  function card(record, detail) {
+    return `<div class="ngs-card"><div><strong>${escape(record.name)}</strong><div class="ngs-muted">${escape(detail)}</div></div><div>${escape(record.status || record.class_type)}</div></div>`;
+  }
+
+  function yesNo(value) {
+    return value ? 'Yes' : 'No';
+  }
+
+  function itemSummary(item) {
+    return [item.project_type, item.sample_type, item.quantity ? `x${item.quantity}` : null].filter(Boolean).join(' / ');
+  }
+
+  function itemDescription(item) {
+    const description = item.description || '';
+    if (item.project_type === 'Bulk RNAseq') return description.replace(/\s*20M reads\s*$/i, '');
+    if (item.project_type === 'Shotgun Meta') return description.replace(/\s*20M reads\s*$/i, '');
+    return description;
+  }
+
+  function money(value) {
+    const number = Number(value || 0);
+    return Number.isInteger(number) ? String(number) : number.toFixed(2);
+  }
+
+  function formatDate(value) {
+    if (!value) return '';
+    const normalized = String(value).replace(' ', 'T').replace(/\.(\d{3})\d+/, '.$1');
+    const date = new Date(normalized);
+    if (Number.isNaN(date.getTime())) return String(value).split('.')[0];
+    return new Intl.DateTimeFormat(undefined, { year: 'numeric', month: 'short', day: 'numeric' }).format(date);
+  }
+
+  function setAccountMessage(text, isError = false) {
+    const message = document.getElementById('ngs-account-message');
+    window.clearTimeout(accountMessageTimer);
+    message.textContent = text;
+    message.style.color = isError ? '#9b2c2c' : '#26635b';
+    if (text && !isError) {
+      accountMessageTimer = window.setTimeout(() => {
+        if (message.textContent === text) message.textContent = '';
+      }, 6000);
+    }
+  }
+
+  function itemAddOns(item) {
+    const addOns = [];
+    if (item.tissue_dissociation) addOns.push('Tissue dissociation');
+    if (item.nuclei_extraction) addOns.push('Nuclei extraction');
+    if (item.onsite_service) addOns.push(item.onsite_address ? `On-site service: ${item.onsite_address}` : 'On-site service');
+    if (item.library_qc) addOns.push('Library QC');
+    if (item.add_on_sequencing) addOns.push('Extra sequencing');
+    return addOns;
+  }
+
+  function itemPriceSummary(item) {
+    const quantity = Number(item.quantity || 0);
+    return [`Unit price: $${money(item.unit_price)}`, quantity ? `Qty: ${quantity}` : null, `Line total: $${money(item.amount)}`].filter(Boolean).join(' · ');
+  }
+
+  function itemMeta(item) {
+    return [
+      item.data_analysis ? `Analysis: ${item.data_analysis}` : null,
+      item.reads_per_sample_million ? `Reads: ${item.reads_per_sample_million}M` : null,
+      item.species ? `Species: ${item.species}` : null,
+    ].filter(Boolean);
+  }
+
+  function itemCountLabel(items) {
+    const count = (items || []).length;
+    return `${count} item${count === 1 ? '' : 's'}`;
+  }
+
+  function compactItemSummary(items) {
+    if (!items || !items.length) return 'No item summary';
+    const first = itemSummary(items[0]) || 'Line item';
+    return items.length > 1 ? `${first} +${items.length - 1} more` : first;
+  }
+
+  function statusClass(status) {
+    const value = String(status || '').toLowerCase();
+    if (value.includes('cancel')) return 'ngs-status ngs-status-cancelled';
+    if (value.includes('complete') || value.includes('converted')) return 'ngs-status ngs-status-done';
+    if (value.includes('sent') || value.includes('confirm') || value.includes('accept') || value.includes('progress')) return 'ngs-status ngs-status-active';
+    if (value.includes('pending') || value.includes('submitted') || value.includes('review')) return 'ngs-status ngs-status-pending';
+    return 'ngs-status ngs-status-draft';
+  }
+
+  function renderStatus(status) {
+    return `<span class="${statusClass(status)}">${escape(status || 'Draft')}</span>`;
+  }
+
+  function renderItems(items, includePrices) {
+    if (!items || !items.length) return '<p class="ngs-muted">No line items saved.</p>';
+    const headers = includePrices
+      ? ['Project', 'Sample', 'Qty', 'Reads', 'Analysis', 'Unit', 'Total']
+      : ['Project', 'Sample', 'Qty', 'Reads', 'Analysis'];
+    const columnCount = headers.length;
+    const rows = items.map((item) => {
+      const addOns = itemAddOns(item);
+      const description = itemDescription(item);
+      const extras = [
+        addOns.length ? `Options: ${addOns.join(' · ')}` : null,
+        description || null,
+        item.rule_notes || null,
+      ].filter(Boolean);
+      const cells = [
+        `<td data-label="Project"><strong>${escape(item.project_type || item.description || 'Project')}</strong>${item.species ? `<div class="ngs-muted">${escape(item.species)}</div>` : ''}</td>`,
+        `<td data-label="Sample">${escape(item.sample_type || '')}</td>`,
+        `<td data-label="Qty" class="ngs-num">${escape(item.quantity || '')}</td>`,
+        `<td data-label="Reads" class="ngs-num">${item.reads_per_sample_million ? `${escape(item.reads_per_sample_million)}M` : ''}</td>`,
+        `<td data-label="Analysis">${escape(item.data_analysis || '')}</td>`,
+      ];
+      if (includePrices) {
+        cells.push(`<td data-label="Unit" class="ngs-num">$${escape(money(item.unit_price))}</td>`);
+        cells.push(`<td data-label="Total" class="ngs-num">$${escape(money(item.amount))}</td>`);
+      }
+      return `
+        <tr>${cells.join('')}</tr>
+        ${extras.length ? `<tr class="ngs-item-extra"><td colspan="${columnCount}">${extras.map((line) => `<div>${escape(line).replace(/\n/g, '<br>')}</div>`).join('')}</td></tr>` : ''}
+      `;
+    }).join('');
+    return `
+      <div class="ngs-detail-section">
+        <h4>Line items</h4>
+        <div class="ngs-items">
+          <table class="ngs-item-table">
+            <thead><tr>${headers.map((header) => `<th>${escape(header)}</th>`).join('')}</tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  function quoteRecord(quote) {
+    const items = quote.items || [];
+    const status = quote.status || 'Draft';
+    return `
+      <article class="ngs-record">
+        <button type="button" class="ngs-record-toggle" aria-expanded="false">
+          <span class="ngs-record-main">
+            <span class="ngs-record-title"><strong>${escape(quote.name)}</strong>${renderStatus(status)}</span>
+            <span class="ngs-record-meta">Updated ${escape(formatDate(quote.modified))} · ${escape(itemCountLabel(items))} · ${escape(compactItemSummary(items))}</span>
+          </span>
+          <span class="ngs-record-side">
+            <span class="ngs-record-amount">$${escape(money(quote.total_amount))}</span>
+            <span class="ngs-record-chevron">Details</span>
+          </span>
+        </button>
+        <div class="ngs-record-detail">
+          <div class="ngs-detail-grid">
+            <div class="ngs-detail-field is-total"><span>Total</span>${escape(`$${money(quote.total_amount)}`)}</div>
+            <div class="ngs-detail-field"><span>Status</span>${renderStatus(status)}</div>
+            <div class="ngs-detail-field"><span>Updated</span>${escape(formatDate(quote.modified))}</div>
+            <div class="ngs-detail-field"><span>Linked order</span>${escape(quote.order || 'Not ordered yet')}</div>
+          </div>
+          ${renderItems(quote.items, true)}
+          ${quote.custom_project_description ? `<div class="ngs-detail-field"><span>Custom project details</span>${escape(quote.custom_project_description)}</div>` : ''}
+        </div>
+      </article>
+    `;
+  }
+
+  function orderRecord(order) {
+    const items = order.items || [];
+    const status = order.status || 'Draft';
+    return `
+      <article class="ngs-record">
+        <button type="button" class="ngs-record-toggle" aria-expanded="false">
+          <span class="ngs-record-main">
+            <span class="ngs-record-title"><strong>${escape(order.name)}</strong>${renderStatus(status)}</span>
+            <span class="ngs-record-meta">Updated ${escape(formatDate(order.modified))} · ${escape(itemCountLabel(items))} · ${escape(order.quote ? `Quote: ${order.quote}` : 'Direct order')}</span>
+          </span>
+          <span class="ngs-record-side">
+            <span>${escape(compactItemSummary(items))}</span>
+            <span class="ngs-record-chevron">Details</span>
+          </span>
+        </button>
+        <div class="ngs-record-detail">
+          <div class="ngs-detail-grid">
+            <div class="ngs-detail-field"><span>Status</span>${renderStatus(status)}</div>
+            <div class="ngs-detail-field"><span>Updated</span>${escape(formatDate(order.modified))}</div>
+            <div class="ngs-detail-field"><span>Linked quote</span>${escape(order.quote || 'Direct order')}</div>
+            <div class="ngs-detail-field"><span>Linked project</span>${escape(order.project || 'Not linked yet')}</div>
+            <div class="ngs-detail-field"><span>Order reference</span>${escape(order.erpnext_sales_order || 'Not assigned yet')}</div>
+          </div>
+          <div class="ngs-detail-section">
+            <h4>Documents</h4>
+            <div class="ngs-detail-grid">
+              <div class="ngs-detail-field"><span>PO number</span>${escape(order.po_number || 'Not provided')}</div>
+              <div class="ngs-detail-field"><span>PO file</span>${order.po_file ? `<a href="${escape(order.po_file)}">Uploaded</a>` : 'Not uploaded'}</div>
+              <div class="ngs-detail-field"><span>Sample registration</span>${order.sample_registration_form ? `<a href="${escape(order.sample_registration_form)}">Uploaded</a>` : 'Not uploaded'}</div>
+            </div>
+          </div>
+          ${renderItems(order.items, false)}
+          ${order.notes ? `<div class="ngs-detail-field"><span>Notes</span>${escape(order.notes)}</div>` : ''}
+        </div>
+      </article>
+    `;
+  }
+
+  function existingList(title, records, renderer) {
+    return `
+      <div class="ngs-existing-head"><h3>${escape(title)}</h3><span>${records.length} saved</span></div>
+      <div class="ngs-list">${records.length ? records.map(renderer).join('') : '<p class="ngs-muted">No saved records yet.</p>'}</div>
+    `;
+  }
+
+  function projectCard(project) {
+    const sampleQc = project.sample_qc || [];
+    const sampleCount = sampleQc.length;
+    const qcCount = sampleQc.filter((sample) => sample.qc_fig).length;
+    const samples = sampleQc.length
+      ? `<div class="ngs-sample-qc">${sampleQc.map((sample) => `
+          <div class="ngs-sample-qc-item">
+            <div><strong>${escape(sample.sample_name || sample.name)}</strong><div class="ngs-muted">${escape(sample.sample_wvc || sample.sample_index || '')}</div></div>
+            ${sample.qc_fig ? `<img class="ngs-qc-image" src="${escape(sample.qc_fig)}" alt="QC chart for ${escape(sample.sample_name || sample.name)}">` : '<div class="ngs-muted">No QC chart uploaded.</div>'}
+          </div>
+        `).join('')}</div>`
+      : '<p class="ngs-muted">No sample QC charts yet.</p>';
+    return `
+      <article class="ngs-record">
+        <button type="button" class="ngs-record-toggle" aria-expanded="false">
+          <span class="ngs-record-main">
+            <span class="ngs-record-title"><strong>${escape(project.name)}</strong><span class="ngs-status">${escape(project.class_type || '')}</span></span>
+            <span class="ngs-record-meta">${sampleCount} sample${sampleCount === 1 ? '' : 's'} · ${qcCount} QC chart${qcCount === 1 ? '' : 's'} · Updated ${escape(formatDate(project.modified))}</span>
+          </span>
+          <span class="ngs-record-chevron">Details</span>
+        </button>
+        <div class="ngs-record-detail ngs-project-detail">
+          <div class="ngs-detail-grid">
+            <div class="ngs-detail-field"><span>Project type</span>${escape(project.class_type || '')}</div>
+            <div class="ngs-detail-field"><span>Samples</span>${sampleCount}</div>
+            <div class="ngs-detail-field"><span>QC charts</span>${qcCount}</div>
+            <div class="ngs-detail-field"><span>Updated</span>${escape(formatDate(project.modified))}</div>
+          </div>
+          ${samples}
+        </div>
+      </article>
+    `;
+  }
+
+  function render(data) {
+    state.quotes = data.quotes || [];
+    state.orders = data.orders || [];
+    state.projects = data.projects || [];
+    state.services = data.services || [];
+    const customer = data.customer;
+    document.getElementById('ngs-customer').innerHTML = customer
+      ? `<strong>${escape(customer.full_name || customer.name)}</strong><br><span class="ngs-muted">${escape(customer.organization || customer.email)}</span>`
+      : '<strong>No customer profile linked</strong><br><span class="ngs-muted">Please contact Athenomics.</span>';
+    document.getElementById('ngs-quotes').innerHTML = existingList('Existing quotes', state.quotes, quoteRecord);
+    document.getElementById('ngs-orders').innerHTML = existingList('Existing orders', state.orders, orderRecord);
+    document.getElementById('ngs-projects').innerHTML = state.projects.length ? state.projects.map(projectCard).join('') : '<p class="ngs-muted">No projects yet.</p>';
+    const quoteSelect = document.querySelector('#ngs-order-form select[name="quote"]');
+    quoteSelect.innerHTML = '<option value="">No quote / direct order</option>' + state.quotes.map((q) => `<option value="${escape(q.name)}">${escape(q.name)} (${escape(q.status)})</option>`).join('');
+  }
+
+  function activatePanel(button, focus = false) {
+    setAccountMessage('');
+    document.querySelectorAll('.ngs-actions [role="tab"]').forEach((item) => {
+      const selected = item === button;
+      item.classList.toggle('is-active', selected);
+      item.setAttribute('aria-selected', selected ? 'true' : 'false');
+      item.tabIndex = selected ? 0 : -1;
+      const panel = document.getElementById(`panel-${item.dataset.panel}`);
+      panel.classList.toggle('is-active', selected);
+      panel.hidden = !selected;
+    });
+    if (focus) button.focus();
+  }
+
+  async function load() {
+    const response = await frappe.call('ngs_hub.api.portal.get_portal_context');
+    render(response.message || {});
+  }
+
+  async function uploadFile(file) {
+    if (!file) return null;
+    const form = new FormData();
+    form.append('file', file, file.name);
+    form.append('is_private', '1');
+    const response = await fetch('/api/method/upload_file', {
+      method: 'POST',
+      headers: { 'X-Frappe-CSRF-Token': frappe.csrf_token },
+      body: form,
+    });
+    const data = await response.json();
+    if (!response.ok || data.exc) {
+      throw new Error(data._server_messages || data.exc || 'File upload failed');
+    }
+    return data.message.file_url;
+  }
+
+  function updateOrderValidity(form) {
+    const poNumber = form.elements.po_number.value.trim();
+    const poFile = form.elements.po_file.files[0];
+    const sampleForm = form.elements.sample_registration_form.files[0];
+    const poMessage = poNumber || poFile ? '' : 'Provide either a PO number or a PO file.';
+    form.elements.po_number.setCustomValidity(poMessage);
+    form.elements.po_file.setCustomValidity(poMessage);
+    form.elements.sample_registration_form.setCustomValidity(sampleForm ? '' : 'Upload the sample registration form.');
+  }
+
+  function validateOrderForm(form) {
+    updateOrderValidity(form);
+    return form.reportValidity();
+  }
+
+  document.getElementById('ngs-add-quote-line').addEventListener('click', () => createQuoteLine());
+  createQuoteLine();
+
+  document.querySelectorAll('.ngs-actions [role="tab"]').forEach((button) => {
+    button.addEventListener('click', () => {
+      activatePanel(button);
+    });
+    button.addEventListener('keydown', (event) => {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      const tabs = Array.from(document.querySelectorAll('.ngs-actions [role="tab"]'));
+      const current = tabs.indexOf(button);
+      const next = event.key === 'Home'
+        ? 0
+        : event.key === 'End'
+          ? tabs.length - 1
+          : (current + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+      activatePanel(tabs[next], true);
+    });
+  });
+
+  document.addEventListener('click', (event) => {
+    const toggle = event.target.closest('.ngs-record-toggle');
+    if (!toggle) return;
+    const record = toggle.closest('.ngs-record');
+    record.classList.toggle('is-open');
+    const isOpen = record.classList.contains('is-open');
+    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    const label = toggle.querySelector('.ngs-record-chevron');
+    if (label) label.textContent = isOpen ? 'Hide' : 'Details';
+  });
+
+  document.getElementById('ngs-quote-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const items = collectQuoteItems();
+    const customProjectDescription = items
+      .filter((item) => item.project_type === 'Custom Project' && item.description)
+      .map((item, index) => `Custom Project ${index + 1}: ${item.description}`)
+      .join('\n\n');
+    const payload = {
+      source: 'Interactive',
+      custom_project_description: customProjectDescription,
+      items,
+    };
+    const response = await frappe.call('ngs_hub.api.portal.create_quote', { payload: JSON.stringify(payload) });
+    document.getElementById('ngs-quote-lines').innerHTML = '';
+    form.reset();
+    createQuoteLine();
+    await load();
+    setAccountMessage(`Quote draft ${response.message?.name || ''} created.`);
+    document.getElementById('ngs-quotes').scrollIntoView({ block: 'start', behavior: 'smooth' });
+  });
+
+  document.getElementById('ngs-order-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (!validateOrderForm(form)) return;
+    const data = Object.fromEntries(new FormData(form).entries());
+    data.po_file = await uploadFile(form.elements.po_file.files[0]);
+    data.sample_registration_form = await uploadFile(form.elements.sample_registration_form.files[0]);
+    const response = await frappe.call('ngs_hub.api.portal.create_order', { payload: JSON.stringify(data) });
+    form.reset();
+    await load();
+    setAccountMessage(`Order draft ${response.message?.name || ''} created.`);
+    document.getElementById('ngs-orders').scrollIntoView({ block: 'start', behavior: 'smooth' });
+  });
+
+  const orderForm = document.getElementById('ngs-order-form');
+  orderForm.elements.po_number.addEventListener('input', () => updateOrderValidity(orderForm));
+  orderForm.elements.po_file.addEventListener('change', () => updateOrderValidity(orderForm));
+  orderForm.elements.sample_registration_form.addEventListener('change', () => updateOrderValidity(orderForm));
+  updateOrderValidity(orderForm);
+
+  load();
+});
+</script>
+{% endblock %}

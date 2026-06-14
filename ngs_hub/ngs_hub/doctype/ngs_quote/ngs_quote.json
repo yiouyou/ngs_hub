@@ -1,0 +1,229 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-12 18:30:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "customer",
+  "status",
+  "source",
+  "contact_section",
+  "first_name",
+  "last_name",
+  "email",
+  "company_institution",
+  "lab_group_name",
+  "address",
+  "quote_section",
+  "items",
+  "custom_project_description",
+  "missing_info",
+  "total_amount",
+  "quote_pdf",
+  "integration_section",
+  "erpnext_quotation",
+  "frappe_crm_deal",
+  "order",
+  "quote_id",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "NGS Customer",
+   "reqd": 1,
+   "in_list_view": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nDraft\nPending Info\nConfirmed\nSent\nConverted to Order\nCancelled",
+   "default": "Draft",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "source",
+   "fieldtype": "Select",
+   "label": "Source",
+   "options": "\nInteractive\nLLM\nManual",
+   "default": "Interactive"
+  },
+  {
+   "fieldname": "contact_section",
+   "fieldtype": "Section Break",
+   "label": "Contact"
+  },
+  {
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "label": "First Name"
+  },
+  {
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "label": "Last Name"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fieldname": "company_institution",
+   "fieldtype": "Data",
+   "label": "Company / Institution"
+  },
+  {
+   "fieldname": "lab_group_name",
+   "fieldtype": "Data",
+   "label": "Lab / Group Name"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address"
+  },
+  {
+   "fieldname": "quote_section",
+   "fieldtype": "Section Break",
+   "label": "Quote"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "NGS Quote Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "custom_project_description",
+   "fieldtype": "Text",
+   "label": "Custom Project Description"
+  },
+  {
+   "fieldname": "missing_info",
+   "fieldtype": "Small Text",
+   "label": "Missing Information"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "quote_pdf",
+   "fieldtype": "Attach",
+   "label": "Quote PDF"
+  },
+  {
+   "fieldname": "integration_section",
+   "fieldtype": "Section Break",
+   "label": "Integration"
+  },
+  {
+   "fieldname": "erpnext_quotation",
+   "fieldtype": "Link",
+   "label": "ERPNext Quotation",
+   "options": "Quotation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "frappe_crm_deal",
+   "fieldtype": "Data",
+   "label": "Frappe CRM Deal",
+   "read_only": 1
+  },
+  {
+   "fieldname": "order",
+   "fieldtype": "Link",
+   "label": "Order",
+   "options": "NGS Order",
+   "read_only": 1
+  },
+  {
+   "fieldname": "quote_id",
+   "fieldtype": "Data",
+   "label": "Quote ID",
+   "read_only": 1,
+   "unique": 1,
+   "print_hide": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "options": "NGS Quote",
+   "read_only": 1,
+   "no_copy": 1,
+   "print_hide": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-12 18:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "NGS Hub",
+ "name": "NGS Quote",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 1,
+   "cancel": 1,
+   "amend": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1,
+   "select": 1
+  },
+  {
+   "role": "NGS Internal Staff",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 1,
+   "cancel": 1,
+   "amend": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1,
+   "select": 1
+  },
+  {
+   "role": "NGS External Customer",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1,
+   "export": 1,
+   "select": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "field:quote_id",
+ "naming_rule": "By fieldname",
+ "is_submittable": 1
+}

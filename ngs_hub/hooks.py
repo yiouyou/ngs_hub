@@ -6,7 +6,9 @@ app_email = "zhuosong@gmail.com"
 app_license = "mit"
 
 
-before_install = "ngs_hub.install.create_default_uoms"
+before_install = "ngs_hub.install.prepare_install"
+after_install = "ngs_hub.install.ensure_ngs_defaults"
+after_migrate = "ngs_hub.install.ensure_ngs_defaults"
 
 fixtures = [
 	# 权限与用户配置
@@ -44,36 +46,7 @@ fixtures = [
 	},
 	{"dt": "UOM Category", "filters": [["name", "in", ["Volume", "Quantity", "Data Volume"]]]},
 	{"dt": "UOM Conversion Factor", "filters": [["from_uom", "in", ["mL", "uL", "L"]]]},
-	{"dt": "Warehouse", "filters": [["name", "in", ["NGS Lab - ATH"]]]},
-	{
-		"dt": "Item Group",
-		"filters": [
-			[
-				"name",
-				"in",
-				[
-					"NGS Supplies",
-					"Kits",
-					"NGS Consumables",
-					"Reagents",
-					"NGS Services",
-					"External Packages",
-					"SingleCell",
-					"Meta",
-					"RNAseq",
-					"Customized Data Analysis",
-					"Internal Workflow",
-					"SingleCell Wetlab",
-					"Meta Wetlab",
-					"RNAseq Wetlab",
-					"Sequencing Outsource",
-					"SingleCell Bioinfo",
-					"Meta Bioinfo",
-					"RNAseq Bioinfo",
-				],
-			]
-		],
-	},
+	{"dt": "NGS Service Catalog", "filters": [["service_code", "in", ["BULK_RNASEQ_20M", "RNA_DENOVO_ASSEMBLY", "WGS_30X", "DNA_EXTRACTION_STANDARD", "DNA_EXTRACTION_BLOOD_SALIVA_SWAB", "SHOTGUN_META_20M", "SHOTGUN_ANALYSIS", "10X_3_TRANSCRIPTOME", "10X_5_TRANSCRIPTOME", "10X_5_VDJ", "10X_5_TRANSCRIPTOME_VDJ", "SEQ_ONLY_10B_LANE", "SEQ_ONLY_25B_LANE", "SEQ_ONLY_1M_READS", "EXTRA_SEQUENCING_1M", "ONSITE_SERVICE", "TISSUE_DISSOCIATION", "NUCLEI_EXTRACTION", "LIBRARY_QC"]]]},
 	# {
 	# 	"dt": "Item",
 	# 	"filters": [
@@ -104,7 +77,7 @@ fixtures = [
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["erpnext"]
 
 # Each item in the list will be shown as an app in the apps page
 add_to_apps_screen = [
@@ -113,7 +86,7 @@ add_to_apps_screen = [
 		"logo": "/assets/ngs_hub/logo.png",
 		"title": "NGS Hub",
 		"route": "/app/ngs-hub",
-		# "has_permission": "ngs_hub.api.permission.has_app_permission",
+		"has_permission": "ngs_hub.api.permission.has_app_permission",
 	}
 ]
 
@@ -125,8 +98,8 @@ add_to_apps_screen = [
 # app_include_js = "/assets/ngs_hub/js/ngs_hub.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/ngs_hub/css/ngs_hub.css"
-# web_include_js = "/assets/ngs_hub/js/ngs_hub.js"
+web_include_css = "/assets/ngs_hub/css/portal.css?v=20260614i"
+web_include_js = "/assets/ngs_hub/js/portal.js?v=20260614i"
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "ngs_hub/public/scss/website"
@@ -154,6 +127,13 @@ add_to_apps_screen = [
 
 # application home page (will override Website Settings)
 # home_page = "login"
+
+get_website_user_home_page = "ngs_hub.api.portal.get_ngs_home_page"
+
+website_route_rules = [
+	{"from_route": "/portal", "to_route": "ngs_home"},
+	{"from_route": "/me", "to_route": "ngs_register"},
+]
 
 # website user home page (by Role)
 # role_home_page = {
