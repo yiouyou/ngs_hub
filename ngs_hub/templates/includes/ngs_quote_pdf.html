@@ -1,0 +1,226 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      color: #17212b;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10pt;
+      line-height: 1.35;
+    }
+    .header {
+      display: table;
+      width: 100%;
+      margin-bottom: 18px;
+    }
+    .brand,
+    .quote-meta {
+      display: table-cell;
+      vertical-align: top;
+    }
+    .brand-name {
+      color: #17352f;
+      font-size: 20pt;
+      font-weight: 700;
+      letter-spacing: .05em;
+      margin-bottom: 6px;
+    }
+    .quote-title {
+      color: #17352f;
+      font-size: 18pt;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-align: right;
+    }
+    .meta-table {
+      border-collapse: collapse;
+      margin-left: auto;
+      width: 230px;
+    }
+    .meta-table td {
+      border: 1px solid #cfd9df;
+      padding: 5px 7px;
+    }
+    .meta-label {
+      background: #f1f6f4;
+      color: #48616d;
+      font-weight: 700;
+      width: 90px;
+    }
+    .section {
+      margin-top: 16px;
+    }
+    .section-title {
+      border-bottom: 2px solid #17352f;
+      color: #17352f;
+      font-size: 12pt;
+      font-weight: 700;
+      margin-bottom: 8px;
+      padding-bottom: 3px;
+    }
+    .customer-table,
+    .items-table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    .customer-table td,
+    .items-table th,
+    .items-table td {
+      border: 1px solid #cfd9df;
+      padding: 6px 7px;
+      vertical-align: top;
+    }
+    .customer-table td:first-child {
+      background: #f1f6f4;
+      color: #48616d;
+      font-weight: 700;
+      width: 120px;
+    }
+    .items-table th {
+      background: #17352f;
+      color: #fff;
+      font-weight: 700;
+      text-align: left;
+    }
+    .num {
+      text-align: right;
+      white-space: nowrap;
+    }
+    .muted {
+      color: #64717c;
+      font-size: 9pt;
+    }
+    .total-row td {
+      border-top: 2px solid #17352f;
+      font-size: 11pt;
+      font-weight: 700;
+    }
+    .terms {
+      border: 1px solid #cfd9df;
+      padding: 8px 10px;
+    }
+    .terms p {
+      margin: 0 0 8px;
+    }
+    .terms p:last-child {
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="brand">
+      <div class="brand-name">ATHENOMICS LLC</div>
+      <div>1 GRANT ST STE 230</div>
+      <div>FRAMINGHAM, MA 01702-6767</div>
+      <div>order@athenomics.com</div>
+      <div>443-453-8418</div>
+      <div>www.Athenomics.com</div>
+    </div>
+    <div class="quote-meta">
+      <div class="quote-title">Quote {{ quote.name }}</div>
+      <table class="meta-table">
+        <tr><td class="meta-label">Created Date</td><td>{{ created_date }}</td></tr>
+        <tr><td class="meta-label">Expires</td><td>{{ expires_date }}</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Customer</div>
+    <table class="customer-table">
+      <tr>
+        <td>Organization</td>
+        <td>{{ quote.company_institution or quote.lab_group_name or "" }}</td>
+      </tr>
+      <tr>
+        <td>Address</td>
+        <td>{{ quote.address or "" }}</td>
+      </tr>
+      <tr>
+        <td>Name</td>
+        <td>{{ customer_name }}</td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td>{{ quote.email or "" }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Quote Items</div>
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th style="width: 36px;">No.</th>
+          <th>Description</th>
+          <th class="num" style="width: 70px;">Quantity</th>
+          <th class="num" style="width: 90px;">Unit Price</th>
+          <th class="num" style="width: 90px;">Total Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>
+            <strong>{{ item.project_type }}</strong>
+            {% if item.sample_type %}<div class="muted">Sample: {{ item.sample_type }}</div>{% endif %}
+            {% if item.species %}<div class="muted">Species: {{ item.species }}</div>{% endif %}
+            {% if item.reads_per_sample_million %}<div class="muted">Reads: {{ item.reads_per_sample_million | int }}M</div>{% endif %}
+            {% if item.data_analysis %}<div class="muted">Analysis: {{ item.data_analysis }}</div>{% endif %}
+            {% if item.tissue_dissociation %}<div class="muted">Preprocess: Tissue Dissociation</div>{% endif %}
+            {% if item.nuclei_extraction %}<div class="muted">Preprocess: Nuclei Extraction</div>{% endif %}
+            {% if item.onsite_service %}
+              <div class="muted">On-site service{% if item.onsite_address %}: {{ item.onsite_address }}{% endif %}</div>
+            {% endif %}
+            {% if item.rule_notes %}
+              {% for line in item.rule_notes.split("\n") %}
+                {% if line %}<div class="muted">{{ line }}</div>{% endif %}
+              {% endfor %}
+            {% endif %}
+          </td>
+          <td class="num">{{ item.quantity or 0 }}</td>
+          <td class="num">${{ money(item.unit_price) }}</td>
+          <td class="num">${{ money(item.amount) }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="total-row">
+          <td colspan="4" class="num">Total</td>
+          <td class="num">${{ money(quote.total_amount) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  {% if quote.custom_project_description %}
+  <div class="section">
+    <div class="section-title">Custom Project Details</div>
+    <div class="terms">{{ quote.custom_project_description }}</div>
+  </div>
+  {% endif %}
+
+  <div class="section">
+    <div class="section-title">Delivery Instruction</div>
+    <div class="terms">
+      <p>Please submit samples with the current Athenomics sample registration form. Include this quote number with your order communication.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Sample Requirement</div>
+    <div class="terms">
+      <p>Sample requirements depend on project type, sample material, and requested library preparation. Athenomics will confirm any project-specific requirements before processing.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Post-Project Sample Handling</div>
+    <div class="terms">
+      <p>Remaining samples can be returned or discarded according to the agreed project instructions and applicable handling requirements.</p>
+    </div>
+  </div>
+</body>
+</html>

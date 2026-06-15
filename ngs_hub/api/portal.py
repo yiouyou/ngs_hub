@@ -1,7 +1,9 @@
 import json
 
 import frappe
+import pdfkit
 from frappe import _
+from frappe.utils import add_days, flt, formatdate, getdate
 
 from ngs_hub.api.crm_sync import sync_ngs_customer_to_crm
 from ngs_hub.api.frappe_crm_sync import sync_ngs_customer_to_frappe_crm
@@ -65,6 +67,46 @@ def validate_order_documents(po_number=None, po_file=None, sample_registration_f
 		frappe.throw(_("Provide either a PO number or a PO file before placing an order."))
 	if not sample_registration_form:
 		frappe.throw(_("Upload the sample registration form before placing an order."))
+
+
+def money(value):
+	return f"{flt(value):,.2f}"
+
+
+def quote_pdf_context(quote):
+	created = getdate(quote.creation)
+	customer_name = " ".join(part for part in [quote.get("first_name"), quote.get("last_name")] if part)
+	return {
+		"quote": quote,
+		"items": quote.items,
+		"customer_name": customer_name,
+		"created_date": formatdate(created, "mm.dd.yyyy"),
+		"expires_date": formatdate(add_days(created, 60), "mm.dd.yyyy"),
+		"money": money,
+	}
+
+
+@frappe.whitelist()
+def download_quote_pdf(quote):
+	customer = get_current_customer()
+	quote_name = validate_customer_quote(quote, customer)
+	quote_doc = frappe.get_doc("NGS Quote", quote_name)
+	html = frappe.render_template("templates/includes/ngs_quote_pdf.html", quote_pdf_context(quote_doc))
+	pdf = pdfkit.from_string(
+		html,
+		False,
+		{
+			"page-size": "Letter",
+			"margin-top": "0.35in",
+			"margin-right": "0.35in",
+			"margin-bottom": "0.35in",
+			"margin-left": "0.35in",
+			"encoding": "UTF-8",
+		},
+	)
+	frappe.local.response.filename = f"{quote_doc.name}.pdf"
+	frappe.local.response.filecontent = pdf
+	frappe.local.response.type = "download"
 
 
 def attach_project_sample_qc(projects):

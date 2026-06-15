@@ -205,6 +205,7 @@ html {
 .ngs-secondary:focus-visible,
 .ngs-icon-button:focus-visible,
 .ngs-record-toggle:focus-visible,
+.ngs-record-download:focus-visible,
 .ngs-form input:focus-visible,
 .ngs-form select:focus-visible,
 .ngs-form textarea:focus-visible {
