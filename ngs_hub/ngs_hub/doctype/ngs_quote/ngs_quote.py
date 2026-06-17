@@ -158,6 +158,9 @@ class NGSQuote(Document):
 			missing_info.extend(self.apply_project_defaults(item))
 			item.amount = (item.quantity or 0) * (item.unit_price or 0)
 		self.missing_info = "\n".join(missing_info)
+		self.pricing_to_confirm = 1 if self.missing_info else 0
+		if self.missing_info and self.status not in {"Cancelled", "Converted to Order"}:
+			self.status = "Pending"
 
 	def apply_project_defaults(self, item):
 		project_type = item.project_type or ""
@@ -167,6 +170,7 @@ class NGSQuote(Document):
 		missing_info = []
 		unit_price = self.get_base_unit_price(item)
 		standard_reads = self.get_standard_reads(item)
+		confirmed_tbd_fee = flt(item.get("confirmed_tbd_fee"))
 
 		if standard_reads:
 			if not item.reads_per_sample_million:
@@ -189,7 +193,7 @@ class NGSQuote(Document):
 		if project_type == "Custom Project" and flt(unit_price) <= 0:
 			manual_note = _("Manual pricing required for custom project.")
 			notes.append(manual_note)
-			missing_info.append(_("Item {0}: custom project pricing is TBD.").format(item.idx))
+			missing_info.append(_("Item {0}: enter the confirmed custom project unit price, then set Status to Confirmed.").format(item.idx))
 			if self.status == "Draft":
 				self.status = "Pending"
 
@@ -233,8 +237,12 @@ class NGSQuote(Document):
 					unit_price += self.get_service_price("ONSITE_SERVICE")
 					pricing_notes.append(_("Massachusetts on-site service added."))
 				elif item.onsite_location == "Outside Massachusetts":
-					notes.append(_("On-site service outside Massachusetts is TBD and is not included in this subtotal."))
-					missing_info.append(_("Item {0}: on-site service outside Massachusetts requires actual-expense pricing.").format(item.idx))
+					if confirmed_tbd_fee > 0:
+						unit_price += confirmed_tbd_fee
+						pricing_notes.append(_("Outside Massachusetts on-site service confirmed: ${0}.").format(f"{confirmed_tbd_fee:g}"))
+					else:
+						notes.append(_("On-site service outside Massachusetts is TBD and is not included in this subtotal."))
+						missing_info.append(_("Item {0}: edit this row and enter the confirmed on-site amount in TBD Fee, then set Status to Confirmed.").format(item.idx))
 
 		if project_type.startswith("Sequencing Only"):
 			item.library_qc = 1

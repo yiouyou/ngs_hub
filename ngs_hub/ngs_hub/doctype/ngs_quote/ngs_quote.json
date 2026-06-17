@@ -16,9 +16,10 @@
   "lab_group_name",
   "address",
   "quote_section",
+  "pricing_to_confirm",
+  "missing_info",
   "items",
   "custom_project_description",
-  "missing_info",
   "total_amount",
   "quote_pdf",
   "integration_section",
@@ -42,7 +43,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "\nDraft\nPending\nConfirmed\nSent\nConverted to Order\nCancelled",
+   "options": "\nDraft\nPending\nConfirmed\nConverted to Order\nCancelled",
    "default": "Draft",
    "in_list_view": 1
   },
@@ -106,9 +107,18 @@
    "label": "Custom Project Description"
   },
   {
+   "fieldname": "pricing_to_confirm",
+   "fieldtype": "Check",
+   "label": "Pricing To Confirm",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
    "fieldname": "missing_info",
    "fieldtype": "Small Text",
-   "label": "Missing Information"
+   "label": "Missing Information",
+   "read_only": 1
   },
   {
    "fieldname": "total_amount",

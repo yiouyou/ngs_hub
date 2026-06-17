@@ -61,7 +61,7 @@ def get_login_target(email):
 	return {"target": f"/{target}"} if target else {}
 
 
-ORDERABLE_QUOTE_STATUSES = {"Draft", "Confirmed", "Sent"}
+ORDERABLE_QUOTE_STATUSES = {"Draft", "Confirmed"}
 CANCELLABLE_QUOTE_STATUSES = {"Draft", "Pending"}
 
 
@@ -171,6 +171,8 @@ def price_breakdown(item):
 			add("Nuclei extraction", get_service_price("NUCLEI_EXTRACTION"))
 		if "Massachusetts on-site service added." in (item.get("rule_notes") or ""):
 			add("On-site service", get_service_price("ONSITE_SERVICE"))
+		if item.get("confirmed_tbd_fee"):
+			add("Confirmed TBD fee", item.get("confirmed_tbd_fee"))
 		if "not included in this subtotal" in (item.get("rule_notes") or ""):
 			rows.append({
 				"label": "On-site service outside Massachusetts",
@@ -310,6 +312,7 @@ def attach_quote_items(quotes):
 			"tissue_dissociation",
 			"nuclei_extraction",
 			"library_qc",
+			"confirmed_tbd_fee",
 			"unit_price",
 			"amount",
 			"rule_notes",

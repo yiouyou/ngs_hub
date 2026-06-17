@@ -261,7 +261,7 @@ def get_customer_organization_name(customer_doc):
 def get_quote_deal_status(status):
 	if status == "Converted to Order":
 		return ensure_deal_status("Won", "Won", 100, "green")
-	if status in {"Confirmed", "Sent"}:
+	if status == "Confirmed":
 		return ensure_deal_status("Qualified", "Ongoing", 75, "blue")
 	if status == "Pending":
 		return ensure_deal_status("Pending", "On Hold", 25, "amber")

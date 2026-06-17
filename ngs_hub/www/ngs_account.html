@@ -878,7 +878,7 @@ frappe.ready(() => {
     const value = String(status || '').toLowerCase();
     if (value.includes('cancel')) return 'ngs-status ngs-status-cancelled';
     if (value.includes('complete') || value.includes('converted')) return 'ngs-status ngs-status-done';
-    if (value.includes('sent') || value.includes('confirm') || value.includes('accept') || value.includes('progress')) return 'ngs-status ngs-status-active';
+    if (value.includes('confirm') || value.includes('accept') || value.includes('progress')) return 'ngs-status ngs-status-active';
     if (value.includes('pending') || value.includes('submitted') || value.includes('review')) return 'ngs-status ngs-status-pending';
     return 'ngs-status ngs-status-draft';
   }
@@ -888,7 +888,7 @@ frappe.ready(() => {
   }
 
   function isOrderableQuote(quote) {
-    return ['Draft', 'Confirmed', 'Sent'].includes(quote.status || 'Draft') && !quote.order && !quoteHasUnpricedFees(quote);
+    return ['Draft', 'Confirmed'].includes(quote.status || 'Draft') && !quote.order && !quoteHasUnpricedFees(quote);
   }
 
   function isCancellableQuote(quote) {

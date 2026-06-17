@@ -21,6 +21,7 @@
   "tissue_dissociation",
   "nuclei_extraction",
   "library_qc",
+  "confirmed_tbd_fee",
   "unit_price",
   "amount",
   "rule_notes"
@@ -117,6 +118,13 @@
    "fieldname": "library_qc",
    "fieldtype": "Check",
    "label": "Library QC"
+  },
+  {
+   "fieldname": "confirmed_tbd_fee",
+   "fieldtype": "Currency",
+   "label": "TBD Fee",
+   "description": "Internal use: enter the confirmed fee for charges that were marked TBD, such as out-of-state on-site service.",
+   "in_list_view": 1
   },
   {
    "fieldname": "unit_price",
