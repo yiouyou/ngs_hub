@@ -364,8 +364,26 @@ def attach_order_items(orders):
 	items_by_order = {}
 	for item in items:
 		items_by_order.setdefault(item.parent, []).append(item)
+
+	quote_names = [order.quote for order in orders if order.get("quote")]
+	quote_summary_by_name = {}
+	if quote_names:
+		for quote in frappe.get_all(
+			"NGS Quote",
+			filters={"name": ["in", quote_names]},
+			fields=["name", "status", "total_amount", "missing_info"],
+			limit=len(quote_names),
+		):
+			quote_summary_by_name[quote.name] = quote
+
 	for order in orders:
 		order["items"] = items_by_order.get(order.name, [])
+		quote_summary = quote_summary_by_name.get(order.get("quote"))
+		if quote_summary:
+			order["quote_status"] = quote_summary.status
+			order["quote_total_amount"] = quote_summary.total_amount
+			order["quote_missing_info"] = quote_summary.missing_info
+			order["quote_has_unpriced_fees"] = bool(quote_summary.missing_info)
 	return orders
 
 

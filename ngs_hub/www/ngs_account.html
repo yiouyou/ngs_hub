@@ -791,6 +791,50 @@ frappe.ready(() => {
     return quoteHasUnpricedFees(quote) ? 'Priced subtotal' : 'Total';
   }
 
+  function linkedQuoteForOrder(order) {
+    if (!order?.quote) return null;
+    const loadedQuote = state.quotes.find((quote) => quote.name === order.quote);
+    if (loadedQuote) return loadedQuote;
+    return {
+      name: order.quote,
+      status: order.quote_status,
+      total_amount: order.quote_total_amount,
+      missing_info: order.quote_missing_info,
+      has_unpriced_fees: order.quote_has_unpriced_fees,
+      items: [],
+    };
+  }
+
+  function orderItemTotal(order) {
+    return (order.items || []).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  }
+
+  function orderTotalLabel(order) {
+    const quote = linkedQuoteForOrder(order);
+    if (quote) return quoteTotalLabel(quote);
+    const total = orderItemTotal(order);
+    return total > 0 ? `$${money(total)}` : 'Pricing pending';
+  }
+
+  function orderTotalCaption(order) {
+    if (linkedQuoteForOrder(order)) return 'Quoted total';
+    return orderItemTotal(order) > 0 ? 'Order total' : 'Pricing';
+  }
+
+  function orderQuoteActions(order) {
+    const quote = linkedQuoteForOrder(order);
+    if (!quote) {
+      return '<div class="ngs-record-actions"><span class="ngs-record-state-note">Direct orders are priced by Athenomics after review.</span></div>';
+    }
+    return `
+      <div class="ngs-record-actions">
+        <button type="button" class="ngs-record-action" data-quote-action="view-quote" data-quote="${escape(quote.name)}">View quote</button>
+        <a class="ngs-record-action" href="${escape(quotePdfUrl(quote.name))}" target="_blank" rel="noopener" download>Quote PDF</a>
+        <span class="ngs-record-state-note">Full price details are in the linked quote.</span>
+      </div>
+    `;
+  }
+
   function formatDate(value) {
     if (!value) return '';
     const normalized = String(value).replace(' ', 'T').replace(/\.(\d{3})\d+/, '.$1');
@@ -1017,21 +1061,23 @@ frappe.ready(() => {
         <button type="button" class="ngs-record-toggle" aria-expanded="false">
           <span class="ngs-record-main">
             <span class="ngs-record-title"><strong>${escape(order.name)}</strong>${renderStatus(status)}</span>
-            <span class="ngs-record-meta">Updated ${escape(formatDate(order.modified))} · ${escape(itemCountLabel(items))} · ${escape(order.quote ? `Quote: ${order.quote}` : 'Direct order')}</span>
+            <span class="ngs-record-meta">Updated ${escape(formatDate(order.modified))} · ${escape(itemCountLabel(items))} · ${escape(order.quote ? `Quote: ${order.quote}` : 'Direct order')} · ${escape(compactItemSummary(items))}</span>
           </span>
           <span class="ngs-record-side">
-            <span>${escape(compactItemSummary(items))}</span>
+            <span class="ngs-record-amount">${escape(orderTotalLabel(order))}</span>
             <span class="ngs-record-chevron">Details</span>
           </span>
         </button>
         <div class="ngs-record-detail">
           <div class="ngs-detail-grid">
+            <div class="ngs-detail-field is-total"><span>${escape(orderTotalCaption(order))}</span>${escape(orderTotalLabel(order))}</div>
             <div class="ngs-detail-field"><span>Status</span>${renderStatus(status)}</div>
             <div class="ngs-detail-field"><span>Updated</span>${escape(formatDate(order.modified))}</div>
             <div class="ngs-detail-field"><span>Linked quote</span>${escape(order.quote || 'Direct order')}</div>
             <div class="ngs-detail-field"><span>Linked project</span>${escape(order.project || 'Not linked yet')}</div>
             <div class="ngs-detail-field"><span>Order reference</span>${escape(order.erpnext_sales_order || 'Not assigned yet')}</div>
           </div>
+          ${orderQuoteActions(order)}
           <div class="ngs-detail-section">
             <h4>Documents</h4>
             <div class="ngs-detail-grid">
@@ -1155,6 +1201,14 @@ frappe.ready(() => {
     }
   }
 
+  function viewLinkedQuote(quoteName) {
+    const quoteTab = document.getElementById('tab-quote');
+    activatePanel(quoteTab);
+    if (!openRecordByName('ngs-quotes', quoteName)) {
+      document.getElementById('ngs-quotes').scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+  }
+
   async function cancelQuote(quoteName) {
     if (!window.confirm(`Cancel quote ${quoteName}? This keeps the record but removes it from ordering.`)) return;
     const response = await frappe.call('ngs_hub.api.portal.cancel_quote', { quote: quoteName });
@@ -1223,6 +1277,7 @@ frappe.ready(() => {
       const action = quoteAction.dataset.quoteAction;
       if (action === 'order') startOrderFromQuote(quoteAction.dataset.quote);
       if (action === 'view-order') viewLinkedOrder(quoteAction.dataset.order);
+      if (action === 'view-quote') viewLinkedQuote(quoteAction.dataset.quote);
       if (action === 'cancel') await cancelQuote(quoteAction.dataset.quote);
       return;
     }
