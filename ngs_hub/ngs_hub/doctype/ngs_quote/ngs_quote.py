@@ -123,6 +123,7 @@ class NGSQuote(Document):
 			frappe.throw(_("Customer is required to generate Quote"))
 		self.set_customer_snapshot()
 		self.apply_quote_rules()
+		self.set_project_summary()
 		self.calculate_total()
 
 	def after_insert(self):
@@ -144,6 +145,20 @@ class NGSQuote(Document):
 			parts = full_name.split(None, 1)
 			self.first_name = customer.get("first_name") or (parts[0] if parts else None)
 			self.last_name = customer.get("last_name") or (parts[1] if len(parts) > 1 else None)
+
+	def set_project_summary(self):
+		project_types = []
+		seen = set()
+		for item in self.items:
+			project_type = item.project_type or item.description
+			if not project_type or project_type in seen:
+				continue
+			seen.add(project_type)
+			project_types.append(project_type)
+		visible_project_types = project_types[:3]
+		if len(project_types) > 3:
+			visible_project_types.append(_("+{0} more").format(len(project_types) - 3))
+		self.project_summary = " | ".join(visible_project_types)
 
 	def apply_quote_rules(self):
 		missing_info = []

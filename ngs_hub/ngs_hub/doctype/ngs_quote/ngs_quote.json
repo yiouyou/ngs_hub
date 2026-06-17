@@ -16,6 +16,7 @@
   "lab_group_name",
   "address",
   "quote_section",
+  "project_summary",
   "pricing_to_confirm",
   "missing_info",
   "items",
@@ -105,6 +106,13 @@
    "fieldname": "custom_project_description",
    "fieldtype": "Text",
    "label": "Custom Project Description"
+  },
+  {
+   "fieldname": "project_summary",
+   "fieldtype": "Data",
+   "label": "Project Summary",
+   "read_only": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "pricing_to_confirm",
