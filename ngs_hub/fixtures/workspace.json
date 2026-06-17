@@ -481,7 +481,7 @@
  {
   "app": "ngs_hub",
   "charts": [],
-  "content": "[{\"id\":\"wmLUnVStZI\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">NGS Hub</span><span class=\\\"h4\\\"><b></b></span>\",\"col\":12}},{\"id\":\"lXwHln3sYS\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"vZiddIJKXI\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"AI Chat\",\"col\":4}},{\"id\":\"MfPowdF05x\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"btCnpabhP4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"NGS Customer\",\"col\":4}},{\"id\":\"hOWLCTc6Ub\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"NGS Project\",\"col\":4}},{\"id\":\"xhJjjQM_mE\",\"type\":\"spacer\",\"data\":{\"col\":4}},{\"id\":\"O1xdE_2YLl\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"n0Dinp4nye\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Customer\",\"col\":4}},{\"id\":\"KBLfg-EEwR\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Project\",\"col\":4}},{\"id\":\"3ZDt6rT7Y7\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Contact\",\"col\":4}}]",
+  "content": "[{\"id\":\"wmLUnVStZI\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">NGS Hub</span><span class=\\\"h4\\\"><b></b></span>\",\"col\":12}},{\"id\":\"lXwHln3sYS\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"vZiddIJKXI\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"AI Chat\",\"col\":4}},{\"id\":\"MfPowdF05x\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"btCnpabhP4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"NGS Customer\",\"col\":4}},{\"id\":\"_UwHPdljrR\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"NGS Quote\",\"col\":4}},{\"id\":\"hOWLCTc6Ub\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"NGS Project\",\"col\":4}},{\"id\":\"O1xdE_2YLl\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"n0Dinp4nye\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Customer\",\"col\":4}},{\"id\":\"FoMyIVobOR\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Quote\",\"col\":4}},{\"id\":\"KBLfg-EEwR\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Project\",\"col\":4}},{\"id\":\"3ZDt6rT7Y7\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Contact\",\"col\":4}}]",
   "custom_blocks": [],
   "docstatus": 0,
   "doctype": "Workspace",
@@ -495,7 +495,7 @@
   "link_to": null,
   "link_type": "DocType",
   "links": [],
-  "modified": "2026-02-08 11:19:17.884884",
+  "modified": "2026-06-16 23:34:37.659227",
   "module": "NGS Hub",
   "name": "NGS Hub",
   "number_cards": [],
@@ -505,6 +505,11 @@
    {
     "document_type": "NGS Customer",
     "label": "NGS Customer",
+    "quick_list_filter": "[]"
+   },
+   {
+    "document_type": "NGS Quote",
+    "label": "NGS Quote",
     "quick_list_filter": "[]"
    },
    {
@@ -544,6 +549,20 @@
     "kanban_board": null,
     "label": "NGS Customer",
     "link_to": "NGS Customer",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": "[]",
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": "Grey",
+    "doc_view": "New",
+    "format": null,
+    "icon": null,
+    "kanban_board": null,
+    "label": "NGS Quote",
+    "link_to": "NGS Quote",
     "report_ref_doctype": null,
     "restrict_to_domain": null,
     "stats_filter": "[]",
