@@ -263,8 +263,8 @@ def get_quote_deal_status(status):
 		return ensure_deal_status("Won", "Won", 100, "green")
 	if status in {"Confirmed", "Sent"}:
 		return ensure_deal_status("Qualified", "Ongoing", 75, "blue")
-	if status == "Pending Info":
-		return ensure_deal_status("Pending Info", "On Hold", 25, "amber")
+	if status == "Pending":
+		return ensure_deal_status("Pending", "On Hold", 25, "amber")
 	return ensure_deal_status("Open", "Open", 10, "gray")
 
 

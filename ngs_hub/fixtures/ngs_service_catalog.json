@@ -35,7 +35,7 @@
   "doctype": "NGS Service Catalog",
   "name": "WGS_30X",
   "service_code": "WGS_30X",
-  "service_name": "30x human/mouse/hamster WGS",
+  "service_name": "WGS 1-60x human/mouse/hamster",
   "enabled": 1,
   "service_group": "Sequencing",
   "project_type": "WGS",

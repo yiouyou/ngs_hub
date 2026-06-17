@@ -16,6 +16,7 @@
   "add_on_sequencing",
   "data_analysis",
   "onsite_service",
+  "onsite_location",
   "onsite_address",
   "tissue_dissociation",
   "nuclei_extraction",
@@ -90,6 +91,12 @@
    "fieldname": "onsite_service",
    "fieldtype": "Check",
    "label": "On-site Service"
+  },
+  {
+   "fieldname": "onsite_location",
+   "fieldtype": "Select",
+   "label": "On-site Location",
+   "options": "\nMassachusetts\nOutside Massachusetts"
   },
   {
    "fieldname": "onsite_address",

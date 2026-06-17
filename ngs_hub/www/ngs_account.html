@@ -112,26 +112,28 @@
   .ngs-line-number { width: 28px; height: 28px; border-radius: 50%; background: #17352f; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex: 0 0 auto; }
   .ngs-line-title strong { color: #17352f; white-space: nowrap; }
   .ngs-line-summary { color: #667681; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .ngs-line-grid { display: grid; grid-template-columns: repeat(30, minmax(0, 1fr)); gap: 12px 8px; padding: 10px; align-items: start; }
-  .ngs-field { grid-column: span 6; }
-  .ngs-field-medium { grid-column: span 6; }
-  .ngs-field-analysis { grid-column: span 4; }
-  .ngs-field-wide { grid-column: span 5; }
-  .ngs-field-small { grid-column: span 2; }
-  .ngs-field-reads { grid-column: span 3; }
-  .ngs-field-preprocess { grid-column: span 5; }
-  .ngs-field-check { grid-column: span 4; }
-  .ngs-field-full { grid-column: 1 / -1; }
+  .ngs-line-grid { display: flex; flex-wrap: wrap; gap: 12px 8px; padding: 10px; align-items: start; }
+  .ngs-line-grid > label { flex: 0 0 var(--ngs-field-width, max-content); width: var(--ngs-field-width, max-content); max-width: 100%; }
+  .ngs-field, .ngs-field-medium, .ngs-field-analysis, .ngs-field-wide, .ngs-field-small, .ngs-field-depth, .ngs-field-reads, .ngs-field-preprocess, .ngs-field-check { width: auto; }
+  .ngs-line-grid > label.ngs-field-full { flex: 1 1 100%; width: 100%; }
   .ngs-line-note { display: none; grid-column: 1 / -1; margin: -2px 0 2px; color: #64717c; font-size: 12px; line-height: 1.35; }
   .ngs-label-row { display: inline-flex; align-items: center; gap: 6px; min-width: 0; white-space: nowrap; }
-  .ngs-info-dot { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; padding: 0; border: 1px solid #8aa2af; border-radius: 50%; background: transparent; color: #48616d; font-size: 10px; font-weight: 800; line-height: 1; cursor: help; flex: 0 0 auto; }
+  .ngs-info-dot { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; padding: 0; border: 1px solid #8aa2af; border-radius: 50%; background: transparent; color: #48616d; font-size: 10px; font-weight: 800; line-height: 1; cursor: help; flex: 0 0 auto; vertical-align: middle; }
   .ngs-info-dot::before { content: "i"; }
-  .ngs-info-dot::after { content: attr(data-tooltip); position: absolute; left: 50%; top: calc(100% + 6px); width: max-content; max-width: min(260px, calc(100vw - 32px)); transform: translateX(-50%); padding: 7px 9px; border: 1px solid #c7d1d9; border-radius: 6px; background: #17212b; color: #fff; font-size: 12px; font-weight: 500; line-height: 1.35; white-space: normal; opacity: 0; pointer-events: none; z-index: 10; box-shadow: 0 8px 20px rgba(23, 33, 43, .18); }
+  .ngs-info-dot::after { content: attr(data-tooltip); position: absolute; left: 50%; bottom: calc(100% + 8px); width: max-content; max-width: min(300px, calc(100vw - 32px)); transform: translateX(-50%); padding: 7px 9px; border: 1px solid #c7d1d9; border-radius: 6px; background: #17212b; color: #fff; font-size: 12px; font-weight: 500; line-height: 1.35; white-space: normal; opacity: 0; pointer-events: none; z-index: 20; box-shadow: 0 8px 20px rgba(23, 33, 43, .18); }
   .ngs-info-dot:hover::after, .ngs-info-dot:focus-visible::after { opacity: 1; }
   .ngs-info-dot:focus-visible { outline: 2px solid #6aa79d; outline-offset: 2px; }
   .ngs-hidden-field { display: none !important; }
-  .ngs-inline-check { min-height: 68px; align-items: center; padding-top: 24px; }
+  .ngs-inline-check { min-height: 40px; align-items: center; padding-top: 0; }
+  .ngs-onsite-row { display: flex; flex: 1 1 100%; width: 100%; gap: 8px; align-items: start; }
+  .ngs-onsite-row .ngs-field-check { flex: 0 0 auto; align-self: start; min-height: 40px; padding-top: 24px; }
+  .ngs-onsite-row .ngs-field-check input[type="checkbox"] { align-self: center; }
+  .ngs-onsite-row .ngs-field-check span { max-width: 82px; line-height: 1.12; }
+  .ngs-onsite-row .ngs-field-medium { flex: 0 0 190px; width: 190px; }
+  .ngs-onsite-row .ngs-field-address { flex: 1 1 420px; min-width: 300px; }
+  .ngs-onsite-row .ngs-field-address textarea { min-height: 40px; }
   .ngs-field-hint { color: #64717c; font-size: 12px; font-weight: 500; }
+  .ngs-onsite-row .ngs-field-address .ngs-label-row { width: max-content; max-width: 100%; }
   .ngs-line-card .is-hidden { display: none !important; }
   .ngs-list { display: grid; gap: 10px; margin-top: 18px; }
   .ngs-card { border: 1px solid #d9e1e8; border-radius: 8px; padding: 14px 16px; background: #fff; display: flex; justify-content: space-between; gap: 12px; }
@@ -159,6 +161,14 @@
   .ngs-record-download { align-self: center; display: inline-flex; align-items: center; gap: 7px; min-height: 34px; margin-right: 14px; padding: 7px 10px; border: 1px solid #cfd9df; border-radius: 6px; background: #fff; color: #17352f; font-size: 13px; font-weight: 750; text-decoration: none; white-space: nowrap; }
   .ngs-record-download:hover { background: #f7faf9; color: #17352f; text-decoration: none; }
   .ngs-record-download .ngs-download-icon { margin-right: 0; width: 14px; height: 14px; }
+  .ngs-record-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .ngs-record-action { min-height: 34px; padding: 7px 10px; border: 1px solid #cfd9df; border-radius: 6px; background: #fff; color: #17352f; font-size: 13px; font-weight: 750; text-decoration: none; cursor: pointer; }
+  .ngs-record-action:hover { background: #f7faf9; color: #17352f; text-decoration: none; }
+  .ngs-record-action.is-primary { border-color: #17352f; background: #17352f; color: #fff; }
+  .ngs-record-action.is-primary:hover { background: #23483f; color: #fff; }
+  .ngs-record-action.is-danger { border-color: #f0c8c8; color: #9b2c2c; }
+  .ngs-record-action.is-danger:hover { background: #fff7f7; color: #9b2c2c; }
+  .ngs-record-state-note { color: #64717c; font-size: 13px; }
   .ngs-record-detail { display: none; border-top: 1px solid #e4ebef; padding: 12px 16px 16px; }
   .ngs-record.is-open .ngs-record-detail { display: grid; gap: 12px; }
   .ngs-detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
@@ -168,12 +178,17 @@
   .ngs-detail-section { display: grid; gap: 8px; }
   .ngs-detail-section h4 { margin: 0; color: #17352f; font-size: 14px; }
   .ngs-items { overflow-x: auto; }
-  .ngs-item-table { width: 100%; border-collapse: collapse; border: 1px solid #edf1f4; border-radius: 6px; background: #fbfdfc; overflow: hidden; }
+  .ngs-item-table { width: 100%; border-collapse: collapse; border: 1px solid #edf1f4; border-radius: 6px; background: #fbfdfc; overflow: hidden; font-variant-numeric: tabular-nums; }
   .ngs-item-table th, .ngs-item-table td { padding: 8px 10px; border-bottom: 1px solid #edf1f4; text-align: left; vertical-align: top; }
   .ngs-item-table th { color: #64717c; font-size: 12px; font-weight: 700; background: #f4f8f6; }
   .ngs-item-table tr:last-child td { border-bottom: 0; }
   .ngs-item-table .ngs-num { text-align: right; white-space: nowrap; }
-  .ngs-item-extra td { padding-top: 0; color: #64717c; font-size: 13px; }
+  .ngs-item-main td { background: #fff; }
+  .ngs-item-main strong { color: #17212b; }
+  .ngs-item-breakdown td { padding-top: 5px; padding-bottom: 5px; color: #64717c; font-size: 13px; background: #fbfdfc; }
+  .ngs-item-breakdown-label { display: inline-block; padding-left: 14px; }
+  .ngs-item-breakdown-label::before { content: ""; display: inline-block; width: 6px; height: 1px; margin: 0 8px 4px 0; background: #9aaab4; }
+  .ngs-item-note td { padding-top: 4px; padding-bottom: 7px; color: #64717c; font-size: 13px; background: #fbfdfc; }
   .ngs-project-card { display: grid; gap: 12px; }
   .ngs-project-detail { gap: 12px; }
   .ngs-project-head { display: flex; justify-content: space-between; gap: 12px; }
@@ -182,11 +197,12 @@
   .ngs-qc-image { width: 100%; aspect-ratio: 16 / 9; object-fit: contain; border: 1px solid #d9e1e8; border-radius: 6px; background: #fff; }
   .ngs-muted { color: #64717c; }
   @media (max-width: 900px) {
-    .ngs-line-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
-    .ngs-field-wide, .ngs-field, .ngs-field-medium, .ngs-field-analysis { grid-column: span 4; }
-    .ngs-field-small { grid-column: span 1; }
-    .ngs-field-reads { grid-column: span 2; }
-    .ngs-field-check { grid-column: span 2; }
+    .ngs-line-grid { align-items: start; }
+    .ngs-field-full { flex-basis: 100%; }
+    .ngs-onsite-row { flex-wrap: wrap; }
+    .ngs-onsite-row .ngs-field-address { flex-basis: 100%; min-width: 0; }
+    .ngs-line-note:not(:empty) { display: block; flex: 1 1 100%; width: 100%; }
+    .ngs-field-reads .ngs-info-dot::after { display: none; }
   }
   @media (max-width: 640px) {
     .ngs-record-head { grid-template-columns: 1fr; }
@@ -199,17 +215,70 @@
     .ngs-item-table tr:last-child { border-bottom: 0; }
     .ngs-item-table td { display: grid; grid-template-columns: 96px 1fr; gap: 8px; border-bottom: 0; padding: 6px 10px; text-align: left !important; white-space: normal !important; }
     .ngs-item-table td::before { content: attr(data-label); color: #64717c; font-size: 12px; font-weight: 700; }
-    .ngs-item-extra td { display: block; padding: 4px 10px 10px; }
-    .ngs-item-extra td::before { content: ""; display: none; }
+    .ngs-item-note td, .ngs-item-breakdown td { display: block; padding: 4px 10px 8px; }
+    .ngs-item-note td::before, .ngs-item-breakdown td::before { content: attr(data-label); color: #64717c; font-size: 12px; font-weight: 700; }
+    .ngs-item-breakdown-label { padding-left: 0; }
+    .ngs-item-breakdown-label::before { display: none; }
   }
-  @media (max-width: 540px) { .ngs-grid, .ngs-order-grid { grid-template-columns: 1fr; } .ngs-card { display: block; } .ngs-quote-header { display: grid; } .ngs-line-head { padding: 10px 12px; } .ngs-line-grid { grid-template-columns: 1fr; padding: 12px; gap: 10px; } .ngs-field, .ngs-field-medium, .ngs-field-analysis, .ngs-field-wide, .ngs-field-small, .ngs-field-reads, .ngs-field-preprocess, .ngs-field-check { grid-column: 1 / -1; } .ngs-inline-check { min-height: 40px; padding-top: 0; } .ngs-line-summary { display: none; } .ngs-line-note:not(:empty) { display: block; } }
+  @media (max-width: 540px) { .ngs-grid, .ngs-order-grid { grid-template-columns: 1fr; } .ngs-card { display: block; } .ngs-quote-header { display: grid; } .ngs-line-head { padding: 10px 12px; } .ngs-line-grid { padding: 12px; gap: 10px; } .ngs-line-grid > label, .ngs-field, .ngs-field-medium, .ngs-field-analysis, .ngs-field-wide, .ngs-field-small, .ngs-field-depth, .ngs-field-reads, .ngs-field-preprocess, .ngs-field-check { flex: 1 1 100%; width: auto; } .ngs-onsite-row { gap: 10px; } .ngs-onsite-row .ngs-field-check, .ngs-onsite-row .ngs-field-medium, .ngs-onsite-row .ngs-field-address { flex: 1 1 100%; width: auto; min-width: 0; padding-top: 0; } .ngs-inline-check { min-height: 40px; padding-top: 0; } .ngs-line-summary { display: none; } }
 </style>
 
 <script>
 frappe.ready(() => {
   const state = { quotes: [], orders: [], projects: [], services: [] };
+  const US_STATE_ABBREVIATIONS = [
+    'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+    'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+    'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+    'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+    'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
+    'DC',
+  ];
+  const US_STATE_NAME_TO_ABBR = {
+    'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR',
+    'california': 'CA', 'colorado': 'CO', 'connecticut': 'CT', 'delaware': 'DE',
+    'florida': 'FL', 'georgia': 'GA', 'hawaii': 'HI', 'idaho': 'ID',
+    'illinois': 'IL', 'indiana': 'IN', 'iowa': 'IA', 'kansas': 'KS',
+    'kentucky': 'KY', 'louisiana': 'LA', 'maine': 'ME', 'maryland': 'MD',
+    'massachusetts': 'MA', 'michigan': 'MI', 'minnesota': 'MN', 'mississippi': 'MS',
+    'missouri': 'MO', 'montana': 'MT', 'nebraska': 'NE', 'nevada': 'NV',
+    'new hampshire': 'NH', 'new jersey': 'NJ', 'new mexico': 'NM', 'new york': 'NY',
+    'north carolina': 'NC', 'north dakota': 'ND', 'ohio': 'OH', 'oklahoma': 'OK',
+    'oregon': 'OR', 'pennsylvania': 'PA', 'rhode island': 'RI',
+    'south carolina': 'SC', 'south dakota': 'SD', 'tennessee': 'TN', 'texas': 'TX',
+    'utah': 'UT', 'vermont': 'VT', 'virginia': 'VA', 'washington': 'WA',
+    'west virginia': 'WV', 'wisconsin': 'WI', 'wyoming': 'WY',
+    'district of columbia': 'DC',
+  };
+  const STATE_ABBR_PATTERN = new RegExp(`(?:^|\\s)(${US_STATE_ABBREVIATIONS.join('|')})(?:\\s+\\d{5}(?:-\\d{4})?)?(?=\\s*$|\\s*,)`, 'ig');
+  const ZIP_PATTERN = /\b\d{5}(?:-\d{4})?\b/g;
+
+  function extractAddressState(address) {
+    const normalized = String(address || '').replace(/\n/g, ',').replace(/\s+/g, ' ').trim();
+    if (!normalized) return null;
+    const matches = Array.from(normalized.matchAll(STATE_ABBR_PATTERN)).map((match) => match[1].toUpperCase());
+    if (matches.length) return matches[matches.length - 1];
+    const components = normalized.split(',').map((part) => part.trim().replace(/[. ]+$/g, '')).filter(Boolean);
+    for (let index = components.length - 1; index >= 0; index -= 1) {
+      const withoutZip = components[index].replace(ZIP_PATTERN, '').trim().replace(/[. ]+$/g, '').toLowerCase();
+      if (US_STATE_NAME_TO_ABBR[withoutZip]) return US_STATE_NAME_TO_ABBR[withoutZip];
+      const stateName = Object.keys(US_STATE_NAME_TO_ABBR).sort((a, b) => b.length - a.length).find((name) => withoutZip.endsWith(` ${name}`));
+      if (stateName) return US_STATE_NAME_TO_ABBR[stateName];
+    }
+    return null;
+  }
+
+  function onsiteLocationMessage(location, address) {
+    if (!location || !address) return '';
+    const state = extractAddressState(address);
+    if (!state) return 'Address must include a US state abbreviation or state name.';
+    if (location === 'Massachusetts' && state !== 'MA') return `Address appears to be ${state}, but location is Massachusetts.`;
+    if (location === 'Outside Massachusetts' && state === 'MA') return 'Address appears to be Massachusetts, but location is Outside Massachusetts.';
+    return '';
+  }
+
   let accountMessageTimer = null;
-  const projectTypes = ['Bulk RNAseq', '30x WGS', '10x Single Cell', 'Shotgun Meta', 'Sequencing Only', 'Custom Project'];
+  const projectTypes = ['Bulk RNAseq', 'WGS', '10x Single Cell', 'Shotgun Meta', 'Sequencing Only', 'Custom Project'];
   const tenxSubtypes = [
     { label: "3' transcriptome", projectType: "10x 3' Transcriptome", serviceCode: '10X_3_TRANSCRIPTOME' },
     { label: "5' transcriptome", projectType: "10x 5' Transcriptome", serviceCode: '10X_5_TRANSCRIPTOME' },
@@ -231,12 +300,16 @@ frappe.ready(() => {
       standardReads: 20,
       defaultReads: 20,
     },
-    '30x WGS': {
+    'WGS': {
       backendProjectType: 'WGS',
       serviceCode: 'WGS_30X',
       species: ['human', 'mouse', 'hamster'],
       samples: ['DNA', 'Cells', 'Tissue', 'Saliva', 'Blood', 'Plasma', 'Serum', 'Swabs'],
       analyses: ['No', 'Standard Analysis'],
+      depth: true,
+      defaultDepth: 30,
+      minDepth: 1,
+      maxDepth: 60,
       reads: false,
     },
     '10x Single Cell': {
@@ -268,7 +341,6 @@ frappe.ready(() => {
       samples: ['Other'],
       analyses: ['Custom Analysis'],
       reads: false,
-      onsite: true,
     },
   };
 
@@ -280,6 +352,59 @@ frappe.ready(() => {
 
   function fillOptions(select, options, selected) {
     select.innerHTML = options.map((value) => `<option value="${escape(value)}"${value === selected ? ' selected' : ''}>${escape(value)}</option>`).join('');
+  }
+
+  const fieldMeasureCanvas = document.createElement('canvas');
+  const fieldMeasureContext = fieldMeasureCanvas.getContext('2d');
+
+  function measureFieldText(label, text) {
+    if (!fieldMeasureContext) return String(text || '').length * 8;
+    const control = label.querySelector('select, input, textarea') || label;
+    const style = window.getComputedStyle(control);
+    fieldMeasureContext.font = `${style.fontStyle} ${style.fontVariant} ${style.fontWeight} ${style.fontSize} / ${style.lineHeight} ${style.fontFamily}`;
+    return fieldMeasureContext.measureText(String(text || '')).width;
+  }
+
+  function getVisibleLabelText(label) {
+    const labelRow = label.querySelector('.ngs-label-row');
+    const source = labelRow || label;
+    const directText = Array.from(source.childNodes)
+      .filter((node) => node.nodeType === Node.TEXT_NODE)
+      .map((node) => node.textContent.trim())
+      .filter(Boolean)
+      .join(' ');
+    return directText || label.querySelector('span:not(.ngs-field-hint)')?.textContent.trim() || '';
+  }
+
+  function getFieldWidthCandidates(label) {
+    const select = label.querySelector('select');
+    const input = label.querySelector('input');
+    const candidates = [getVisibleLabelText(label)];
+    if (select) {
+      candidates.push(...Array.from(select.options).map((option) => option.textContent || option.label || option.value));
+    } else if (input?.type === 'number') {
+      candidates.push('0000');
+    } else if (input) {
+      candidates.push(input.value || input.placeholder || '');
+    }
+    return candidates.filter(Boolean);
+  }
+
+  function updateFieldWidth(label) {
+    if (label.classList.contains('ngs-field-full')) return;
+    const candidates = getFieldWidthCandidates(label);
+    const contentWidth = Math.max(0, ...candidates.map((text) => measureFieldText(label, text)));
+    const control = label.querySelector('select, input, textarea');
+    const isSelect = Boolean(label.querySelector('select'));
+    const isCheckbox = control?.type === 'checkbox';
+    const controlChrome = isCheckbox ? 52 : (isSelect ? 54 : 38);
+    const width = Math.ceil(contentWidth + controlChrome);
+    const rowWidth = label.closest('.ngs-line-grid')?.clientWidth || 960;
+    label.style.setProperty('--ngs-field-width', `${Math.min(Math.max(width, 72), rowWidth)}px`);
+  }
+
+  function updateQuoteLineWidths(row) {
+    row.querySelectorAll('.ngs-line-grid > label:not(.is-hidden)').forEach(updateFieldWidth);
   }
 
   function getRule(projectType) {
@@ -322,7 +447,7 @@ frappe.ready(() => {
   }
 
   function needsOnsiteAddress(projectType, onsite) {
-    return Boolean(onsite && ['10x Single Cell', 'Custom Project'].includes(projectType));
+    return Boolean(onsite && projectType === '10x Single Cell');
   }
 
   function needsNuclei(projectType, sampleType) {
@@ -362,6 +487,9 @@ frappe.ready(() => {
         <label class="ngs-field-medium" data-field="species">Species
           <select name="species"></select>
         </label>
+        <label class="ngs-field-depth" data-field="depth">Coverage (x)
+          <input name="read_depth" type="number" min="1" max="60" step="1">
+        </label>
         <label class="ngs-field" data-field="sample">Sample type
           <select name="sample_type"></select>
         </label>
@@ -385,14 +513,23 @@ frappe.ready(() => {
             <option value="Nuclei Extraction">Nuclei Extraction</option>
           </select>
         </label>
-        <label class="ngs-check ngs-inline-check ngs-field-check" data-field="onsite">
-          <input name="onsite_service" type="checkbox"> <span>On-site service</span>
-        </label>
         <div class="ngs-line-note" data-field="reads-hint"></div>
-        <label class="ngs-field-full" data-field="address">On-site address
-          <textarea name="onsite_address" rows="2" placeholder="Include ZIP code for Massachusetts service-area pricing."></textarea>
-          <span class="ngs-field-hint">MA ZIP prefixes 018, 020, 021, 022, and 024 add $200. Other areas are quoted based on actual expenses.</span>
-        </label>
+        <div class="ngs-onsite-row" data-field="onsite-row">
+          <label class="ngs-check ngs-inline-check ngs-field-check" data-field="onsite">
+            <input name="onsite_service" type="checkbox"> <span>On-site<br>service</span>
+          </label>
+          <label class="ngs-field-medium" data-field="onsite-location">On-site location
+            <select name="onsite_location">
+              <option value="">Select location</option>
+              <option value="Massachusetts">Massachusetts</option>
+              <option value="Outside Massachusetts">Outside Massachusetts</option>
+            </select>
+          </label>
+          <label class="ngs-field-address" data-field="address">
+            <span class="ngs-label-row">On-site address<button class="ngs-info-dot" data-field="onsite-info" type="button" aria-label="Massachusetts adds $200. Outside Massachusetts is quoted based on actual expenses." data-tooltip="Massachusetts adds $200. Outside Massachusetts is quoted based on actual expenses."></button></span>
+            <textarea name="onsite_address" rows="1" placeholder="Street, city, state, ZIP"></textarea>
+          </label>
+        </div>
         <label class="ngs-field-full" data-field="custom-details">Custom project details
           <textarea name="custom_project_description" rows="4" placeholder="Include the project goal, sample material/type, organism/species, sample count, library or sequencing needs, read depth, analysis needs, timeline, logistics, and any special handling."></textarea>
         </label>
@@ -402,6 +539,8 @@ frappe.ready(() => {
     const projectSelect = row.querySelector('[name="project_type"]');
     fillOptions(projectSelect, projectTypes, values.project_type || 'Bulk RNAseq');
     row.querySelector('[name="reads_per_sample_million"]').value = values.reads_per_sample_million || '';
+    row.querySelector('[name="read_depth"]').value = String(values.read_depth || '').replace(/x$/i, '');
+    row.querySelector('[name="onsite_location"]').value = values.onsite_location || '';
     row.querySelector('[name="onsite_address"]').value = values.onsite_address || '';
     row.querySelector('[name="custom_project_description"]').value = values.custom_project_description || '';
     row.querySelector('[name="add_on_sequencing"]').value = values.add_on_sequencing ? '1' : '0';
@@ -418,9 +557,19 @@ frappe.ready(() => {
       input.addEventListener('change', () => refreshQuoteLine(row));
     });
     row.querySelector('[name="reads_per_sample_million"]').addEventListener('input', () => refreshQuoteLine(row));
+    row.querySelector('[name="read_depth"]').addEventListener('input', () => refreshQuoteLine(row));
     row.querySelector('[name="custom_project_description"]').addEventListener('input', () => refreshQuoteLine(row));
+    row.querySelector('[name="onsite_address"]').addEventListener('input', () => refreshQuoteLine(row));
     refreshQuoteLine(row);
     renumberQuoteLines();
+  }
+
+  function validateOnsiteLocation(row) {
+    const locationInput = row.querySelector('[name="onsite_location"]');
+    const addressInput = row.querySelector('[name="onsite_address"]');
+    const message = onsiteLocationMessage(locationInput.value, addressInput.value);
+    locationInput.setCustomValidity(message);
+    addressInput.setCustomValidity(message);
   }
 
   function refreshQuoteLine(row) {
@@ -442,10 +591,12 @@ frappe.ready(() => {
 
     const sampleType = sampleSelect.value;
     const readsInput = row.querySelector('[name="reads_per_sample_million"]');
+    const depthInput = row.querySelector('[name="read_depth"]');
     const readsHint = row.querySelector('[data-field="reads-hint"]');
     const readsInfo = row.querySelector('[data-field="reads-info"]');
     const addOnInput = row.querySelector('[name="add_on_sequencing"]');
     const onsiteInput = row.querySelector('[name="onsite_service"]');
+    const locationInput = row.querySelector('[name="onsite_location"]');
     const addressInput = row.querySelector('[name="onsite_address"]');
     const tissueInput = row.querySelector('[name="tissue_dissociation"]');
     const nucleiInput = row.querySelector('[name="nuclei_extraction"]');
@@ -457,11 +608,17 @@ frappe.ready(() => {
     row.querySelector('[data-field="species"]').classList.toggle('is-hidden', isCustomProject || !(rule.species || []).length);
     row.querySelector('[data-field="sample"]').classList.toggle('is-hidden', isCustomProject);
     row.querySelector('[data-field="analysis"]').classList.toggle('is-hidden', isCustomProject);
+    row.querySelector('[data-field="depth"]').classList.toggle('is-hidden', isCustomProject || !rule.depth);
     row.querySelector('[data-field="reads"]').classList.toggle('is-hidden', isCustomProject || !rule.reads);
     row.classList.toggle('no-reads', !rule.reads);
-    row.querySelector('[data-field="onsite"]').classList.toggle('is-hidden', !rule.onsite);
+    const onsiteEnabled = Boolean(rule.onsite);
+    row.querySelector('[data-field="onsite-row"]').classList.toggle('is-hidden', !onsiteEnabled);
+    row.querySelector('[data-field="onsite"]').classList.toggle('is-hidden', !onsiteEnabled);
+    if (!onsiteEnabled) onsiteInput.checked = false;
     const addressRequired = needsOnsiteAddress(projectType, onsiteInput.checked);
+    row.querySelector('[data-field="onsite-location"]').classList.toggle('is-hidden', !addressRequired);
     row.querySelector('[data-field="address"]').classList.toggle('is-hidden', !addressRequired);
+    locationInput.required = addressRequired;
     addressInput.required = addressRequired;
     const subtypeKey = `${projectType}|${subtypeSelect.value}`;
     const subtypeChanged = row.dataset.subtypeKey !== subtypeKey;
@@ -498,13 +655,35 @@ frappe.ready(() => {
       readsInfo.classList.add('is-hidden');
       addOnInput.value = '0';
     }
-    if (!rule.onsite) onsiteInput.checked = false;
-    if (!addressRequired) addressInput.value = '';
+    if (rule.depth && !isCustomProject) {
+      depthInput.required = true;
+      depthInput.min = rule.minDepth || 1;
+      depthInput.max = rule.maxDepth || 60;
+      if (projectChanged || !depthInput.value) {
+        depthInput.value = rule.defaultDepth || 30;
+      }
+      const depth = Number(depthInput.value || 0);
+      depthInput.setCustomValidity(
+        depth < Number(depthInput.min) || depth > Number(depthInput.max)
+          ? `Coverage must be between ${depthInput.min}x and ${depthInput.max}x.`
+          : ''
+      );
+    } else {
+      depthInput.required = false;
+      depthInput.value = '';
+      depthInput.setCustomValidity('');
+    }
+    if (!onsiteEnabled || !addressRequired) {
+      locationInput.value = '';
+      addressInput.value = '';
+    }
     if (!isCustomProject) customDetailsInput.value = '';
+    validateOnsiteLocation(row);
     row.dataset.projectType = projectType;
     row.dataset.subtypeKey = subtypeKey;
     row.dataset.sampleKey = sampleKey;
     updateQuoteLineSummary(row);
+    updateQuoteLineWidths(row);
   }
 
   function renumberQuoteLines() {
@@ -523,12 +702,13 @@ frappe.ready(() => {
     const projectType = row.querySelector('[name="project_type"]').value;
     const sampleType = row.querySelector('[name="sample_type"]').value;
     const species = row.querySelector('[name="species"]').value;
+    const depth = row.querySelector('[name="read_depth"]').value;
     const quantity = row.querySelector('[name="quantity"]').value || 1;
     if (projectType === 'Custom Project') {
       row.querySelector('.ngs-line-summary').textContent = `${resolved.displayProjectType} / ${quantity}`;
       return;
     }
-    const details = [resolved.displayProjectType, resolved.subtype, species, sampleType, quantity].filter(Boolean);
+    const details = [resolved.displayProjectType, resolved.subtype, species, depth ? `${depth}x` : null, sampleType, quantity].filter(Boolean);
     row.querySelector('.ngs-line-summary').textContent = details.join(' / ');
   }
 
@@ -538,19 +718,24 @@ frappe.ready(() => {
       const sampleType = row.querySelector('[name="sample_type"]').value;
       const description = row.querySelector('[name="custom_project_description"]').value.trim();
       const service = findServiceByCode(resolved.serviceCode);
+      const selectedProjectType = row.querySelector('[name="project_type"]').value;
+      const rule = getRule(selectedProjectType);
+      const onsiteEnabled = Boolean(rule.onsite && row.querySelector('[name="onsite_service"]').checked);
       return {
         service: service ? service.name : null,
         project_type: resolved.projectType,
         sample_type: sampleType,
         description,
         species: row.querySelector('[name="species"]').value || null,
+        read_depth: row.querySelector('[name="read_depth"]').value || null,
         quantity: Number(row.querySelector('[name="quantity"]').value || 1),
         reads_per_sample_million: Number(row.querySelector('[name="reads_per_sample_million"]').value || 0) || null,
         add_on_sequencing: row.querySelector('[name="add_on_sequencing"]').value === '1' ? 1 : 0,
         data_analysis: row.querySelector('[name="data_analysis"]').value,
         library_qc: resolved.isSequencingOnly ? 1 : 0,
-        onsite_service: row.querySelector('[name="onsite_service"]').checked ? 1 : 0,
-        onsite_address: row.querySelector('[name="onsite_address"]').value,
+        onsite_service: onsiteEnabled ? 1 : 0,
+        onsite_location: onsiteEnabled ? row.querySelector('[name="onsite_location"]').value : '',
+        onsite_address: onsiteEnabled ? row.querySelector('[name="onsite_address"]').value : '',
         tissue_dissociation: row.querySelector('[name="tissue_dissociation"]').value === '1' ? 1 : 0,
         nuclei_extraction: row.querySelector('[name="nuclei_extraction"]').value === '1' ? 1 : 0,
       };
@@ -581,6 +766,31 @@ frappe.ready(() => {
     return Number.isInteger(number) ? String(number) : number.toFixed(2);
   }
 
+  function requiresManualPricing(item) {
+    return item?.project_type === 'Custom Project' && Number(item.unit_price || 0) <= 0 && Number(item.amount || 0) <= 0;
+  }
+
+  function itemHasUnpricedFee(item) {
+    return Boolean(item?.has_unpriced_fee) || requiresManualPricing(item);
+  }
+
+  function quoteHasUnpricedFees(quote) {
+    return Boolean(quote?.has_unpriced_fees) || Boolean(quote?.missing_info) || (quote.items || []).some((item) => itemHasUnpricedFee(item));
+  }
+
+  function itemPriceLabel(item, field) {
+    return requiresManualPricing(item) ? 'TBD' : `$${money(item[field])}`;
+  }
+
+  function quoteTotalLabel(quote) {
+    if (!quoteHasUnpricedFees(quote)) return `$${money(quote.total_amount)}`;
+    return Number(quote.total_amount || 0) > 0 ? `$${money(quote.total_amount)} + TBD` : 'TBD';
+  }
+
+  function quoteTotalCaption(quote) {
+    return quoteHasUnpricedFees(quote) ? 'Priced subtotal' : 'Total';
+  }
+
   function formatDate(value) {
     if (!value) return '';
     const normalized = String(value).replace(' ', 'T').replace(/\.(\d{3})\d+/, '.$1');
@@ -605,7 +815,10 @@ frappe.ready(() => {
     const addOns = [];
     if (item.tissue_dissociation) addOns.push('Tissue dissociation');
     if (item.nuclei_extraction) addOns.push('Nuclei extraction');
-    if (item.onsite_service) addOns.push(item.onsite_address ? `On-site service: ${item.onsite_address}` : 'On-site service');
+    if (item.onsite_service) {
+      const onsiteParts = [item.onsite_location, item.onsite_address].filter(Boolean).join(' - ');
+      addOns.push(onsiteParts ? `On-site service: ${onsiteParts}` : 'On-site service');
+    }
     if (item.library_qc) addOns.push('Library QC');
     if (item.add_on_sequencing) addOns.push('Extra sequencing');
     return addOns;
@@ -613,12 +826,38 @@ frappe.ready(() => {
 
   function itemPriceSummary(item) {
     const quantity = Number(item.quantity || 0);
-    return [`Unit price: $${money(item.unit_price)}`, quantity ? `Qty: ${quantity}` : null, `Line total: $${money(item.amount)}`].filter(Boolean).join(' · ');
+    return [`Unit price: ${itemPriceLabel(item, 'unit_price')}`, quantity ? `Qty: ${quantity}` : null, `Line total: ${itemPriceLabel(item, 'amount')}`].filter(Boolean).join(' · ');
+  }
+
+  function priceBreakdownUnitLabel(row) {
+    if (row.display) return row.display;
+    const unit = `$${money(row.unit_price)}`;
+    const quantity = Number(row.quantity || 0);
+    return quantity ? `${unit} x ${quantity}` : unit;
+  }
+
+  function priceBreakdownAmountLabel(row) {
+    if (row.amount === null || row.amount === undefined) return row.display || 'TBD';
+    return `$${money(row.amount)}`;
+  }
+
+  function renderPriceBreakdownRows(item, columnCount) {
+    const rows = item.price_breakdown || [];
+    if (!rows.length) return '';
+    const detailSpan = columnCount - 2;
+    return rows.map((row) => `
+      <tr class="ngs-item-breakdown">
+        <td data-label="Price detail" colspan="${detailSpan}"><span class="ngs-item-breakdown-label">${escape(row.label || '')}</span></td>
+        <td data-label="Unit" class="ngs-num">${escape(priceBreakdownUnitLabel(row))}</td>
+        <td data-label="Total" class="ngs-num">${escape(priceBreakdownAmountLabel(row))}</td>
+      </tr>
+    `).join('');
   }
 
   function itemMeta(item) {
     return [
       item.data_analysis ? `Analysis: ${item.data_analysis}` : null,
+      item.read_depth ? `Coverage: ${item.read_depth}` : null,
       item.reads_per_sample_million ? `Reads: ${item.reads_per_sample_million}M` : null,
       item.species ? `Species: ${item.species}` : null,
     ].filter(Boolean);
@@ -648,45 +887,83 @@ frappe.ready(() => {
     return `<span class="${statusClass(status)}">${escape(status || 'Draft')}</span>`;
   }
 
+  function isOrderableQuote(quote) {
+    return ['Draft', 'Confirmed', 'Sent'].includes(quote.status || 'Draft') && !quote.order && !quoteHasUnpricedFees(quote);
+  }
+
+  function isCancellableQuote(quote) {
+    return ['Draft', 'Pending'].includes(quote.status || 'Draft') && !quote.order;
+  }
+
+  function quoteStateNote(quote) {
+    const status = quote.status || 'Draft';
+    if (quoteHasUnpricedFees(quote)) return 'Some charges are TBD. Athenomics will confirm final pricing before this quote can be ordered.';
+    if (status === 'Pending') return 'Waiting for Athenomics to confirm missing information.';
+    if (status === 'Converted to Order') return quote.order ? `Converted to order ${quote.order}.` : 'Converted to an order.';
+    if (status === 'Cancelled') return 'Cancelled by request.';
+    return 'Ready to place an order when you have PO and sample registration documents.';
+  }
+
+  function quoteActions(quote) {
+    const actions = [];
+    if (isOrderableQuote(quote)) {
+      actions.push(`<button type="button" class="ngs-record-action is-primary" data-quote-action="order" data-quote="${escape(quote.name)}">Place order</button>`);
+    }
+    if (quote.status === 'Converted to Order' && quote.order) {
+      actions.push(`<button type="button" class="ngs-record-action" data-quote-action="view-order" data-order="${escape(quote.order)}">View order</button>`);
+    }
+    if (isCancellableQuote(quote)) {
+      actions.push(`<button type="button" class="ngs-record-action is-danger" data-quote-action="cancel" data-quote="${escape(quote.name)}">${quote.status === 'Pending' ? 'Cancel request' : 'Cancel quote'}</button>`);
+    }
+    actions.push(`<span class="ngs-record-state-note">${escape(quoteStateNote(quote))}</span>`);
+    return `<div class="ngs-record-actions">${actions.join('')}</div>`;
+  }
+
   function renderItems(items, includePrices) {
     if (!items || !items.length) return '<p class="ngs-muted">No line items saved.</p>';
     const headers = includePrices
-      ? ['Project', 'Sample', 'Qty', 'Reads', 'Analysis', 'Unit', 'Total']
-      : ['Project', 'Sample', 'Qty', 'Reads', 'Analysis'];
+      ? ['Project', 'Sample', 'Qty', 'Coverage / Reads', 'Analysis', 'Unit', 'Total']
+      : ['Project', 'Sample', 'Qty', 'Coverage / Reads', 'Analysis'];
     const columnCount = headers.length;
+    const colgroup = includePrices
+      ? '<col style="width: 28%"><col style="width: 14%"><col style="width: 6%"><col style="width: 14%"><col style="width: 14%"><col style="width: 12%"><col style="width: 12%">'
+      : '<col style="width: 34%"><col style="width: 18%"><col style="width: 8%"><col style="width: 20%"><col style="width: 20%">';
     const rows = items.map((item) => {
       const addOns = itemAddOns(item);
       const description = itemDescription(item);
-      const extras = [
+      const notes = [
         addOns.length ? `Options: ${addOns.join(' · ')}` : null,
-        description || null,
+        item.project_type === 'Custom Project' && description ? description : null,
         item.rule_notes || null,
       ].filter(Boolean);
+      const projectCell = [
+        `<strong>${escape(item.project_type || item.description || 'Project')}</strong>`,
+        item.species ? `<div class="ngs-muted">${escape(item.species)}</div>` : '',
+      ].join('');
       const cells = [
-        `<td data-label="Project"><strong>${escape(item.project_type || item.description || 'Project')}</strong>${item.species ? `<div class="ngs-muted">${escape(item.species)}</div>` : ''}</td>`,
+        `<td data-label="Project">${projectCell}</td>`,
         `<td data-label="Sample">${escape(item.sample_type || '')}</td>`,
         `<td data-label="Qty" class="ngs-num">${escape(item.quantity || '')}</td>`,
-        `<td data-label="Reads" class="ngs-num">${item.reads_per_sample_million ? `${escape(item.reads_per_sample_million)}M` : ''}</td>`,
+        `<td data-label="Coverage / Reads" class="ngs-num">${item.read_depth ? escape(item.read_depth) : (item.reads_per_sample_million ? `${escape(item.reads_per_sample_million)}M` : '')}</td>`,
         `<td data-label="Analysis">${escape(item.data_analysis || '')}</td>`,
       ];
       if (includePrices) {
-        cells.push(`<td data-label="Unit" class="ngs-num">$${escape(money(item.unit_price))}</td>`);
-        cells.push(`<td data-label="Total" class="ngs-num">$${escape(money(item.amount))}</td>`);
+        cells.push(`<td data-label="Unit" class="ngs-num">${escape(itemPriceLabel(item, 'unit_price'))}</td>`);
+        cells.push(`<td data-label="Total" class="ngs-num">${escape(itemPriceLabel(item, 'amount'))}</td>`);
       }
-      return `
-        <tr>${cells.join('')}</tr>
-        ${extras.length ? `<tr class="ngs-item-extra"><td colspan="${columnCount}">${extras.map((line) => `<div>${escape(line).replace(/\n/g, '<br>')}</div>`).join('')}</td></tr>` : ''}
-      `;
+      const noteRows = notes.length
+        ? `<tr class="ngs-item-note"><td data-label="Notes" colspan="${columnCount}">${notes.map((line) => `<div>${escape(line).replace(/\n/g, '<br>')}</div>`).join('')}</td></tr>`
+        : '';
+      const breakdownRows = includePrices ? renderPriceBreakdownRows(item, columnCount) : '';
+      return `<tr class="ngs-item-main">${cells.join('')}</tr>${noteRows}${breakdownRows}`;
     }).join('');
     return `
-      <div class="ngs-detail-section">
-        <h4>Line items</h4>
-        <div class="ngs-items">
-          <table class="ngs-item-table">
-            <thead><tr>${headers.map((header) => `<th>${escape(header)}</th>`).join('')}</tr></thead>
-            <tbody>${rows}</tbody>
-          </table>
-        </div>
+      <div class="ngs-items">
+        <table class="ngs-item-table">
+          <colgroup>${colgroup}</colgroup>
+          <thead><tr>${headers.map((header) => `<th>${escape(header)}</th>`).join('')}</tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
       </div>
     `;
   }
@@ -699,7 +976,7 @@ frappe.ready(() => {
     const items = quote.items || [];
     const status = quote.status || 'Draft';
     return `
-      <article class="ngs-record">
+      <article class="ngs-record" data-record-name="${escape(quote.name)}">
         <div class="ngs-record-head">
           <button type="button" class="ngs-record-toggle" aria-expanded="false">
             <span class="ngs-record-main">
@@ -707,7 +984,7 @@ frappe.ready(() => {
               <span class="ngs-record-meta">Updated ${escape(formatDate(quote.modified))} · ${escape(itemCountLabel(items))} · ${escape(compactItemSummary(items))}</span>
             </span>
             <span class="ngs-record-side">
-              <span class="ngs-record-amount">$${escape(money(quote.total_amount))}</span>
+              <span class="ngs-record-amount">${escape(quoteTotalLabel(quote))}</span>
               <span class="ngs-record-chevron">Details</span>
             </span>
           </button>
@@ -718,12 +995,14 @@ frappe.ready(() => {
         </div>
         <div class="ngs-record-detail">
           <div class="ngs-detail-grid">
-            <div class="ngs-detail-field is-total"><span>Total</span>${escape(`$${money(quote.total_amount)}`)}</div>
+            <div class="ngs-detail-field is-total"><span>${escape(quoteTotalCaption(quote))}</span>${escape(quoteTotalLabel(quote))}</div>
             <div class="ngs-detail-field"><span>Status</span>${renderStatus(status)}</div>
             <div class="ngs-detail-field"><span>Updated</span>${escape(formatDate(quote.modified))}</div>
             <div class="ngs-detail-field"><span>Linked order</span>${escape(quote.order || 'Not ordered yet')}</div>
           </div>
+          ${quoteActions(quote)}
           ${renderItems(quote.items, true)}
+          ${quote.missing_info ? `<div class="ngs-detail-field"><span>Pricing to confirm</span>${escape(quote.missing_info).replace(/\n/g, '<br>')}</div>` : ''}
           ${quote.custom_project_description ? `<div class="ngs-detail-field"><span>Custom project details</span>${escape(quote.custom_project_description)}</div>` : ''}
         </div>
       </article>
@@ -734,7 +1013,7 @@ frappe.ready(() => {
     const items = order.items || [];
     const status = order.status || 'Draft';
     return `
-      <article class="ngs-record">
+      <article class="ngs-record" data-record-name="${escape(order.name)}">
         <button type="button" class="ngs-record-toggle" aria-expanded="false">
           <span class="ngs-record-main">
             <span class="ngs-record-title"><strong>${escape(order.name)}</strong>${renderStatus(status)}</span>
@@ -822,7 +1101,8 @@ frappe.ready(() => {
     document.getElementById('ngs-orders').innerHTML = existingList('Existing orders', state.orders, orderRecord);
     document.getElementById('ngs-projects').innerHTML = state.projects.length ? state.projects.map(projectCard).join('') : '<p class="ngs-muted">No projects yet.</p>';
     const quoteSelect = document.querySelector('#ngs-order-form select[name="quote"]');
-    quoteSelect.innerHTML = '<option value="">No quote / direct order</option>' + state.quotes.map((q) => `<option value="${escape(q.name)}">${escape(q.name)} (${escape(q.status)})</option>`).join('');
+    const orderableQuotes = state.quotes.filter(isOrderableQuote);
+    quoteSelect.innerHTML = '<option value="">No quote / direct order</option>' + orderableQuotes.map((q) => `<option value="${escape(q.name)}">${escape(q.name)} (${escape(q.status || 'Draft')})</option>`).join('');
   }
 
   function activatePanel(button, focus = false) {
@@ -842,6 +1122,45 @@ frappe.ready(() => {
   async function load() {
     const response = await frappe.call('ngs_hub.api.portal.get_portal_context');
     render(response.message || {});
+  }
+
+  function openRecordByName(containerId, name) {
+    const container = document.getElementById(containerId);
+    const record = Array.from(container.querySelectorAll('.ngs-record')).find((item) => item.dataset.recordName === name);
+    if (!record) return false;
+    record.classList.add('is-open');
+    const toggle = record.querySelector('.ngs-record-toggle');
+    if (toggle) toggle.setAttribute('aria-expanded', 'true');
+    const label = record.querySelector('.ngs-record-chevron');
+    if (label) label.textContent = 'Hide';
+    record.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    return true;
+  }
+
+  function startOrderFromQuote(quoteName) {
+    const orderTab = document.getElementById('tab-order');
+    activatePanel(orderTab);
+    const quoteSelect = document.querySelector('#ngs-order-form select[name="quote"]');
+    quoteSelect.value = quoteName;
+    quoteSelect.focus();
+    document.getElementById('ngs-order-form').scrollIntoView({ block: 'start', behavior: 'smooth' });
+    setAccountMessage(`Quote ${quoteName} selected for order.`);
+  }
+
+  function viewLinkedOrder(orderName) {
+    const orderTab = document.getElementById('tab-order');
+    activatePanel(orderTab);
+    if (!openRecordByName('ngs-orders', orderName)) {
+      document.getElementById('ngs-orders').scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+  }
+
+  async function cancelQuote(quoteName) {
+    if (!window.confirm(`Cancel quote ${quoteName}? This keeps the record but removes it from ordering.`)) return;
+    const response = await frappe.call('ngs_hub.api.portal.cancel_quote', { quote: quoteName });
+    await load();
+    setAccountMessage(`Quote ${response.message?.name || quoteName} cancelled.`);
+    openRecordByName('ngs-quotes', quoteName);
   }
 
   async function uploadFile(file) {
@@ -897,7 +1216,16 @@ frappe.ready(() => {
     });
   });
 
-  document.addEventListener('click', (event) => {
+  document.addEventListener('click', async (event) => {
+    const quoteAction = event.target.closest('[data-quote-action]');
+    if (quoteAction) {
+      event.preventDefault();
+      const action = quoteAction.dataset.quoteAction;
+      if (action === 'order') startOrderFromQuote(quoteAction.dataset.quote);
+      if (action === 'view-order') viewLinkedOrder(quoteAction.dataset.order);
+      if (action === 'cancel') await cancelQuote(quoteAction.dataset.quote);
+      return;
+    }
     const toggle = event.target.closest('.ngs-record-toggle');
     if (!toggle) return;
     const record = toggle.closest('.ngs-record');

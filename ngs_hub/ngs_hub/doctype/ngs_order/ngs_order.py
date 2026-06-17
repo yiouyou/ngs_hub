@@ -33,6 +33,8 @@ class NGSOrder(Document):
 		for item in self.items:
 			if not item.quantity or item.quantity <= 0:
 				frappe.throw(_("Quantity must be greater than zero for order item {0}").format(item.idx))
+			if item.onsite_service and not item.onsite_location:
+				frappe.throw(_("On-site service requires a location for order item {0}").format(item.idx))
 			if item.onsite_service and not item.onsite_address:
 				frappe.throw(_("On-site service requires an address for order item {0}").format(item.idx))
 			if item.service and not item.quote_item:
@@ -60,16 +62,18 @@ class NGSOrder(Document):
 				"sample_type": quote_item.sample_type,
 				"description": quote_item.description,
 				"quantity": quote_item.quantity,
-					"data_analysis": quote_item.data_analysis,
-					"onsite_service": quote_item.onsite_service,
-					"onsite_address": quote_item.onsite_address,
-					"tissue_dissociation": quote_item.tissue_dissociation,
-					"nuclei_extraction": quote_item.nuclei_extraction,
-					"library_qc": quote_item.library_qc,
-					"unit_price": quote_item.unit_price,
-					"amount": quote_item.amount,
-					"notes": quote_item.rule_notes,
-				})
+				"read_depth": quote_item.read_depth,
+				"data_analysis": quote_item.data_analysis,
+				"onsite_service": quote_item.onsite_service,
+				"onsite_location": quote_item.onsite_location,
+				"onsite_address": quote_item.onsite_address,
+				"tissue_dissociation": quote_item.tissue_dissociation,
+				"nuclei_extraction": quote_item.nuclei_extraction,
+				"library_qc": quote_item.library_qc,
+				"unit_price": quote_item.unit_price,
+				"amount": quote_item.amount,
+				"notes": quote_item.rule_notes,
+			})
 
 	def attach_uploaded_files(self):
 		for fieldname in ("po_file", "sample_registration_form"):

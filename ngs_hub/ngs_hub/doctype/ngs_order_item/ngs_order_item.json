@@ -11,8 +11,10 @@
   "sample_type",
   "description",
   "quantity",
+  "read_depth",
   "data_analysis",
   "onsite_service",
+  "onsite_location",
   "onsite_address",
   "tissue_dissociation",
   "nuclei_extraction",
@@ -63,6 +65,11 @@
    "reqd": 1
   },
   {
+   "fieldname": "read_depth",
+   "fieldtype": "Data",
+   "label": "Coverage / Read Depth"
+  },
+  {
    "fieldname": "data_analysis",
    "fieldtype": "Select",
    "label": "Data Analysis",
@@ -72,6 +79,12 @@
    "fieldname": "onsite_service",
    "fieldtype": "Check",
    "label": "On-site Service"
+  },
+  {
+   "fieldname": "onsite_location",
+   "fieldtype": "Select",
+   "label": "On-site Location",
+   "options": "\nMassachusetts\nOutside Massachusetts"
   },
   {
    "fieldname": "onsite_address",

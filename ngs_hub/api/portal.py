@@ -7,6 +7,16 @@ from frappe.utils import add_days, flt, formatdate, getdate
 
 from ngs_hub.api.crm_sync import sync_ngs_customer_to_crm
 from ngs_hub.api.frappe_crm_sync import sync_ngs_customer_to_frappe_crm
+from ngs_hub.ngs_hub.doctype.ngs_quote.ngs_quote import (
+	DNA_EXTRACTION_BLOOD_SALIVA_SWAB_SAMPLE_TYPES,
+	DNA_EXTRACTION_STANDARD_SAMPLE_TYPES,
+	TENX_NUCLEI_EXTRACTION_SAMPLE_TYPES,
+	TENX_TISSUE_DISSOCIATION_SAMPLE_TYPES,
+	WGS_HIGH_VOLUME_MIN_QUANTITY,
+	WGS_HIGH_VOLUME_RATE_PER_X,
+	WGS_LIBRARY_PREP_PRICE,
+	WGS_LOW_VOLUME_RATE_PER_X,
+)
 
 
 def _loads(value):
@@ -51,14 +61,26 @@ def get_login_target(email):
 	return {"target": f"/{target}"} if target else {}
 
 
-def validate_customer_quote(quote, customer):
+ORDERABLE_QUOTE_STATUSES = {"Draft", "Confirmed", "Sent"}
+CANCELLABLE_QUOTE_STATUSES = {"Draft", "Pending"}
+
+
+def validate_customer_quote(quote, customer, require_orderable=False):
 	if not quote:
 		return None
-	quote_customer = frappe.db.get_value("NGS Quote", quote, "customer")
-	if not quote_customer:
+	quote_doc = frappe.db.get_value("NGS Quote", quote, ["customer", "status", "order"], as_dict=True)
+	if not quote_doc:
 		frappe.throw(_("Quote {0} was not found.").format(quote))
-	if quote_customer != customer:
+	if quote_doc.customer != customer:
 		frappe.throw(_("Quote {0} is not linked to your customer account.").format(quote), frappe.PermissionError)
+	if require_orderable and quote_doc.status not in ORDERABLE_QUOTE_STATUSES:
+		frappe.throw(_("Quote {0} is {1} and cannot be used to place an order.").format(quote, quote_doc.status))
+	if require_orderable and quote_doc.order:
+		frappe.throw(_("Quote {0} has already been converted to order {1}.").format(quote, quote_doc.order))
+	if require_orderable:
+		full_quote = frappe.get_doc("NGS Quote", quote)
+		if quote_has_unpriced_fees(full_quote):
+			frappe.throw(_("Quote {0} includes TBD pricing and must be finalized before placing an order.").format(quote))
 	return quote
 
 
@@ -73,6 +95,137 @@ def money(value):
 	return f"{flt(value):,.2f}"
 
 
+def requires_manual_pricing(item):
+	return item.get("project_type") == "Custom Project" and flt(item.get("unit_price")) <= 0 and flt(item.get("amount")) <= 0
+
+
+def item_has_unpriced_fee(item):
+	rule_notes = item.get("rule_notes") or ""
+	return (
+		requires_manual_pricing(item)
+		or "TBD" in rule_notes
+		or "actual-expense pricing" in rule_notes
+		or "quoted based on actual expenses" in rule_notes
+		or "not included in this subtotal" in rule_notes
+		or "not included in this total" in rule_notes
+	)
+
+
+def quote_has_unpriced_fees(quote):
+	return bool(quote.get("missing_info")) or any(item_has_unpriced_fee(item) for item in quote.items)
+
+
+def price_breakdown(item):
+	if requires_manual_pricing(item):
+		return [{"label": "Manual quote", "unit_price": None, "quantity": item.get("quantity") or 1, "amount": None, "display": "TBD"}]
+	quantity = flt(item.get("quantity") or 1)
+	rows = []
+
+	def add(label, unit_price, row_quantity=None):
+		unit_price = flt(unit_price)
+		row_quantity = quantity if row_quantity is None else flt(row_quantity)
+		if unit_price == 0 and row_quantity == 0:
+			return
+		rows.append({
+			"label": label,
+			"unit_price": unit_price,
+			"quantity": row_quantity,
+			"amount": unit_price * row_quantity,
+		})
+
+	project_type = item.get("project_type") or ""
+	sample_type = item.get("sample_type") or ""
+	service_name = get_service_label(item)
+	standard_reads = get_standard_reads(item)
+
+	if project_type == "Custom Project":
+		add(item.get("description") or "Custom project", item.get("unit_price") or 0)
+		return rows
+
+	if project_type == "WGS":
+		depth = get_wgs_depth_value(item)
+		rate = WGS_HIGH_VOLUME_RATE_PER_X if quantity >= WGS_HIGH_VOLUME_MIN_QUANTITY else WGS_LOW_VOLUME_RATE_PER_X
+		add("WGS library prep", WGS_LIBRARY_PREP_PRICE)
+		add(f"WGS sequencing ({depth:g}x at ${rate:g}/x)", depth * rate)
+	else:
+		add(service_name, get_base_unit_price(item, service_name))
+
+	if standard_reads:
+		extra_reads = flt(item.get("reads_per_sample_million")) - standard_reads
+		if extra_reads > 0:
+			add(f"Extra sequencing ({extra_reads:g}M reads at ${get_service_price('EXTRA_SEQUENCING_1M'):g}/M)", extra_reads * get_service_price("EXTRA_SEQUENCING_1M"))
+
+	if project_type == "Bulk RNAseq" and item.get("data_analysis") == "De novo Assembly":
+		add("Transcriptome de novo assembly", get_service_price("RNA_DENOVO_ASSEMBLY"))
+	if project_type == "Shotgun Meta" and item.get("data_analysis") in {"Mapping", "De novo Assembly"}:
+		add("Shotgun metagenomics analysis", get_service_price("SHOTGUN_ANALYSIS"))
+	if project_type == "WGS":
+		if sample_type in DNA_EXTRACTION_STANDARD_SAMPLE_TYPES:
+			add("DNA extraction - cell/tissue/plasma/serum", get_service_price("DNA_EXTRACTION_STANDARD"))
+		elif sample_type in DNA_EXTRACTION_BLOOD_SALIVA_SWAB_SAMPLE_TYPES:
+			add("DNA extraction - blood/saliva/swab", get_service_price("DNA_EXTRACTION_BLOOD_SALIVA_SWAB"))
+	if project_type.startswith("10x"):
+		if sample_type in TENX_TISSUE_DISSOCIATION_SAMPLE_TYPES or item.get("tissue_dissociation"):
+			add("Tissue dissociation", get_service_price("TISSUE_DISSOCIATION"))
+		if sample_type in TENX_NUCLEI_EXTRACTION_SAMPLE_TYPES or item.get("nuclei_extraction"):
+			add("Nuclei extraction", get_service_price("NUCLEI_EXTRACTION"))
+		if "Massachusetts on-site service added." in (item.get("rule_notes") or ""):
+			add("On-site service", get_service_price("ONSITE_SERVICE"))
+		if "not included in this subtotal" in (item.get("rule_notes") or ""):
+			rows.append({
+				"label": "On-site service outside Massachusetts",
+				"unit_price": None,
+				"quantity": item.get("quantity") or 1,
+				"amount": None,
+				"display": "TBD",
+			})
+	if project_type.startswith("Sequencing Only") or item.get("library_qc"):
+		add("Library QC", get_service_price("LIBRARY_QC"))
+
+	breakdown_total = sum(row["amount"] for row in rows if row.get("amount") is not None)
+	unit_price = flt(item.get("unit_price"))
+	adjustment = unit_price - (breakdown_total / quantity if quantity else 0)
+	if abs(adjustment) >= 0.005:
+		add("Manual adjustment", adjustment)
+	return rows
+
+
+def get_service_label(item):
+	if item.get("service"):
+		return frappe.db.get_value("NGS Service Catalog", item.get("service"), "service_name") or item.get("project_type") or "Service"
+	return item.get("description") or item.get("project_type") or "Service"
+
+
+def get_base_unit_price(item, service_name):
+	project_type = item.get("project_type") or ""
+	quantity = flt(item.get("quantity") or 1)
+	if project_type == "Bulk RNAseq":
+		if quantity < 12:
+			return 109
+		if quantity < 49:
+			return 99
+		if quantity < 97:
+			return 94
+		return 89
+	if item.get("service"):
+		return get_service_price(item.get("service"))
+	return item.get("unit_price") or 0
+
+
+def get_standard_reads(item):
+	if item.get("service"):
+		return flt(frappe.db.get_value("NGS Service Catalog", item.get("service"), "standard_reads_million"))
+	return 0
+
+
+def get_service_price(service_code):
+	return flt(frappe.db.get_value("NGS Service Catalog", service_code, "unit_price"))
+
+
+def get_wgs_depth_value(item):
+	return flt(str(item.get("read_depth") or "30").lower().replace("x", "").strip())
+
+
 def quote_pdf_context(quote):
 	created = getdate(quote.creation)
 	customer_name = " ".join(part for part in [quote.get("first_name"), quote.get("last_name")] if part)
@@ -83,6 +236,10 @@ def quote_pdf_context(quote):
 		"created_date": formatdate(created, "mm.dd.yyyy"),
 		"expires_date": formatdate(add_days(created, 60), "mm.dd.yyyy"),
 		"money": money,
+		"requires_manual_pricing": requires_manual_pricing,
+		"item_has_unpriced_fee": item_has_unpriced_fee,
+		"quote_has_unpriced_fees": quote_has_unpriced_fees(quote),
+		"price_breakdown": price_breakdown,
 	}
 
 
@@ -143,26 +300,33 @@ def attach_quote_items(quotes):
 			"description",
 			"quantity",
 			"species",
+			"read_depth",
 			"reads_per_sample_million",
 			"add_on_sequencing",
 			"data_analysis",
-				"onsite_service",
-				"onsite_address",
-				"tissue_dissociation",
-				"nuclei_extraction",
-				"library_qc",
-				"unit_price",
-				"amount",
-				"rule_notes",
-			],
+			"onsite_service",
+			"onsite_location",
+			"onsite_address",
+			"tissue_dissociation",
+			"nuclei_extraction",
+			"library_qc",
+			"unit_price",
+			"amount",
+			"rule_notes",
+		],
 		order_by="idx asc",
 		limit=500,
 	)
 	items_by_quote = {}
 	for item in items:
+		item["price_breakdown"] = price_breakdown(item)
+		item["has_unpriced_fee"] = item_has_unpriced_fee(item)
 		items_by_quote.setdefault(item.parent, []).append(item)
 	for quote in quotes:
 		quote["items"] = items_by_quote.get(quote.name, [])
+		quote["has_unpriced_fees"] = bool(quote.get("missing_info")) or any(
+			item.get("has_unpriced_fee") for item in quote["items"]
+		)
 	return quotes
 
 
@@ -180,13 +344,15 @@ def attach_order_items(orders):
 			"sample_type",
 			"description",
 			"quantity",
+			"read_depth",
 			"data_analysis",
-				"onsite_service",
-				"onsite_address",
-				"tissue_dissociation",
-				"nuclei_extraction",
-				"library_qc",
-				"unit_price",
+			"onsite_service",
+			"onsite_location",
+			"onsite_address",
+			"tissue_dissociation",
+			"nuclei_extraction",
+			"library_qc",
+			"unit_price",
 			"amount",
 		],
 		order_by="idx asc",
@@ -215,7 +381,7 @@ def get_portal_context():
 		data["quotes"] = attach_quote_items(frappe.get_all(
 			"NGS Quote",
 			filters={"customer": customer},
-			fields=["name", "status", "source", "total_amount", "order", "custom_project_description", "modified"],
+			fields=["name", "status", "source", "total_amount", "order", "custom_project_description", "missing_info", "modified"],
 			order_by="modified desc",
 			limit=20,
 		))
@@ -359,6 +525,7 @@ def create_quote(payload):
 			"add_on_sequencing": item.get("add_on_sequencing"),
 			"data_analysis": item.get("data_analysis"),
 			"onsite_service": item.get("onsite_service"),
+			"onsite_location": item.get("onsite_location"),
 			"onsite_address": item.get("onsite_address"),
 			"tissue_dissociation": item.get("tissue_dissociation"),
 			"nuclei_extraction": item.get("nuclei_extraction"),
@@ -369,12 +536,29 @@ def create_quote(payload):
 
 
 @frappe.whitelist()
+def cancel_quote(quote):
+	customer = get_current_customer()
+	if not customer:
+		frappe.throw(_("No NGS Customer is linked to this user yet. Please contact Athenomics."))
+	quote_name = validate_customer_quote(quote, customer)
+	quote_doc = frappe.get_doc("NGS Quote", quote_name)
+	if quote_doc.status == "Converted to Order" or quote_doc.order:
+		frappe.throw(_("Quote {0} has already been converted to an order and cannot be cancelled here.").format(quote_doc.name))
+	if quote_doc.status not in CANCELLABLE_QUOTE_STATUSES and quote_doc.status != "Cancelled":
+		frappe.throw(_("Quote {0} is {1} and cannot be cancelled here.").format(quote_doc.name, quote_doc.status))
+	if quote_doc.status != "Cancelled":
+		quote_doc.status = "Cancelled"
+		quote_doc.save(ignore_permissions=True)
+	return {"name": quote_doc.name, "status": quote_doc.status}
+
+
+@frappe.whitelist()
 def create_order(payload):
 	customer = get_current_customer()
 	if not customer:
 		frappe.throw(_("No NGS Customer is linked to this user yet. Please contact Athenomics."))
 	payload = _loads(payload)
-	quote = validate_customer_quote(payload.get("quote"), customer)
+	quote = validate_customer_quote(payload.get("quote"), customer, require_orderable=True)
 	validate_order_documents(
 		payload.get("po_number"),
 		payload.get("po_file"),
@@ -399,6 +583,7 @@ def create_order(payload):
 				"quantity": item.get("quantity") or 1,
 				"data_analysis": item.get("data_analysis"),
 				"onsite_service": item.get("onsite_service"),
+				"onsite_location": item.get("onsite_location"),
 				"onsite_address": item.get("onsite_address"),
 				"tissue_dissociation": item.get("tissue_dissociation"),
 				"nuclei_extraction": item.get("nuclei_extraction"),
