@@ -3,7 +3,7 @@ import json
 import frappe
 import pdfkit
 from frappe import _
-from frappe.utils import add_days, flt, formatdate, getdate
+from frappe.utils import add_days, escape_html, flt, formatdate, get_url, getdate
 
 from ngs_hub.api.crm_sync import sync_ngs_customer_to_crm
 from ngs_hub.api.frappe_crm_sync import sync_ngs_customer_to_frappe_crm
@@ -63,6 +63,7 @@ def get_login_target(email):
 
 ORDERABLE_QUOTE_STATUSES = {"Draft", "Confirmed"}
 CANCELLABLE_QUOTE_STATUSES = {"Draft", "Pending"}
+ORDER_EMAIL_SENDER = "order@athenomics.com"
 
 
 def validate_customer_quote(quote, customer, require_orderable=False):
@@ -128,6 +129,168 @@ def item_has_unpriced_fee(item):
 
 def quote_has_unpriced_fees(quote):
 	return bool(quote.get("missing_info")) or any(item_has_unpriced_fee(item) for item in quote.items)
+
+
+def customer_display_name(customer):
+	return (
+		customer.get("full_name")
+		or " ".join(part for part in [customer.get("first_name"), customer.get("last_name")] if part)
+		or customer.get("email")
+		or customer.name
+	)
+
+
+def quote_total_label(quote):
+	if quote_has_unpriced_fees(quote):
+		return f"${money(quote.total_amount)} + TBD" if flt(quote.total_amount) else "TBD"
+	return f"${money(quote.total_amount)}"
+
+
+def email_summary_table(rows):
+	if not rows:
+		return ""
+	body = "\n".join(
+		f"""<tr>
+          <td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb; color: #64717c; width: 38%;">{escape_html(label)}</td>
+          <td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb; color: #0f1720; font-weight: 600;">{escape_html(value)}</td>
+        </tr>"""
+		for label, value in rows
+	)
+	return f"""<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; margin: 18px 0 22px;">
+        {body}
+      </table>"""
+
+
+def portal_email_html(greeting_name, title, intro, summary_rows=None, cta_url=None, cta_label=None, note=None):
+	summary = email_summary_table(summary_rows)
+	cta = ""
+	if cta_url and cta_label:
+		cta = f"""<p style="margin: 24px 0;">
+        <a href="{escape_html(cta_url)}" style="display: inline-block; background: #153f37; color: #ffffff; text-decoration: none; font-weight: 700; padding: 12px 18px; border-radius: 6px;">
+          {escape_html(cta_label)}
+        </a>
+      </p>"""
+	note_html = f"""<p style="margin: 0 0 22px; color: #64717c;">{escape_html(note)}</p>""" if note else ""
+	return f"""<!DOCTYPE html>
+<html>
+  <body style="margin: 0; padding: 0; background: #f6f8f7; font-family: Arial, sans-serif; color: #0f1720; line-height: 1.5;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background: #f6f8f7; padding: 24px 0;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width: 640px; background: #ffffff; border: 1px solid #d8e2df; border-radius: 8px; overflow: hidden;">
+            <tr>
+              <td style="padding: 22px 28px 14px; border-left: 5px solid #2c776c;">
+                <div style="font-size: 12px; line-height: 1; letter-spacing: 0.12em; text-transform: uppercase; color: #2c776c; font-weight: 800;">Athenomics</div>
+                <h1 style="margin: 14px 0 0; font-size: 24px; line-height: 1.25; color: #0f1720;">{escape_html(title)}</h1>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 28px 28px;">
+                <p style="margin: 0 0 16px;">Hello {escape_html(greeting_name)},</p>
+                <p style="margin: 0 0 14px;">{escape_html(intro)}</p>
+                {summary}
+                {cta}
+                {note_html}
+                <p style="margin: 28px 0 0; color: #0f1720;">
+                  Best regards,<br>
+                  <strong>Athenomics Order Team</strong>
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>"""
+
+
+def send_order_account_email(customer_name, subject, message, reference_doctype=None, reference_name=None, attachments=None):
+	customer = frappe.get_cached_doc("NGS Customer", customer_name)
+	if not customer.email:
+		frappe.logger("ngs_hub.email").warning(
+			"Skipped NGS portal email for %s because the customer has no email", customer_name
+		)
+		return
+	try:
+		frappe.sendmail(
+			recipients=[customer.email],
+			sender=ORDER_EMAIL_SENDER,
+			subject=subject,
+			message=message,
+			delayed=True,
+			retry=3,
+			reference_doctype=reference_doctype,
+			reference_name=reference_name,
+			attachments=attachments,
+			expose_recipients="header",
+			add_unsubscribe_link=False,
+			with_container=False,
+		)
+		frappe.enqueue(
+			"frappe.email.queue.flush",
+			queue="short",
+			enqueue_after_commit=True,
+		)
+	except Exception:
+		frappe.logger("ngs_hub.email").error(
+			"Failed to send %s notification %s to %s",
+			reference_doctype or "NGS portal",
+			reference_name or "",
+			customer.email,
+			exc_info=True,
+		)
+
+
+def notify_quote_created(quote):
+	customer = frappe.get_cached_doc("NGS Customer", quote.customer)
+	attachment = safe_pdf_attachment(quote_pdf_attachment, quote)
+	message = portal_email_html(
+		customer_display_name(customer),
+		"Quote request received",
+		f"We received your quote request {quote.name}. A PDF copy is attached for your records.",
+		[
+			("Quote", quote.name),
+			("Status", quote.status),
+			("Total", quote_total_label(quote)),
+		],
+		cta_url=get_url("/ngs_account"),
+		cta_label="Review quote",
+		note="You can place an order from the NGS Portal when the quote is ready.",
+	)
+	send_order_account_email(
+		quote.customer,
+		f"Athenomics quote request received: {quote.name}",
+		message,
+		reference_doctype=quote.doctype,
+		reference_name=quote.name,
+		attachments=[attachment] if attachment else None,
+	)
+
+
+def notify_order_created(order):
+	customer = frappe.get_cached_doc("NGS Customer", order.customer)
+	attachment = safe_pdf_attachment(order_pdf_attachment, order)
+	summary_rows = [("Order", order.name), ("Status", order.status)]
+	if order.get("quote"):
+		summary_rows.append(("Quote", order.quote))
+	message = portal_email_html(
+		customer_display_name(customer),
+		"Order submitted",
+		f"We received your order {order.name}. A PDF copy is attached for your records.",
+		summary_rows,
+		cta_url=get_url("/ngs_account"),
+		cta_label="Review order",
+		note="We will contact you if additional information is needed.",
+	)
+	send_order_account_email(
+		order.customer,
+		f"Athenomics order submitted: {order.name}",
+		message,
+		reference_doctype=order.doctype,
+		reference_name=order.name,
+		attachments=[attachment] if attachment else None,
+	)
 
 
 def price_breakdown(item):
@@ -297,13 +460,9 @@ def order_pdf_context(order):
 	}
 
 
-@frappe.whitelist()
-def download_quote_pdf(quote):
-	customer = get_current_customer()
-	quote_name = validate_customer_quote(quote, customer)
-	quote_doc = frappe.get_doc("NGS Quote", quote_name)
-	html = frappe.render_template("templates/includes/ngs_quote_pdf.html", quote_pdf_context(quote_doc))
-	pdf = pdfkit.from_string(
+def render_pdf(template, context):
+	html = frappe.render_template(template, context)
+	return pdfkit.from_string(
 		html,
 		False,
 		{
@@ -315,8 +474,44 @@ def download_quote_pdf(quote):
 			"encoding": "UTF-8",
 		},
 	)
+
+
+def render_quote_pdf(quote):
+	return render_pdf("templates/includes/ngs_quote_pdf.html", quote_pdf_context(quote))
+
+
+def render_order_pdf(order):
+	return render_pdf("templates/includes/ngs_order_pdf.html", order_pdf_context(order))
+
+
+def quote_pdf_attachment(quote):
+	return {"fname": f"{quote.name}.pdf", "fcontent": render_quote_pdf(quote)}
+
+
+def order_pdf_attachment(order):
+	return {"fname": f"{order.name}.pdf", "fcontent": render_order_pdf(order)}
+
+
+def safe_pdf_attachment(builder, doc):
+	try:
+		return builder(doc)
+	except Exception:
+		frappe.logger("ngs_hub.email").error(
+			"Failed to generate PDF attachment for %s %s",
+			doc.doctype,
+			doc.name,
+			exc_info=True,
+		)
+		return None
+
+
+@frappe.whitelist()
+def download_quote_pdf(quote):
+	customer = get_current_customer()
+	quote_name = validate_customer_quote(quote, customer)
+	quote_doc = frappe.get_doc("NGS Quote", quote_name)
 	frappe.local.response.filename = f"{quote_doc.name}.pdf"
-	frappe.local.response.filecontent = pdf
+	frappe.local.response.filecontent = render_quote_pdf(quote_doc)
 	frappe.local.response.type = "download"
 
 
@@ -325,21 +520,8 @@ def download_order_pdf(order):
 	customer = get_current_customer()
 	order_name = validate_customer_order(order, customer)
 	order_doc = frappe.get_doc("NGS Order", order_name)
-	html = frappe.render_template("templates/includes/ngs_order_pdf.html", order_pdf_context(order_doc))
-	pdf = pdfkit.from_string(
-		html,
-		False,
-		{
-			"page-size": "Letter",
-			"margin-top": "0.35in",
-			"margin-right": "0.35in",
-			"margin-bottom": "0.35in",
-			"margin-left": "0.35in",
-			"encoding": "UTF-8",
-		},
-	)
 	frappe.local.response.filename = f"{order_doc.name}.pdf"
-	frappe.local.response.filecontent = pdf
+	frappe.local.response.filecontent = render_order_pdf(order_doc)
 	frappe.local.response.type = "download"
 
 
@@ -629,6 +811,7 @@ def create_quote(payload):
 			"library_qc": item.get("library_qc"),
 		})
 	quote.insert(ignore_permissions=True)
+	notify_quote_created(quote)
 	return {"name": quote.name, "status": quote.status, "total_amount": quote.total_amount}
 
 
@@ -692,4 +875,5 @@ def create_order(payload):
 				"library_qc": item.get("library_qc"),
 			})
 	order.insert(ignore_permissions=True)
+	notify_order_created(order)
 	return {"name": order.name, "status": order.status}
