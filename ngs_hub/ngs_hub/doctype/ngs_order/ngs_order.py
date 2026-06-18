@@ -26,7 +26,7 @@ class NGSOrder(Document):
 				self.copy_items_from_quote(quote)
 		if not self.customer:
 			frappe.throw(_("Customer is required to generate Order"))
-		if not (self.po_number or self.po_file):
+		if not self.no_po_available and not (self.po_number or self.po_file):
 			frappe.throw(_("Provide either a PO number or a PO file before placing an order."))
 		if not self.sample_registration_form:
 			frappe.throw(_("Upload the sample registration form before placing an order."))

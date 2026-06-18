@@ -48,22 +48,31 @@
   <section class="ngs-panel" id="panel-order" role="tabpanel" aria-labelledby="tab-order" hidden>
     <div class="ngs-panel-head">
       <h2>Place an order</h2>
-      <p>Select an existing quote or start an order for manual review. Provide a PO number or PO file, and upload the sample registration form.</p>
+      <p>Select a quote and upload the sample registration form. Provide PO details unless a PO is not available at submission.</p>
     </div>
     <form id="ngs-order-form" class="ngs-form">
       <div class="ngs-order-grid">
-        <label>Quote
-          <select name="quote"><option value="">No quote / direct order</option></select>
-        </label>
-        <label>PO number
-          <input name="po_number">
-        </label>
-        <label>PO file
-          <input name="po_file" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt">
+        <label class="ngs-quote-field">Quote
+          <select name="quote"><option value="">Select quote</option></select>
         </label>
         <label>Sample registration form
           <input name="sample_registration_form" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt" required>
         </label>
+        <div class="ngs-po-row">
+          <div class="ngs-po-primary">
+            <label class="ngs-check ngs-order-mode">
+              <input name="po_available" type="checkbox" value="1">
+              <span>PO available</span>
+            </label>
+            <label class="ngs-po-field ngs-po-number" hidden>PO number
+              <input name="po_number">
+            </label>
+          </div>
+          <label class="ngs-po-field ngs-po-file" hidden>PO file
+            <input name="po_file" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt">
+          </label>
+        </div>
+        <p class="ngs-order-note" id="ngs-po-note">If a PO is available, provide either a PO number or a PO file.</p>
       </div>
       <label>Order notes
         <textarea name="notes" rows="4"></textarea>
@@ -96,6 +105,12 @@
   .ngs-download-icon { width: 16px; height: 16px; margin-right: 8px; flex: 0 0 auto; background: currentColor; mask: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 2a1 1 0 0 1 1 1v5.6l1.8-1.8a1 1 0 1 1 1.4 1.4l-3.5 3.5a1 1 0 0 1-1.4 0L3.8 8.2a1 1 0 0 1 1.4-1.4L7 8.6V3a1 1 0 0 1 1-1Zm-5 10a1 1 0 0 1 1 1h8a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1Z'/%3E%3C/svg%3E") center / contain no-repeat; }
   .ngs-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
   .ngs-order-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 14px; }
+  .ngs-order-grid > label { min-width: 0; }
+  .ngs-order-note { grid-column: 1 / -1; margin: -4px 0 0; color: #64717c; font-size: 13px; }
+  .ngs-po-row { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: end; }
+  .ngs-po-primary { display: grid; grid-template-columns: max-content minmax(220px, 1fr); gap: 14px; align-items: end; min-width: 0; }
+  .ngs-order-mode { min-height: 40px; white-space: nowrap; }
+  .ngs-po-row .ngs-po-field { min-width: 0; }
   .ngs-form select { appearance: none; padding-right: 28px; background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5' fill='none' stroke='%2317212b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-position: right 10px center; background-repeat: no-repeat; background-size: 12px 12px; }
   .ngs-check { display: flex !important; grid-template-columns: auto 1fr; align-items: center; gap: 10px !important; min-width: 0; line-height: 1.2; }
   .ngs-check input[type="checkbox"] { appearance: none; width: 18px; height: 18px; border: 1px solid #b8c7d1; border-radius: 5px; background-color: #fff; cursor: pointer; flex: 0 0 auto; }
@@ -147,7 +162,7 @@
   .ngs-record-toggle:hover { background: #f7faf9; }
   .ngs-record-main { display: grid; gap: 5px; min-width: 0; }
   .ngs-record-title { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
-  .ngs-record-title strong { color: #17212b; }
+  .ngs-record-title strong { color: #17212b; white-space: nowrap; }
   .ngs-status { border-radius: 999px; padding: 2px 8px; background: #e8efec; color: #17352f; font-size: 12px; font-weight: 700; }
   .ngs-status-draft { background: #eef2f4; color: #4b5963; }
   .ngs-status-pending { background: #fff3d8; color: #7a4b00; }
@@ -158,7 +173,8 @@
   .ngs-record-side { display: grid; justify-items: end; gap: 5px; align-self: center; color: #64717c; }
   .ngs-record-amount { color: #17352f; font-size: 18px; font-weight: 750; }
   .ngs-record-chevron { color: #64717c; font-weight: 700; align-self: center; }
-  .ngs-record-download { align-self: center; display: inline-flex; align-items: center; gap: 7px; min-height: 34px; margin-right: 14px; padding: 7px 10px; border: 1px solid #cfd9df; border-radius: 6px; background: #fff; color: #17352f; font-size: 13px; font-weight: 750; text-decoration: none; white-space: nowrap; }
+  .ngs-record-head-actions { align-self: center; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; padding: 14px 16px 14px 0; }
+  .ngs-record-download { display: inline-flex; align-items: center; gap: 7px; min-height: 34px; padding: 7px 10px; border: 1px solid #cfd9df; border-radius: 6px; background: #fff; color: #17352f; font-size: 13px; font-weight: 750; text-decoration: none; white-space: nowrap; }
   .ngs-record-download:hover { background: #f7faf9; color: #17352f; text-decoration: none; }
   .ngs-record-download .ngs-download-icon { margin-right: 0; width: 14px; height: 14px; }
   .ngs-record-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
@@ -197,18 +213,22 @@
   .ngs-qc-image { width: 100%; aspect-ratio: 16 / 9; object-fit: contain; border: 1px solid #d9e1e8; border-radius: 6px; background: #fff; }
   .ngs-muted { color: #64717c; }
   @media (max-width: 900px) {
+    .ngs-order-grid { grid-template-columns: 1fr; }
     .ngs-line-grid { align-items: start; }
     .ngs-field-full { flex-basis: 100%; }
     .ngs-onsite-row { flex-wrap: wrap; }
     .ngs-onsite-row .ngs-field-address { flex-basis: 100%; min-width: 0; }
     .ngs-line-note:not(:empty) { display: block; flex: 1 1 100%; width: 100%; }
     .ngs-field-reads .ngs-info-dot::after { display: none; }
+    .ngs-record-head { grid-template-columns: 1fr; }
+    .ngs-record-head-actions { justify-content: flex-start; padding: 0 16px 14px; }
+  }
+  @media (max-width: 760px) {
+    .ngs-po-primary { grid-template-columns: max-content minmax(160px, 1fr); }
   }
   @media (max-width: 640px) {
-    .ngs-record-head { grid-template-columns: 1fr; }
     .ngs-record-toggle { grid-template-columns: 1fr; }
     .ngs-record-side { justify-items: start; }
-    .ngs-record-download { justify-self: start; margin: 0 0 14px 16px; }
     .ngs-item-table, .ngs-item-table thead, .ngs-item-table tbody, .ngs-item-table tr, .ngs-item-table th, .ngs-item-table td { display: block; }
     .ngs-item-table thead { display: none; }
     .ngs-item-table tr { border-bottom: 1px solid #edf1f4; }
@@ -220,7 +240,7 @@
     .ngs-item-breakdown-label { padding-left: 0; }
     .ngs-item-breakdown-label::before { display: none; }
   }
-  @media (max-width: 540px) { .ngs-grid, .ngs-order-grid { grid-template-columns: 1fr; } .ngs-card { display: block; } .ngs-quote-header { display: grid; } .ngs-line-head { padding: 10px 12px; } .ngs-line-grid { padding: 12px; gap: 10px; } .ngs-line-grid > label, .ngs-field, .ngs-field-medium, .ngs-field-analysis, .ngs-field-wide, .ngs-field-small, .ngs-field-depth, .ngs-field-reads, .ngs-field-preprocess, .ngs-field-check { flex: 1 1 100%; width: auto; } .ngs-onsite-row { gap: 10px; } .ngs-onsite-row .ngs-field-check, .ngs-onsite-row .ngs-field-medium, .ngs-onsite-row .ngs-field-address { flex: 1 1 100%; width: auto; min-width: 0; padding-top: 0; } .ngs-inline-check { min-height: 40px; padding-top: 0; } .ngs-line-summary { display: none; } }
+  @media (max-width: 540px) { .ngs-grid, .ngs-order-grid, .ngs-po-row, .ngs-po-primary { grid-template-columns: 1fr; } .ngs-po-row { gap: 10px; } .ngs-po-row .ngs-po-field, .ngs-po-row .ngs-po-number { min-width: 0; } .ngs-order-mode { padding-bottom: 0; } .ngs-card { display: block; } .ngs-quote-header { display: grid; } .ngs-line-head { padding: 10px 12px; } .ngs-line-grid { padding: 12px; gap: 10px; } .ngs-line-grid > label, .ngs-field, .ngs-field-medium, .ngs-field-analysis, .ngs-field-wide, .ngs-field-small, .ngs-field-depth, .ngs-field-reads, .ngs-field-preprocess, .ngs-field-check { flex: 1 1 100%; width: auto; } .ngs-onsite-row { gap: 10px; } .ngs-onsite-row .ngs-field-check, .ngs-onsite-row .ngs-field-medium, .ngs-onsite-row .ngs-field-address { flex: 1 1 100%; width: auto; min-width: 0; padding-top: 0; } .ngs-inline-check { min-height: 40px; padding-top: 0; } .ngs-line-summary { display: none; } }
 </style>
 
 <script>
@@ -824,7 +844,7 @@ frappe.ready(() => {
   function orderQuoteActions(order) {
     const quote = linkedQuoteForOrder(order);
     if (!quote) {
-      return '<div class="ngs-record-actions"><span class="ngs-record-state-note">Direct orders are priced by Athenomics after review.</span></div>';
+      return '<div class="ngs-record-actions"><span class="ngs-record-state-note">No linked quote is available for this order.</span></div>';
     }
     return `
       <div class="ngs-record-actions">
@@ -948,19 +968,22 @@ frappe.ready(() => {
     return 'Ready to place an order when you have PO and sample registration documents.';
   }
 
-  function quoteActions(quote) {
+  function quoteActionButtons(quote) {
     const actions = [];
     if (isOrderableQuote(quote)) {
-      actions.push(`<button type="button" class="ngs-record-action is-primary" data-quote-action="order" data-quote="${escape(quote.name)}">Place order</button>`);
+      actions.push(`<button type="button" class="ngs-record-action is-primary" data-quote-action="order" data-quote="${escape(quote.name)}" aria-label="Place order for ${escape(quote.name)}">Order</button>`);
     }
     if (quote.status === 'Converted to Order' && quote.order) {
       actions.push(`<button type="button" class="ngs-record-action" data-quote-action="view-order" data-order="${escape(quote.order)}">View order</button>`);
     }
     if (isCancellableQuote(quote)) {
-      actions.push(`<button type="button" class="ngs-record-action is-danger" data-quote-action="cancel" data-quote="${escape(quote.name)}">${quote.status === 'Pending' ? 'Cancel request' : 'Cancel quote'}</button>`);
+      actions.push(`<button type="button" class="ngs-record-action is-danger" data-quote-action="cancel" data-quote="${escape(quote.name)}" aria-label="${quote.status === 'Pending' ? 'Cancel request' : 'Cancel quote'} ${escape(quote.name)}">Cancel</button>`);
     }
-    actions.push(`<span class="ngs-record-state-note">${escape(quoteStateNote(quote))}</span>`);
-    return `<div class="ngs-record-actions">${actions.join('')}</div>`;
+    return actions.join('');
+  }
+
+  function quoteStateMessage(quote) {
+    return `<div class="ngs-record-actions"><span class="ngs-record-state-note">${escape(quoteStateNote(quote))}</span></div>`;
   }
 
   function renderItems(items, includePrices) {
@@ -1016,6 +1039,10 @@ frappe.ready(() => {
     return `/api/method/ngs_hub.api.portal.download_quote_pdf?quote=${encodeURIComponent(name || '')}`;
   }
 
+  function orderPdfUrl(name) {
+    return `/api/method/ngs_hub.api.portal.download_order_pdf?order=${encodeURIComponent(name || '')}`;
+  }
+
   function quoteRecord(quote) {
     const items = quote.items || [];
     const status = quote.status || 'Draft';
@@ -1032,10 +1059,13 @@ frappe.ready(() => {
               <span class="ngs-record-chevron">Details</span>
             </span>
           </button>
-          <a class="ngs-record-download" href="${escape(quotePdfUrl(quote.name))}" target="_blank" rel="noopener" download aria-label="Download PDF for ${escape(quote.name)}">
-            <span class="ngs-download-icon" aria-hidden="true"></span>
-            PDF
-          </a>
+          <div class="ngs-record-head-actions">
+            <a class="ngs-record-download" href="${escape(quotePdfUrl(quote.name))}" target="_blank" rel="noopener" download aria-label="Download PDF for ${escape(quote.name)}">
+              <span class="ngs-download-icon" aria-hidden="true"></span>
+              PDF
+            </a>
+            ${quoteActionButtons(quote)}
+          </div>
         </div>
         <div class="ngs-record-detail">
           <div class="ngs-detail-grid">
@@ -1044,7 +1074,7 @@ frappe.ready(() => {
             <div class="ngs-detail-field"><span>Updated</span>${escape(formatDate(quote.modified))}</div>
             <div class="ngs-detail-field"><span>Linked order</span>${escape(quote.order || 'Not ordered yet')}</div>
           </div>
-          ${quoteActions(quote)}
+          ${quoteStateMessage(quote)}
           ${renderItems(quote.items, true)}
           ${quote.missing_info ? `<div class="ngs-detail-field"><span>Pricing to confirm</span>${escape(quote.missing_info).replace(/\n/g, '<br>')}</div>` : ''}
           ${quote.custom_project_description ? `<div class="ngs-detail-field"><span>Custom project details</span>${escape(quote.custom_project_description)}</div>` : ''}
@@ -1058,22 +1088,30 @@ frappe.ready(() => {
     const status = order.status || 'Draft';
     return `
       <article class="ngs-record" data-record-name="${escape(order.name)}">
-        <button type="button" class="ngs-record-toggle" aria-expanded="false">
-          <span class="ngs-record-main">
-            <span class="ngs-record-title"><strong>${escape(order.name)}</strong>${renderStatus(status)}</span>
-            <span class="ngs-record-meta">Updated ${escape(formatDate(order.modified))} · ${escape(itemCountLabel(items))} · ${escape(order.quote ? `Quote: ${order.quote}` : 'Direct order')} · ${escape(compactItemSummary(items))}</span>
-          </span>
-          <span class="ngs-record-side">
-            <span class="ngs-record-amount">${escape(orderTotalLabel(order))}</span>
-            <span class="ngs-record-chevron">Details</span>
-          </span>
-        </button>
+        <div class="ngs-record-head">
+          <button type="button" class="ngs-record-toggle" aria-expanded="false">
+            <span class="ngs-record-main">
+              <span class="ngs-record-title"><strong>${escape(order.name)}</strong>${renderStatus(status)}</span>
+              <span class="ngs-record-meta">Updated ${escape(formatDate(order.modified))} · ${escape(itemCountLabel(items))} · ${escape(order.quote ? `Quote: ${order.quote}` : 'No linked quote')} · ${escape(compactItemSummary(items))}</span>
+            </span>
+            <span class="ngs-record-side">
+              <span class="ngs-record-amount">${escape(orderTotalLabel(order))}</span>
+              <span class="ngs-record-chevron">Details</span>
+            </span>
+          </button>
+          <div class="ngs-record-head-actions">
+            <a class="ngs-record-download" href="${escape(orderPdfUrl(order.name))}" target="_blank" rel="noopener" download aria-label="Download PDF for ${escape(order.name)}">
+              <span class="ngs-download-icon" aria-hidden="true"></span>
+              PDF
+            </a>
+          </div>
+        </div>
         <div class="ngs-record-detail">
           <div class="ngs-detail-grid">
             <div class="ngs-detail-field is-total"><span>${escape(orderTotalCaption(order))}</span>${escape(orderTotalLabel(order))}</div>
             <div class="ngs-detail-field"><span>Status</span>${renderStatus(status)}</div>
             <div class="ngs-detail-field"><span>Updated</span>${escape(formatDate(order.modified))}</div>
-            <div class="ngs-detail-field"><span>Linked quote</span>${escape(order.quote || 'Direct order')}</div>
+            <div class="ngs-detail-field"><span>Linked quote</span>${escape(order.quote || 'Not linked')}</div>
             <div class="ngs-detail-field"><span>Linked project</span>${escape(order.project || 'Not linked yet')}</div>
             <div class="ngs-detail-field"><span>Order reference</span>${escape(order.erpnext_sales_order || 'Not assigned yet')}</div>
           </div>
@@ -1081,8 +1119,8 @@ frappe.ready(() => {
           <div class="ngs-detail-section">
             <h4>Documents</h4>
             <div class="ngs-detail-grid">
-              <div class="ngs-detail-field"><span>PO number</span>${escape(order.po_number || 'Not provided')}</div>
-              <div class="ngs-detail-field"><span>PO file</span>${order.po_file ? `<a href="${escape(order.po_file)}">Uploaded</a>` : 'Not uploaded'}</div>
+              <div class="ngs-detail-field"><span>PO number</span>${escape(order.no_po_available ? 'No PO available' : (order.po_number || 'Not provided'))}</div>
+              <div class="ngs-detail-field"><span>PO file</span>${order.po_file ? `<a href="${escape(order.po_file)}">Uploaded</a>` : (order.no_po_available ? 'Not required at submission' : 'Not uploaded')}</div>
               <div class="ngs-detail-field"><span>Sample registration</span>${order.sample_registration_form ? `<a href="${escape(order.sample_registration_form)}">Uploaded</a>` : 'Not uploaded'}</div>
             </div>
           </div>
@@ -1148,7 +1186,8 @@ frappe.ready(() => {
     document.getElementById('ngs-projects').innerHTML = state.projects.length ? state.projects.map(projectCard).join('') : '<p class="ngs-muted">No projects yet.</p>';
     const quoteSelect = document.querySelector('#ngs-order-form select[name="quote"]');
     const orderableQuotes = state.quotes.filter(isOrderableQuote);
-    quoteSelect.innerHTML = '<option value="">No quote / direct order</option>' + orderableQuotes.map((q) => `<option value="${escape(q.name)}">${escape(q.name)} (${escape(q.status || 'Draft')})</option>`).join('');
+    quoteSelect.innerHTML = '<option value="">Select quote</option>' + orderableQuotes.map((q) => `<option value="${escape(q.name)}">${escape(q.name)} (${escape(q.status || 'Draft')})</option>`).join('');
+    syncOrderMode(document.getElementById('ngs-order-form'));
   }
 
   function activatePanel(button, focus = false) {
@@ -1186,10 +1225,13 @@ frappe.ready(() => {
   function startOrderFromQuote(quoteName) {
     const orderTab = document.getElementById('tab-order');
     activatePanel(orderTab);
+    const orderForm = document.getElementById('ngs-order-form');
     const quoteSelect = document.querySelector('#ngs-order-form select[name="quote"]');
+    orderForm.elements.po_available.checked = false;
     quoteSelect.value = quoteName;
+    syncOrderMode(orderForm);
     quoteSelect.focus();
-    document.getElementById('ngs-order-form').scrollIntoView({ block: 'start', behavior: 'smooth' });
+    orderForm.scrollIntoView({ block: 'start', behavior: 'smooth' });
     setAccountMessage(`Quote ${quoteName} selected for order.`);
   }
 
@@ -1234,11 +1276,37 @@ frappe.ready(() => {
     return data.message.file_url;
   }
 
+  function hasPoAvailable(form) {
+    return form.elements.po_available.checked;
+  }
+
+  function syncOrderMode(form) {
+    const poAvailable = hasPoAvailable(form);
+    form.querySelectorAll('.ngs-po-field').forEach((field) => {
+      field.hidden = !poAvailable;
+    });
+    form.elements.po_number.disabled = !poAvailable;
+    form.elements.po_file.disabled = !poAvailable;
+    if (!poAvailable) {
+      form.elements.po_number.value = '';
+      form.elements.po_file.value = '';
+    }
+    const note = document.getElementById('ngs-po-note');
+    note.textContent = poAvailable
+      ? 'Provide either a PO number or a PO file.'
+      : 'No PO will be submitted with this order. Athenomics may request PO details later.';
+    updateOrderValidity(form);
+  }
+
   function updateOrderValidity(form) {
+    const poAvailable = hasPoAvailable(form);
+    const quote = form.elements.quote.value;
     const poNumber = form.elements.po_number.value.trim();
     const poFile = form.elements.po_file.files[0];
     const sampleForm = form.elements.sample_registration_form.files[0];
-    const poMessage = poNumber || poFile ? '' : 'Provide either a PO number or a PO file.';
+    const quoteMessage = quote ? '' : 'Select a quote.';
+    const poMessage = !poAvailable || poNumber || poFile ? '' : 'Provide either a PO number or a PO file.';
+    form.elements.quote.setCustomValidity(quoteMessage);
     form.elements.po_number.setCustomValidity(poMessage);
     form.elements.po_file.setCustomValidity(poMessage);
     form.elements.sample_registration_form.setCustomValidity(sampleForm ? '' : 'Upload the sample registration form.');
@@ -1318,20 +1386,25 @@ frappe.ready(() => {
     const form = event.currentTarget;
     if (!validateOrderForm(form)) return;
     const data = Object.fromEntries(new FormData(form).entries());
+    data.no_po = hasPoAvailable(form) ? 0 : 1;
+    delete data.po_available;
     data.po_file = await uploadFile(form.elements.po_file.files[0]);
     data.sample_registration_form = await uploadFile(form.elements.sample_registration_form.files[0]);
     const response = await frappe.call('ngs_hub.api.portal.create_order', { payload: JSON.stringify(data) });
     form.reset();
+    syncOrderMode(form);
     await load();
     setAccountMessage(`Order draft ${response.message?.name || ''} created.`);
     document.getElementById('ngs-orders').scrollIntoView({ block: 'start', behavior: 'smooth' });
   });
 
   const orderForm = document.getElementById('ngs-order-form');
+  orderForm.elements.quote.addEventListener('change', () => syncOrderMode(orderForm));
+  orderForm.elements.po_available.addEventListener('change', () => syncOrderMode(orderForm));
   orderForm.elements.po_number.addEventListener('input', () => updateOrderValidity(orderForm));
   orderForm.elements.po_file.addEventListener('change', () => updateOrderValidity(orderForm));
   orderForm.elements.sample_registration_form.addEventListener('change', () => updateOrderValidity(orderForm));
-  updateOrderValidity(orderForm);
+  syncOrderMode(orderForm);
 
   load();
 });

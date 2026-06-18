@@ -84,11 +84,26 @@ def validate_customer_quote(quote, customer, require_orderable=False):
 	return quote
 
 
-def validate_order_documents(po_number=None, po_file=None, sample_registration_form=None):
-	if not (po_number or po_file):
+def validate_customer_order(order, customer):
+	if not order:
+		frappe.throw(_("Order is required."))
+	order_doc = frappe.db.get_value("NGS Order", order, ["customer"], as_dict=True)
+	if not order_doc:
+		frappe.throw(_("Order {0} was not found.").format(order))
+	if order_doc.customer != customer:
+		frappe.throw(_("Order {0} is not linked to your customer account.").format(order), frappe.PermissionError)
+	return order
+
+
+def validate_order_documents(po_number=None, po_file=None, sample_registration_form=None, require_po=False):
+	if require_po and not (po_number or po_file):
 		frappe.throw(_("Provide either a PO number or a PO file before placing an order."))
 	if not sample_registration_form:
 		frappe.throw(_("Upload the sample registration form before placing an order."))
+
+
+def truthy(value):
+	return value in (True, 1, "1", "true", "True", "on", "yes", "Yes")
 
 
 def money(value):
@@ -245,6 +260,43 @@ def quote_pdf_context(quote):
 	}
 
 
+def order_pdf_items(order):
+	items = []
+	for item in order.items:
+		row = item.as_dict()
+		row["rule_notes"] = row.get("notes")
+		row["price_breakdown"] = price_breakdown(row)
+		row["has_unpriced_fee"] = item_has_unpriced_fee(row)
+		items.append(row)
+	return items
+
+
+def order_pdf_context(order):
+	created = getdate(order.creation)
+	customer = frappe.get_doc("NGS Customer", order.customer)
+	customer_name = customer.get("full_name") or " ".join(
+		part for part in [customer.get("first_name"), customer.get("last_name")] if part
+	)
+	items = order_pdf_items(order)
+	quote_doc = frappe.get_doc("NGS Quote", order.quote) if order.get("quote") and frappe.db.exists("NGS Quote", order.quote) else None
+	has_unpriced_fees = bool(quote_doc and quote_doc.get("missing_info")) or any(item.get("has_unpriced_fee") for item in items)
+	total_amount = flt(quote_doc.get("total_amount")) if quote_doc else sum(flt(item.get("amount")) for item in items)
+	return {
+		"order": order,
+		"quote": quote_doc,
+		"items": items,
+		"customer": customer,
+		"customer_name": customer_name,
+		"created_date": formatdate(created, "mm.dd.yyyy"),
+		"money": money,
+		"total_amount": total_amount,
+		"has_unpriced_fees": has_unpriced_fees,
+		"requires_manual_pricing": requires_manual_pricing,
+		"item_has_unpriced_fee": item_has_unpriced_fee,
+		"price_breakdown": price_breakdown,
+	}
+
+
 @frappe.whitelist()
 def download_quote_pdf(quote):
 	customer = get_current_customer()
@@ -264,6 +316,29 @@ def download_quote_pdf(quote):
 		},
 	)
 	frappe.local.response.filename = f"{quote_doc.name}.pdf"
+	frappe.local.response.filecontent = pdf
+	frappe.local.response.type = "download"
+
+
+@frappe.whitelist()
+def download_order_pdf(order):
+	customer = get_current_customer()
+	order_name = validate_customer_order(order, customer)
+	order_doc = frappe.get_doc("NGS Order", order_name)
+	html = frappe.render_template("templates/includes/ngs_order_pdf.html", order_pdf_context(order_doc))
+	pdf = pdfkit.from_string(
+		html,
+		False,
+		{
+			"page-size": "Letter",
+			"margin-top": "0.35in",
+			"margin-right": "0.35in",
+			"margin-bottom": "0.35in",
+			"margin-left": "0.35in",
+			"encoding": "UTF-8",
+		},
+	)
+	frappe.local.response.filename = f"{order_doc.name}.pdf"
 	frappe.local.response.filecontent = pdf
 	frappe.local.response.type = "download"
 
@@ -415,6 +490,7 @@ def get_portal_context():
 				"quote",
 				"project",
 				"po_number",
+				"no_po_available",
 				"po_file",
 				"sample_registration_form",
 				"erpnext_sales_order",
@@ -579,11 +655,15 @@ def create_order(payload):
 	if not customer:
 		frappe.throw(_("No NGS Customer is linked to this user yet. Please contact Athenomics."))
 	payload = _loads(payload)
+	if not payload.get("quote"):
+		frappe.throw(_("Select a quote before placing an order."))
 	quote = validate_customer_quote(payload.get("quote"), customer, require_orderable=True)
+	no_po = truthy(payload.get("no_po"))
 	validate_order_documents(
 		payload.get("po_number"),
 		payload.get("po_file"),
 		payload.get("sample_registration_form"),
+		require_po=not no_po,
 	)
 	order = frappe.get_doc({
 		"doctype": "NGS Order",
@@ -591,6 +671,7 @@ def create_order(payload):
 		"quote": quote,
 		"status": "Submitted",
 		"po_number": payload.get("po_number"),
+		"no_po_available": no_po,
 		"po_file": payload.get("po_file"),
 		"sample_registration_form": payload.get("sample_registration_form"),
 		"notes": payload.get("notes"),

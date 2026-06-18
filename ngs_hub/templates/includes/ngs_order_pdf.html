@@ -1,0 +1,287 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      color: #17212b;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10pt;
+      line-height: 1.35;
+    }
+    .header {
+      display: table;
+      width: 100%;
+      margin-bottom: 18px;
+    }
+    .brand,
+    .order-meta {
+      display: table-cell;
+      vertical-align: top;
+    }
+    .brand-name {
+      color: #17352f;
+      font-size: 20pt;
+      font-weight: 700;
+      letter-spacing: .05em;
+      margin-bottom: 6px;
+    }
+    .order-title {
+      color: #17352f;
+      font-size: 18pt;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-align: right;
+    }
+    .meta-table {
+      border-collapse: collapse;
+      margin-left: auto;
+      width: 260px;
+    }
+    .meta-table td {
+      border: 1px solid #cfd9df;
+      padding: 5px 7px;
+    }
+    .meta-label {
+      background: #f1f6f4;
+      color: #48616d;
+      font-weight: 700;
+      width: 100px;
+    }
+    .section {
+      margin-top: 16px;
+    }
+    .section-title {
+      border-bottom: 2px solid #17352f;
+      color: #17352f;
+      font-size: 12pt;
+      font-weight: 700;
+      margin-bottom: 8px;
+      padding-bottom: 3px;
+    }
+    .customer-table,
+    .items-table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    .customer-table td,
+    .items-table th,
+    .items-table td {
+      border: 1px solid #cfd9df;
+      padding: 6px 7px;
+      vertical-align: top;
+    }
+    .customer-table td:first-child {
+      background: #f1f6f4;
+      color: #48616d;
+      font-weight: 700;
+      width: 130px;
+    }
+    .items-table th {
+      background: #17352f;
+      color: #fff;
+      font-weight: 700;
+      text-align: left;
+    }
+    .items-table th.num {
+      text-align: right;
+    }
+    .num {
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .muted {
+      color: #64717c;
+      font-size: 9pt;
+    }
+    .item-row td {
+      background: #fff;
+    }
+    .breakdown-row td {
+      background: #fbfdfc;
+      color: #64717c;
+      font-size: 8.8pt;
+      padding-bottom: 4px;
+      padding-top: 4px;
+    }
+    .breakdown-label {
+      padding-left: 12px;
+    }
+    .breakdown-label:before {
+      content: "- ";
+      color: #9aaab4;
+    }
+    .note-row td {
+      background: #fbfdfc;
+      color: #64717c;
+      font-size: 8.8pt;
+      padding-bottom: 4px;
+      padding-top: 4px;
+    }
+    .total-row td {
+      border-top: 2px solid #17352f;
+      font-size: 11pt;
+      font-weight: 700;
+    }
+    .terms {
+      border: 1px solid #cfd9df;
+      padding: 8px 10px;
+    }
+    .terms p {
+      margin: 0 0 8px;
+    }
+    .terms p:last-child {
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="brand">
+      <div class="brand-name">ATHENOMICS LLC</div>
+      <div>1 GRANT ST STE 230</div>
+      <div>FRAMINGHAM, MA 01702-6767</div>
+      <div>order@athenomics.com</div>
+      <div>443-453-8418</div>
+      <div>www.Athenomics.com</div>
+    </div>
+    <div class="order-meta">
+      <div class="order-title">Order {{ order.name }}</div>
+      <table class="meta-table">
+        <tr><td class="meta-label">Order Date</td><td>{{ created_date }}</td></tr>
+        <tr><td class="meta-label">Status</td><td>{{ order.status or "" }}</td></tr>
+        <tr><td class="meta-label">Quote</td><td>{{ order.quote or "" }}</td></tr>
+        <tr><td class="meta-label">Reference</td><td>{{ order.erpnext_sales_order or "Not assigned yet" }}</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Customer</div>
+    <table class="customer-table">
+      <tr>
+        <td>Organization</td>
+        <td>{{ customer.organization or customer.company_institution or customer.lab_group_name or "" }}</td>
+      </tr>
+      <tr>
+        <td>Address</td>
+        <td>{{ customer.address or "" }}</td>
+      </tr>
+      <tr>
+        <td>Name</td>
+        <td>{{ customer_name }}</td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td>{{ customer.email or "" }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Order Documents</div>
+    <table class="customer-table">
+      <tr>
+        <td>PO Number</td>
+        <td>{% if order.no_po_available %}No PO available at submission{% else %}{{ order.po_number or "Not provided" }}{% endif %}</td>
+      </tr>
+      <tr>
+        <td>PO File</td>
+        <td>{% if order.po_file %}Uploaded{% elif order.no_po_available %}Not required at submission{% else %}Not uploaded{% endif %}</td>
+      </tr>
+      <tr>
+        <td>Sample Registration</td>
+        <td>{% if order.sample_registration_form %}Uploaded{% else %}Not uploaded{% endif %}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Order Items</div>
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Sample</th>
+          <th class="num" style="width: 48px;">Qty</th>
+          <th class="num" style="width: 82px;">Coverage / Reads</th>
+          <th style="width: 78px;">Analysis</th>
+          <th class="num" style="width: 82px;">Unit Price</th>
+          <th class="num" style="width: 82px;">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr class="item-row">
+          <td>
+            <strong>{{ item.project_type }}</strong>
+            {% if item.species %}<div class="muted">{{ item.species }}</div>{% endif %}
+          </td>
+          <td>{{ item.sample_type or "" }}</td>
+          <td class="num">{{ item.quantity or 0 }}</td>
+          <td class="num">{% if item.read_depth %}{{ item.read_depth }}{% elif item.reads_per_sample_million %}{{ item.reads_per_sample_million | int }}M{% endif %}</td>
+          <td>{{ item.data_analysis or "" }}</td>
+          <td class="num">{% if requires_manual_pricing(item) %}TBD{% else %}${{ money(item.unit_price) }}{% endif %}</td>
+          <td class="num">{% if requires_manual_pricing(item) %}TBD{% else %}${{ money(item.amount) }}{% endif %}</td>
+        </tr>
+        {% if item.description %}
+        <tr class="note-row">
+          <td colspan="7">{{ item.description }}</td>
+        </tr>
+        {% endif %}
+        {% if item.tissue_dissociation or item.nuclei_extraction or item.onsite_service or item.rule_notes %}
+        <tr class="note-row">
+          <td colspan="7">
+            {% if item.tissue_dissociation %}<div>Options: Tissue Dissociation</div>{% endif %}
+            {% if item.nuclei_extraction %}<div>Options: Nuclei Extraction</div>{% endif %}
+            {% if item.onsite_service %}
+              <div>Options: On-site service{% if item.onsite_location %}: {{ item.onsite_location }}{% endif %}{% if item.onsite_address %} - {{ item.onsite_address }}{% endif %}</div>
+            {% endif %}
+            {% if item.rule_notes %}
+              {% for line in item.rule_notes.split("\n") %}
+                {% if line %}<div>{{ line }}</div>{% endif %}
+              {% endfor %}
+            {% endif %}
+          </td>
+        </tr>
+        {% endif %}
+        {% set breakdown = price_breakdown(item) %}
+        {% for row in breakdown %}
+        <tr class="breakdown-row">
+          <td colspan="5"><span class="breakdown-label">{{ row.label }}</span></td>
+          <td class="num">{% if row.display %}{{ row.display }}{% else %}${{ money(row.unit_price) }} x {{ row.quantity }}{% endif %}</td>
+          <td class="num">{% if row.amount is none %}{{ row.display or "" }}{% else %}${{ money(row.amount) }}{% endif %}</td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
+        <tr class="total-row">
+          <td colspan="6" class="num">{% if has_unpriced_fees %}Priced Subtotal{% else %}Order Total{% endif %}</td>
+          <td class="num">{% if has_unpriced_fees %}{% if total_amount %}${{ money(total_amount) }} + TBD{% else %}TBD{% endif %}{% else %}${{ money(total_amount) }}{% endif %}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  {% if order.notes %}
+  <div class="section">
+    <div class="section-title">Order Notes</div>
+    <div class="terms">{{ order.notes }}</div>
+  </div>
+  {% endif %}
+
+  <div class="section">
+    <div class="section-title">Delivery Instruction</div>
+    <div class="terms">
+      <p>Please mail your samples to the following address: Jiaqi Zhang, Athenomics, 9096169589, 1 Grant St Suite 230, Framingham, MA, 01702 and fill the transportation company and tracking number in the Sample Registration Form.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Post-Project Sample Handling</div>
+    <div class="terms">
+      <p>The original samples and intermediate samples will be preserved 1 month after the analysis results are delivered and will be discarded by default afterward. If returning or extended storage are required, please specify the requirements in the Sample Registration Form. The data will be preserved 2 months after the analysis results are delivered.</p>
+    </div>
+  </div>
+</body>
+</html>
