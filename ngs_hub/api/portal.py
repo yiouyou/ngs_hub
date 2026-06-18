@@ -254,7 +254,7 @@ def notify_quote_created(quote):
 			("Status", quote.status),
 			("Total", quote_total_label(quote)),
 		],
-		cta_url=get_url("/ngs_account"),
+		cta_url=get_url(f"/ngs_account?tab=quote&quote={quote.name}"),
 		cta_label="Review quote",
 		note="You can place an order from the NGS Portal when the quote is ready.",
 	)
@@ -279,7 +279,7 @@ def notify_order_created(order):
 		"Order submitted",
 		f"We received your order {order.name}. A PDF copy is attached for your records.",
 		summary_rows,
-		cta_url=get_url("/ngs_account"),
+		cta_url=get_url(f"/ngs_account?tab=order&order={order.name}"),
 		cta_label="Review order",
 		note="We will contact you if additional information is needed.",
 	)

@@ -52,9 +52,12 @@
     </div>
     <form id="ngs-order-form" class="ngs-form">
       <div class="ngs-order-grid">
-        <label class="ngs-quote-field">Quote
-          <select name="quote"><option value="">Select quote</option></select>
-        </label>
+        <div class="ngs-quote-field">
+          <label>Quote
+            <select name="quote"><option value="">Select quote</option></select>
+          </label>
+          <p class="ngs-orderable-note" id="ngs-orderable-note"></p>
+        </div>
         <label>Sample registration form
           <input name="sample_registration_form" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt" required>
         </label>
@@ -105,8 +108,11 @@
   .ngs-download-icon { width: 16px; height: 16px; margin-right: 8px; flex: 0 0 auto; background: currentColor; mask: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 2a1 1 0 0 1 1 1v5.6l1.8-1.8a1 1 0 1 1 1.4 1.4l-3.5 3.5a1 1 0 0 1-1.4 0L3.8 8.2a1 1 0 0 1 1.4-1.4L7 8.6V3a1 1 0 0 1 1-1Zm-5 10a1 1 0 0 1 1 1h8a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1Z'/%3E%3C/svg%3E") center / contain no-repeat; }
   .ngs-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
   .ngs-order-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 14px; }
-  .ngs-order-grid > label { min-width: 0; }
+  .ngs-order-grid > label, .ngs-order-grid > .ngs-quote-field { min-width: 0; }
   .ngs-order-note { grid-column: 1 / -1; margin: -4px 0 0; color: #64717c; font-size: 13px; }
+  .ngs-orderable-note { display: block; margin-top: 6px; color: #64717c; font-size: 13px; line-height: 1.35; font-weight: 400; }
+  .ngs-text-action { border: 0; background: transparent; color: #0f3d36; font: inherit; font-weight: 700; padding: 0; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+  .ngs-text-action:hover { color: #0b2f29; }
   .ngs-po-row { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: end; }
   .ngs-po-primary { display: grid; grid-template-columns: max-content minmax(220px, 1fr); gap: 14px; align-items: end; min-width: 0; }
   .ngs-order-mode { min-height: 40px; white-space: nowrap; }
@@ -245,6 +251,7 @@
 
 <script>
 frappe.ready(() => {
+  let shouldApplyInitialDeepLink = true;
   const state = { quotes: [], orders: [], projects: [], services: [] };
   const US_STATE_ABBREVIATIONS = [
     'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
@@ -1187,6 +1194,9 @@ frappe.ready(() => {
     const quoteSelect = document.querySelector('#ngs-order-form select[name="quote"]');
     const orderableQuotes = state.quotes.filter(isOrderableQuote);
     quoteSelect.innerHTML = '<option value="">Select quote</option>' + orderableQuotes.map((q) => `<option value="${escape(q.name)}">${escape(q.name)} (${escape(q.status || 'Draft')})</option>`).join('');
+    document.getElementById('ngs-orderable-note').innerHTML = orderableQuotes.length
+      ? ''
+      : 'No orderable quotes are available. <button type="button" class="ngs-text-action" data-order-empty-action="create-quote">Create a new quote</button> or <button type="button" class="ngs-text-action" data-order-empty-action="review-quotes">review existing quotes</button>.';
     syncOrderMode(document.getElementById('ngs-order-form'));
   }
 
@@ -1207,6 +1217,10 @@ frappe.ready(() => {
   async function load() {
     const response = await frappe.call('ngs_hub.api.portal.get_portal_context');
     render(response.message || {});
+    if (shouldApplyInitialDeepLink) {
+      shouldApplyInitialDeepLink = false;
+      applyPortalDeepLink();
+    }
   }
 
   function openRecordByName(containerId, name) {
@@ -1248,6 +1262,41 @@ frappe.ready(() => {
     activatePanel(quoteTab);
     if (!openRecordByName('ngs-quotes', quoteName)) {
       document.getElementById('ngs-quotes').scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+  }
+
+  function focusQuoteForm() {
+    activatePanel(document.getElementById('tab-quote'));
+    const form = document.getElementById('ngs-quote-form');
+    form.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    const firstField = form.querySelector('select, input, textarea, button');
+    if (firstField) firstField.focus({ preventScroll: true });
+  }
+
+  function reviewExistingQuotes() {
+    activatePanel(document.getElementById('tab-quote'));
+    document.getElementById('ngs-quotes').scrollIntoView({ block: 'start', behavior: 'smooth' });
+  }
+
+  function applyPortalDeepLink() {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    const quoteName = params.get('quote');
+    const orderName = params.get('order');
+
+    if (tab === 'order' || orderName) {
+      activatePanel(document.getElementById('tab-order'));
+      if (orderName && !openRecordByName('ngs-orders', orderName)) {
+        document.getElementById('ngs-orders').scrollIntoView({ block: 'start', behavior: 'smooth' });
+      }
+      return;
+    }
+
+    if (tab === 'quote' || quoteName) {
+      activatePanel(document.getElementById('tab-quote'));
+      if (quoteName && !openRecordByName('ngs-quotes', quoteName)) {
+        document.getElementById('ngs-quotes').scrollIntoView({ block: 'start', behavior: 'smooth' });
+      }
     }
   }
 
@@ -1339,6 +1388,14 @@ frappe.ready(() => {
   });
 
   document.addEventListener('click', async (event) => {
+    const orderEmptyAction = event.target.closest('[data-order-empty-action]');
+    if (orderEmptyAction) {
+      event.preventDefault();
+      if (orderEmptyAction.dataset.orderEmptyAction === 'create-quote') focusQuoteForm();
+      if (orderEmptyAction.dataset.orderEmptyAction === 'review-quotes') reviewExistingQuotes();
+      return;
+    }
+
     const quoteAction = event.target.closest('[data-quote-action]');
     if (quoteAction) {
       event.preventDefault();
