@@ -343,14 +343,17 @@ html {
 }
 
 .ngs-login-signup {
-	margin-top: 18px;
+	width: 400px;
+	max-width: calc(100vw - 32px);
+	margin: 16px auto 0;
 	color: #64717c;
 	font-size: 14px;
+	line-height: 1.5;
 }
 
 .ngs-login-signup a {
 	color: #17352f;
-	font-weight: 700;
+	font-weight: 750;
 	text-decoration: none;
 }
 

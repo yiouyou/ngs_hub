@@ -96,7 +96,7 @@
 
 
 	function installNgsSignupLink() {
-		if (window.location.pathname !== '/login' || document.querySelector('.ngs-login-signup')) {
+		if (document.querySelector('.ngs-login-signup')) {
 			return;
 		}
 		const loginCard = document.querySelector('.for-login .login-content.page-card');
@@ -108,7 +108,7 @@
 	}
 
 	function installNgsLoginSubmitLookup() {
-		if (window.location.pathname !== '/login' || loginSubmitLookupInstalled) {
+		if (loginSubmitLookupInstalled || !document.querySelector('.form-login')) {
 			return;
 		}
 
