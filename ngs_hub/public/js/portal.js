@@ -94,6 +94,36 @@
 		}
 	}
 
+	window.ngsPortalPasswordIssues = function (password, details = {}) {
+		const issues = [];
+		const categoryCount = [
+			/[a-z]/.test(password),
+			/[A-Z]/.test(password),
+			/\d/.test(password),
+			/[^A-Za-z0-9]/.test(password),
+		].filter(Boolean).length;
+		const normalized = password.toLowerCase();
+		const personalTokens = [
+			details.firstName,
+			details.lastName,
+			(details.email || '').split('@')[0],
+		].filter((value) => value && value.length >= 3).map((value) => value.toLowerCase());
+
+		if (password.length < 8) {
+			issues.push('Use at least 8 characters.');
+		}
+		if (categoryCount < 3) {
+			issues.push('Use at least three character types: uppercase, lowercase, numbers, symbols.');
+		}
+		if (personalTokens.some((token) => normalized.includes(token))) {
+			issues.push('Do not include your name or email.');
+		}
+		if (/^(.)\1+$/.test(password) || /(123456|abcdef|qwerty|password|welcome|admin)/i.test(password)) {
+			issues.push('Avoid common words, repeated characters, and simple sequences.');
+		}
+		return issues;
+	};
+
 
 	function installNgsSignupLink() {
 		if (document.querySelector('.ngs-login-signup')) {

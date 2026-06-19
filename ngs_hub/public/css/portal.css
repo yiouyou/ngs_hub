@@ -299,6 +299,14 @@ html {
 	display: none;
 }
 
+.ngs-password-help {
+	margin: -2px 0 0;
+	color: #64717c;
+	font-size: 12px;
+	font-weight: 500;
+	line-height: 1.45;
+}
+
 @media (max-width: 540px) {
 	.ngs-portal {
 		padding: 24px 12px 48px;

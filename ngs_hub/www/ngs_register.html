@@ -43,13 +43,16 @@
         <input name="email" type="email" required autocomplete="email">
       </label>
       <label>Password
-        <input name="password" type="password" required minlength="8" autocomplete="new-password">
+        <input name="password" type="password" required minlength="8" autocomplete="new-password" aria-describedby="ngs-signup-password-help">
       </label>
       <label>Confirm password
-        <input name="confirm_password" type="password" required minlength="8" autocomplete="new-password">
+        <input name="confirm_password" type="password" required minlength="8" autocomplete="new-password" aria-describedby="ngs-signup-password-help">
       </label>
+      <p class="ngs-password-help" id="ngs-signup-password-help">
+        Password requirements: at least 8 characters; include at least three of uppercase letters, lowercase letters, numbers, and symbols; avoid your name, email, common words, repeated characters, and simple sequences.
+      </p>
     </div>
-    <p class="ngs-form-note">Use at least 8 characters. You will complete your customer profile after logging in.</p>
+    <p class="ngs-form-note">You will complete your customer profile after logging in.</p>
     <button type="submit" class="ngs-primary" id="ngs-signup-submit">Create account</button>
     <p class="ngs-message" id="ngs-signup-message" role="status" aria-live="polite"></p>
   </form>
@@ -120,6 +123,9 @@
   .ngs-signup-email {
     grid-column: 1 / -1;
   }
+  .ngs-signup-grid .ngs-password-help {
+    grid-column: 1 / -1;
+  }
   .ngs-signup-form .ngs-primary {
     width: 100%;
   }
@@ -164,8 +170,19 @@ frappe.ready(async () => {
       event.preventDefault();
       if (!form.reportValidity()) return;
       const data = Object.fromEntries(new FormData(form).entries());
+      const issues = window.ngsPortalPasswordIssues(data.password, {
+        firstName: data.first_name,
+        lastName: data.last_name,
+        email: data.email,
+      });
+      if (issues.length) {
+        setMessage(message, `Password does not meet the requirements. ${issues.join(' ')}`, true);
+        form.elements.password.focus();
+        return;
+      }
       if (data.password !== data.confirm_password) {
         setMessage(message, 'Passwords do not match.', true);
+        form.elements.confirm_password.focus();
         return;
       }
       const button = document.getElementById('ngs-signup-submit');
