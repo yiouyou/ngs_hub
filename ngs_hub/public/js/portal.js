@@ -94,6 +94,19 @@
 		}
 	}
 
+
+	function installNgsSignupLink() {
+		if (window.location.pathname !== '/login' || document.querySelector('.ngs-login-signup')) {
+			return;
+		}
+		const loginCard = document.querySelector('.for-login .login-content.page-card');
+		if (!loginCard || !loginCard.parentNode) return;
+		const message = document.createElement('div');
+		message.className = 'text-center sign-up-message ngs-login-signup';
+		message.innerHTML = 'No account? <a href="/ngs_register">Sign up</a>';
+		loginCard.insertAdjacentElement('afterend', message);
+	}
+
 	function installNgsLoginSubmitLookup() {
 		if (window.location.pathname !== '/login' || loginSubmitLookupInstalled) {
 			return;
@@ -142,6 +155,7 @@
 		markPortalPage();
 		renameUserMenu();
 		normalizeLoginDestination();
+		installNgsSignupLink();
 		installNgsLoginSubmitLookup();
 		installNgsLoginTargetLookup();
 		if (observer && document.readyState === 'complete') {

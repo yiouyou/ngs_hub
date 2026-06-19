@@ -25,7 +25,7 @@ html {
 .ngs-portal {
 	max-width: 1120px;
 	margin: 0 auto;
-	padding: 20px 20px 64px;
+	padding: 14px 20px 48px;
 	color: #1f2933;
 }
 
@@ -34,8 +34,8 @@ html {
 	align-items: center;
 	justify-content: space-between;
 	gap: 18px;
-	margin-bottom: 26px;
-	padding: 8px 12px;
+	margin-bottom: 16px;
+	padding: 6px 12px;
 	border: 1px solid #d9e1e8;
 	border-radius: 8px;
 	background: #f7faf9;
@@ -98,8 +98,8 @@ html {
 	gap: 28px;
 	align-items: end;
 	border-bottom: 1px solid #d9e1e8;
-	padding-bottom: 24px;
-	margin-bottom: 24px;
+	padding-bottom: 18px;
+	margin-bottom: 18px;
 }
 
 .ngs-hero h1 {
@@ -123,7 +123,7 @@ html {
 .ngs-profile-summary {
 	min-width: 240px;
 	border-left: 4px solid #26635b;
-	padding: 12px 0 12px 16px;
+	padding: 10px 0 10px 16px;
 	background: #f7faf9;
 }
 
@@ -219,8 +219,8 @@ html {
 
 .ngs-form {
 	display: grid;
-	gap: 16px;
-	padding: 16px;
+	gap: 12px;
+	padding: 14px;
 	background: #f8faf9;
 	border: 1px solid #d9e1e8;
 	border-radius: 8px;
@@ -228,7 +228,7 @@ html {
 
 .ngs-form label {
 	display: grid;
-	gap: 6px;
+	gap: 5px;
 	min-width: 0;
 	font-size: 13px;
 	font-weight: 650;
@@ -340,4 +340,20 @@ html {
 	.ngs-form {
 		padding: 14px;
 	}
+}
+
+.ngs-login-signup {
+	margin-top: 18px;
+	color: #64717c;
+	font-size: 14px;
+}
+
+.ngs-login-signup a {
+	color: #17352f;
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.ngs-login-signup a:hover {
+	text-decoration: underline;
 }

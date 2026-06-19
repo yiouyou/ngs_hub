@@ -5,51 +5,91 @@
 
 {% block page_content %}
 <div class="ngs-portal ngs-profile-page">
+  {% if is_guest %}
+  <header class="ngs-topbar" aria-label="NGS registration navigation">
+    <a class="ngs-brand" href="/login">Athenomics</a>
+    <nav>
+      <a href="/login">Login</a>
+    </nav>
+  </header>
+  {% else %}
   {% set active_page = "profile" %}
   {% include "templates/includes/ngs_topbar.html" %}
+  {% endif %}
 
   <section class="ngs-hero">
     <div>
-      <h1 id="ngs-register-title">{% if has_customer %}Customer Profile{% else %}Create Customer Profile{% endif %}</h1>
+      <h1 id="ngs-register-title">{% if is_guest %}Create account{% elif has_customer %}Customer Profile{% else %}Create Customer Profile{% endif %}</h1>
     </div>
-    <div class="ngs-profile-summary" id="ngs-profile-summary">Loading profile...</div>
+    <div class="ngs-profile-summary" id="ngs-profile-summary">
+      {% if is_guest %}
+      <strong>NGS customer access</strong><br><span class="ngs-muted">Create a website account first.</span>
+      {% else %}
+      Loading profile...
+      {% endif %}
+    </div>
   </section>
 
-  <form id="ngs-register-form" class="ngs-form ngs-profile-form">
-    <div class="ngs-register-grid">
+  {% if is_guest %}
+  <form id="ngs-signup-form" class="ngs-form ngs-profile-form ngs-signup-form">
+    <div class="ngs-register-grid ngs-signup-grid">
       <label>First name
         <input name="first_name" required autocomplete="given-name">
       </label>
       <label>Last name
         <input name="last_name" required autocomplete="family-name">
       </label>
-      <label>Email
-        <input name="email" type="email" disabled>
+      <label class="ngs-signup-email">Email
+        <input name="email" type="email" required autocomplete="email">
+      </label>
+      <label>Password
+        <input name="password" type="password" required minlength="8" autocomplete="new-password">
+      </label>
+      <label>Confirm password
+        <input name="confirm_password" type="password" required minlength="8" autocomplete="new-password">
+      </label>
+    </div>
+    <p class="ngs-form-note">Use at least 8 characters. You will complete your customer profile after logging in.</p>
+    <button type="submit" class="ngs-primary" id="ngs-signup-submit">Create account</button>
+    <p class="ngs-message" id="ngs-signup-message" role="status" aria-live="polite"></p>
+  </form>
+  {% else %}
+  <form id="ngs-register-form" class="ngs-form ngs-profile-form">
+    <div class="ngs-register-grid">
+      <label><span class="ngs-field-title">First name <span class="ngs-required" aria-hidden="true">*</span></span>
+        <input name="first_name" required autocomplete="given-name">
+      </label>
+      <label><span class="ngs-field-title">Last name <span class="ngs-required" aria-hidden="true">*</span></span>
+        <input name="last_name" required autocomplete="family-name">
+      </label>
+      <label><span class="ngs-field-title">Email <span class="ngs-required" aria-hidden="true">*</span></span>
+        <input name="email" type="email" disabled aria-required="true">
       </label>
       <label>Phone
         <input name="phone" autocomplete="tel">
       </label>
-      <label>Organization
-        <input name="organization" autocomplete="organization">
+      <label><span class="ngs-field-title">Organization <span class="ngs-required" aria-hidden="true">*</span></span>
+        <input name="organization" required autocomplete="organization">
       </label>
       <label>Lab / Group name
         <input name="lab_group_name">
       </label>
-      <label>Address
-        <textarea name="address" rows="3" autocomplete="street-address"></textarea>
+      <label class="ngs-profile-address"><span class="ngs-field-title">Address <span class="ngs-required" aria-hidden="true">*</span></span>
+        <textarea name="address" rows="3" required autocomplete="street-address"></textarea>
       </label>
     </div>
-    <label>Notes
-      <textarea name="note" rows="4" placeholder="Include billing contact, preferred project contact, or other account setup details."></textarea>
+    <label class="ngs-profile-notes">Notes
+      <textarea name="note" rows="1" placeholder="Billing contact, preferred project contact, or other account setup details."></textarea>
     </label>
     <button type="submit" class="ngs-primary" id="ngs-register-submit">{% if has_customer %}Save NGS customer profile{% else %}Create NGS customer profile{% endif %}</button>
-    <p class="ngs-message" id="ngs-register-message"></p>
+    <p class="ngs-message" id="ngs-register-message" role="status" aria-live="polite"></p>
   </form>
+  {% endif %}
 </div>
 
 <style>
-  .ngs-profile-form { padding: 16px; }
-  .ngs-register-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .ngs-profile-form { padding: 14px; }
+  .ngs-register-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; }
   .ngs-register-grid input,
   .ngs-register-grid textarea {
     min-height: 44px;
@@ -57,6 +97,47 @@
   .ngs-register-grid textarea[name="address"] {
     height: 44px;
     min-height: 44px;
+  }
+  .ngs-profile-notes textarea[name="note"] {
+    height: 44px;
+    min-height: 44px;
+  }
+  .ngs-profile-address {
+    grid-column: 1 / -1;
+  }
+  .ngs-field-title {
+    align-items: baseline;
+    display: inline-flex;
+    gap: 4px;
+  }
+  .ngs-required {
+    color: #b42318;
+    font-weight: 700;
+  }
+  .ngs-signup-form {
+    max-width: 760px;
+  }
+  .ngs-signup-email {
+    grid-column: 1 / -1;
+  }
+  .ngs-signup-form .ngs-primary {
+    width: 100%;
+  }
+  .ngs-form-note {
+    color: #64717c;
+    font-size: 0.95rem;
+    margin: 8px 0 12px;
+  }
+  @media (max-width: 720px) {
+    .ngs-signup-form {
+      max-width: none;
+    }
+    .ngs-signup-grid {
+      grid-template-columns: 1fr;
+    }
+    .ngs-signup-email {
+      grid-column: auto;
+    }
   }
   @media (max-width: 540px) {
     .ngs-register-grid { grid-template-columns: 1fr; }
@@ -68,17 +149,49 @@
 
 <script>
 frappe.ready(async () => {
+  const isGuest = {{ "true" if is_guest else "false" }};
+
+  function setMessage(element, text, isError = false) {
+    if (!element) return;
+    element.textContent = text;
+    element.style.color = isError ? '#9b2c2c' : '#26635b';
+  }
+
+  if (isGuest) {
+    const form = document.getElementById('ngs-signup-form');
+    const message = document.getElementById('ngs-signup-message');
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const data = Object.fromEntries(new FormData(form).entries());
+      if (data.password !== data.confirm_password) {
+        setMessage(message, 'Passwords do not match.', true);
+        return;
+      }
+      const button = document.getElementById('ngs-signup-submit');
+      button.disabled = true;
+      setMessage(message, 'Creating your account...');
+      try {
+        const response = await frappe.call('ngs_hub.api.portal.create_ngs_user_account', { payload: JSON.stringify(data) });
+        const loginUrl = response.message?.login_url || '/login?redirect-to=/ngs_register';
+        setMessage(message, 'Account created. Redirecting to login...');
+        window.setTimeout(() => {
+          window.location.href = loginUrl;
+        }, 700);
+      } catch (error) {
+        button.disabled = false;
+        setMessage(message, error.message || 'Unable to create account.', true);
+      }
+    });
+    return;
+  }
+
   const form = document.getElementById('ngs-register-form');
   const message = document.getElementById('ngs-register-message');
   const title = document.getElementById('ngs-register-title');
   const submit = document.getElementById('ngs-register-submit');
   const summary = document.getElementById('ngs-profile-summary');
   let existingCustomer = false;
-
-  function setMessage(text, isError = false) {
-    message.textContent = text;
-    message.style.color = isError ? '#9b2c2c' : '#26635b';
-  }
 
   function values() {
     const data = Object.fromEntries(new FormData(form).entries());
@@ -111,7 +224,7 @@ frappe.ready(async () => {
     }
   } catch (error) {
     summary.textContent = 'Profile unavailable';
-    setMessage(error.message || 'Unable to load registration context.', true);
+    setMessage(message, error.message || 'Unable to load registration context.', true);
   }
 
   form.addEventListener('submit', async (event) => {
@@ -119,10 +232,10 @@ frappe.ready(async () => {
     if (!form.reportValidity()) return;
     const button = form.querySelector('button[type="submit"]');
     button.disabled = true;
-    setMessage('Saving your customer profile...');
+    setMessage(message, 'Saving your customer profile...');
     try {
       await frappe.call('ngs_hub.api.portal.register_ngs_customer', { payload: JSON.stringify(values()) });
-      setMessage('Profile saved.');
+      setMessage(message, 'Profile saved.');
       if (existingCustomer) {
         button.disabled = false;
       } else {
@@ -130,7 +243,7 @@ frappe.ready(async () => {
       }
     } catch (error) {
       button.disabled = false;
-      setMessage(error.message || 'Registration failed.', true);
+      setMessage(message, error.message || 'Registration failed.', true);
     }
   });
 });

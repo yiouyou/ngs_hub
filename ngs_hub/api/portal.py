@@ -3,7 +3,9 @@ import json
 import frappe
 import pdfkit
 from frappe import _
-from frappe.utils import add_days, escape_html, flt, formatdate, get_url, getdate
+from frappe.rate_limiter import rate_limit
+from frappe.utils import add_days, escape_html, flt, formatdate, get_url, getdate, validate_email_address
+from frappe.utils.password import update_password
 
 from ngs_hub.api.crm_sync import sync_ngs_customer_to_crm
 from ngs_hub.api.frappe_crm_sync import sync_ngs_customer_to_frappe_crm
@@ -644,6 +646,55 @@ def attach_order_items(orders):
 	return orders
 
 
+@frappe.whitelist(allow_guest=True)
+@rate_limit(limit=5, seconds=60 * 60)
+def create_ngs_user_account(payload):
+	if frappe.session.user != "Guest":
+		frappe.throw(_("Log out before creating a new account."))
+	payload = _loads(payload)
+	first_name = (payload.get("first_name") or "").strip()
+	last_name = (payload.get("last_name") or "").strip()
+	email = (payload.get("email") or "").strip().lower()
+	password = payload.get("password") or ""
+	confirm_password = payload.get("confirm_password") or ""
+	if not first_name or not last_name:
+		frappe.throw(_("First name and last name are required."))
+	valid_email = validate_email_address(email)
+	if not valid_email or "," in valid_email:
+		frappe.throw(_("Enter a valid email address."))
+	email = valid_email.lower()
+	if frappe.db.exists("User", email) or frappe.db.exists("User", {"email": email}):
+		frappe.throw(_("An account already exists for this email. Please log in or reset your password."))
+	if not password or len(password) < 8:
+		frappe.throw(_("Password must be at least 8 characters."))
+	if password != confirm_password:
+		frappe.throw(_("Passwords do not match."))
+	from frappe.core.doctype.user.user import test_password_strength
+
+	strength = test_password_strength(password, user_data=(first_name, "", last_name, email, None)) or {}
+	feedback = strength.get("feedback") or {}
+	if feedback and feedback.get("password_policy_validation_passed") is False:
+		suggestions = " ".join(feedback.get("suggestions") or [])
+		frappe.throw(suggestions or _("Choose a stronger password."))
+	if not frappe.db.exists("Role", "NGS External Customer"):
+		frappe.throw(_("NGS External Customer role is not configured."))
+	user = frappe.get_doc({
+		"doctype": "User",
+		"email": email,
+		"first_name": first_name,
+		"last_name": last_name,
+		"full_name": " ".join([first_name, last_name]),
+		"user_type": "Website User",
+		"send_welcome_email": 0,
+		"enabled": 1,
+	})
+	user.append("roles", {"role": "NGS External Customer"})
+	user.insert(ignore_permissions=True)
+	update_password(user.name, password)
+	frappe.cache.hdel("home_page", user.name)
+	return {"name": user.name, "login_url": "/login?redirect-to=/ngs_register"}
+
+
 @frappe.whitelist()
 def get_portal_context():
 	customer = get_current_customer()
@@ -745,18 +796,24 @@ def register_ngs_customer(payload):
 	existing_customer = frappe.db.get_value("NGS Customer", {"email": email}, "name")
 	first_name = (payload.get("first_name") or "").strip()
 	last_name = (payload.get("last_name") or "").strip()
+	organization = (payload.get("organization") or "").strip()
+	address = (payload.get("address") or "").strip()
 	full_name = " ".join(part for part in [first_name, last_name] if part).strip()
 	if not first_name or not last_name:
 		frappe.throw(_("First name and last name are required."))
+	if not organization:
+		frappe.throw(_("Organization is required."))
+	if not address:
+		frappe.throw(_("Address is required."))
 	values = {
 		"full_name": full_name,
 		"first_name": first_name,
 		"last_name": last_name,
 		"email": email,
-		"organization": (payload.get("organization") or "").strip(),
-		"company_institution": (payload.get("organization") or "").strip(),
+		"organization": organization,
+		"company_institution": organization,
 		"phone": (payload.get("phone") or "").strip(),
-		"address": (payload.get("address") or "").strip(),
+		"address": address,
 		"lab_group_name": (payload.get("lab_group_name") or "").strip(),
 		"note": (payload.get("note") or "").strip(),
 	}
