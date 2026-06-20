@@ -317,6 +317,7 @@ def price_breakdown(item):
 	sample_type = item.get("sample_type") or ""
 	service_name = get_service_label(item)
 	standard_reads = get_standard_reads(item)
+	reads_per_sample = get_million_reads_per_sample(item)
 
 	if project_type == "Custom Project":
 		add(item.get("description") or "Custom project", item.get("unit_price") or 0)
@@ -328,14 +329,14 @@ def price_breakdown(item):
 		add("WGS library prep", WGS_LIBRARY_PREP_PRICE)
 		add(f"WGS sequencing ({depth:g}x at ${rate:g}/x)", depth * rate)
 	elif project_type == "Sequencing Only - 1M Reads":
-		reads = flt(item.get("reads_per_sample_million") or standard_reads or 1)
+		reads = reads_per_sample or standard_reads or 1
 		rate = get_service_price("SEQ_ONLY_1M_READS")
 		add(f"Sequencing ({reads:g}M reads at ${rate:g}/M)", reads * rate)
 	else:
 		add(service_name, get_base_unit_price(item, service_name))
 
 	if standard_reads and project_type != "Sequencing Only - 1M Reads":
-		extra_reads = flt(item.get("reads_per_sample_million")) - standard_reads
+		extra_reads = reads_per_sample - standard_reads
 		if extra_reads > 0:
 			add(f"Extra sequencing ({extra_reads:g}M reads at ${get_service_price('EXTRA_SEQUENCING_1M'):g}/M)", extra_reads * get_service_price("EXTRA_SEQUENCING_1M"))
 
@@ -401,6 +402,20 @@ def get_base_unit_price(item, service_name):
 def get_standard_reads(item):
 	if item.get("service"):
 		return flt(frappe.db.get_value("NGS Service Catalog", item.get("service"), "standard_reads_million"))
+	return 0
+
+
+def get_million_reads_per_sample(item):
+	reads = flt(item.get("million_reads_per_sample"))
+	if reads:
+		return reads
+	if item.get("quote_item"):
+		reads = flt(frappe.db.get_value("NGS Quote Item", item.get("quote_item"), "million_reads_per_sample"))
+		if reads:
+			return reads
+	raw_depth = str(item.get("read_depth") or "").strip().lower()
+	if raw_depth.endswith("m"):
+		return flt(raw_depth[:-1].strip())
 	return 0
 
 
@@ -566,7 +581,7 @@ def attach_quote_items(quotes):
 			"quantity",
 			"species",
 			"read_depth",
-			"reads_per_sample_million",
+			"million_reads_per_sample",
 			"add_on_sequencing",
 			"data_analysis",
 			"onsite_service",
@@ -861,7 +876,7 @@ def create_quote(payload):
 			"quantity": item.get("quantity") or 1,
 			"species": item.get("species"),
 			"read_depth": item.get("read_depth"),
-			"reads_per_sample_million": item.get("reads_per_sample_million"),
+			"million_reads_per_sample": item.get("million_reads_per_sample"),
 			"add_on_sequencing": item.get("add_on_sequencing"),
 			"data_analysis": item.get("data_analysis"),
 			"onsite_service": item.get("onsite_service"),

@@ -12,7 +12,7 @@
   "quantity",
   "species",
   "read_depth",
-  "reads_per_sample_million",
+  "million_reads_per_sample",
   "add_on_sequencing",
   "data_analysis",
   "onsite_service",
@@ -73,9 +73,9 @@
    "label": "Read Depth"
   },
   {
-   "fieldname": "reads_per_sample_million",
+   "fieldname": "million_reads_per_sample",
    "fieldtype": "Float",
-   "label": "Reads Per Sample (Million)"
+   "label": "Million Reads per Sample"
   },
   {
    "fieldname": "add_on_sequencing",

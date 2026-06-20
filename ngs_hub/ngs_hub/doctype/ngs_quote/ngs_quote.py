@@ -188,10 +188,10 @@ class NGSQuote(Document):
 		confirmed_tbd_fee = flt(item.get("confirmed_tbd_fee"))
 
 		if project_type == "Sequencing Only - 1M Reads":
-			reads = flt(item.reads_per_sample_million)
+			reads = flt(item.million_reads_per_sample)
 			if not reads:
 				reads = standard_reads or 1
-				item.reads_per_sample_million = reads
+				item.million_reads_per_sample = reads
 			if reads <= 0:
 				frappe.throw(_("Reads (M) for quote item {0} must be greater than zero.").format(item.idx))
 			unit_price = reads * self.get_service_price("SEQ_ONLY_1M_READS")
@@ -202,15 +202,15 @@ class NGSQuote(Document):
 				)
 			)
 		elif standard_reads:
-			if not item.reads_per_sample_million:
-				item.reads_per_sample_million = standard_reads
-			if flt(item.reads_per_sample_million) < standard_reads:
+			if not item.million_reads_per_sample:
+				item.million_reads_per_sample = standard_reads
+			if flt(item.million_reads_per_sample) < standard_reads:
 				frappe.throw(
 					_("Reads (M) for quote item {0} cannot be lower than the default {1}M reads.").format(
 						item.idx, standard_reads
 					)
 				)
-			extra_reads = flt(item.reads_per_sample_million) - standard_reads
+			extra_reads = flt(item.million_reads_per_sample) - standard_reads
 			if extra_reads > 0:
 				item.add_on_sequencing = 1
 				extra_fee = extra_reads * self.get_service_price("EXTRA_SEQUENCING_1M")

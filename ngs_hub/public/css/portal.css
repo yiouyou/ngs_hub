@@ -175,8 +175,26 @@ html {
 }
 
 .ngs-primary {
+	align-items: center;
 	background: #17352f;
 	color: #fff;
+	display: inline-flex;
+	gap: 8px;
+	justify-content: center;
+}
+
+.ngs-primary[aria-busy="true"]::before {
+	animation: ngs-spin .8s linear infinite;
+	border: 2px solid rgba(255, 255, 255, .45);
+	border-top-color: #fff;
+	border-radius: 50%;
+	content: "";
+	height: 14px;
+	width: 14px;
+}
+
+@keyframes ngs-spin {
+	to { transform: rotate(360deg); }
 }
 
 .ngs-actions button:hover,

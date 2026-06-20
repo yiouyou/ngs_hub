@@ -201,7 +201,7 @@
           </td>
           <td>{{ item.sample_type or "" }}</td>
           <td class="num">{{ item.quantity or 0 }}</td>
-          <td class="num">{% if item.read_depth %}{{ item.read_depth }}{% elif item.reads_per_sample_million %}{{ item.reads_per_sample_million | int }}M{% endif %}</td>
+          <td class="num">{% if item.read_depth %}{{ item.read_depth }}{% elif item.million_reads_per_sample %}{{ item.million_reads_per_sample | int }}M{% endif %}</td>
           <td>{{ item.data_analysis or "" }}</td>
           <td class="num">{% if requires_manual_pricing(item) %}TBD{% else %}${{ money(item.unit_price) }}{% endif %}</td>
           <td class="num">{% if requires_manual_pricing(item) %}TBD{% else %}${{ money(item.amount) }}{% endif %}</td>

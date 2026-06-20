@@ -306,7 +306,7 @@ def get_item_description(doc_item, fallback_quote_item=None):
 		("Sample Type", "sample_type"),
 		("Species", "species"),
 		("Read Depth", "read_depth"),
-		("Reads Per Sample (M)", "reads_per_sample_million"),
+		("Million Reads per Sample", "million_reads_per_sample"),
 		("Data Analysis", "data_analysis"),
 		("Rule Notes", "rule_notes"),
 	):

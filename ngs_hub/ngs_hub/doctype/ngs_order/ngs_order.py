@@ -55,6 +55,9 @@ class NGSOrder(Document):
 
 	def copy_items_from_quote(self, quote):
 		for quote_item in quote.items:
+			read_depth = quote_item.read_depth
+			if not read_depth and quote_item.million_reads_per_sample:
+				read_depth = f"{quote_item.million_reads_per_sample:g}M"
 			self.append("items", {
 				"quote_item": quote_item.name,
 				"service": quote_item.service,
@@ -62,7 +65,7 @@ class NGSOrder(Document):
 				"sample_type": quote_item.sample_type,
 				"description": quote_item.description,
 				"quantity": quote_item.quantity,
-				"read_depth": quote_item.read_depth,
+				"read_depth": read_depth,
 				"data_analysis": quote_item.data_analysis,
 				"onsite_service": quote_item.onsite_service,
 				"onsite_location": quote_item.onsite_location,

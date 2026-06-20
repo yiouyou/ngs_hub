@@ -530,7 +530,7 @@ frappe.ready(() => {
         </label>
         <label class="ngs-field-reads" data-field="reads">
           <span class="ngs-label-row">Reads (M)<button class="ngs-info-dot is-hidden" data-field="reads-info" type="button" aria-label=""></button></span>
-          <input name="reads_per_sample_million" type="number" min="0" step="1">
+          <input name="million_reads_per_sample" type="number" min="0" step="1">
         </label>
         <label class="ngs-field-analysis" data-field="analysis">Data analysis
           <select name="data_analysis"></select>
@@ -570,7 +570,7 @@ frappe.ready(() => {
     list.appendChild(row);
     const projectSelect = row.querySelector('[name="project_type"]');
     fillOptions(projectSelect, projectTypes, values.project_type || 'Bulk RNAseq');
-    row.querySelector('[name="reads_per_sample_million"]').value = values.reads_per_sample_million || '';
+    row.querySelector('[name="million_reads_per_sample"]').value = values.million_reads_per_sample || '';
     row.querySelector('[name="read_depth"]').value = String(values.read_depth || '').replace(/x$/i, '');
     row.querySelector('[name="onsite_location"]').value = values.onsite_location || '';
     row.querySelector('[name="onsite_address"]').value = values.onsite_address || '';
@@ -588,7 +588,7 @@ frappe.ready(() => {
     row.querySelectorAll('select, input, textarea').forEach((input) => {
       input.addEventListener('change', () => refreshQuoteLine(row));
     });
-    row.querySelector('[name="reads_per_sample_million"]').addEventListener('input', () => refreshQuoteLine(row, { preserveReadsInput: true }));
+    row.querySelector('[name="million_reads_per_sample"]').addEventListener('input', () => refreshQuoteLine(row, { preserveReadsInput: true }));
     row.querySelector('[name="read_depth"]').addEventListener('input', () => refreshQuoteLine(row));
     row.querySelector('[name="custom_project_description"]').addEventListener('input', () => refreshQuoteLine(row));
     row.querySelector('[name="onsite_address"]').addEventListener('input', () => refreshQuoteLine(row));
@@ -622,7 +622,7 @@ frappe.ready(() => {
     fillOptions(speciesSelect, rule.species || [], (rule.species || []).includes(previousSpecies) ? previousSpecies : (rule.species || [])[0]);
 
     const sampleType = sampleSelect.value;
-    const readsInput = row.querySelector('[name="reads_per_sample_million"]');
+    const readsInput = row.querySelector('[name="million_reads_per_sample"]');
     const depthInput = row.querySelector('[name="read_depth"]');
     const readsHint = row.querySelector('[data-field="reads-hint"]');
     const readsInfo = row.querySelector('[data-field="reads-info"]');
@@ -741,7 +741,7 @@ frappe.ready(() => {
     const species = row.querySelector('[name="species"]').value;
     const depth = row.querySelector('[name="read_depth"]').value;
     const quantity = row.querySelector('[name="quantity"]').value || 1;
-    const reads = row.querySelector('[name="reads_per_sample_million"]').value;
+    const reads = row.querySelector('[name="million_reads_per_sample"]').value;
     if (projectType === 'Custom Project') {
       row.querySelector('.ngs-line-summary').textContent = `${resolved.displayProjectType} / ${quantity}`;
       return;
@@ -767,7 +767,7 @@ frappe.ready(() => {
         species: row.querySelector('[name="species"]').value || null,
         read_depth: row.querySelector('[name="read_depth"]').value || null,
         quantity: Number(row.querySelector('[name="quantity"]').value || 1),
-        reads_per_sample_million: Number(row.querySelector('[name="reads_per_sample_million"]').value || 0) || null,
+        million_reads_per_sample: Number(row.querySelector('[name="million_reads_per_sample"]').value || 0) || null,
         add_on_sequencing: row.querySelector('[name="add_on_sequencing"]').value === '1' ? 1 : 0,
         data_analysis: row.querySelector('[name="data_analysis"]').value,
         library_qc: resolved.isSequencingOnly ? 1 : 0,
@@ -893,6 +893,15 @@ frappe.ready(() => {
     }
   }
 
+  function setSubmitting(form, isSubmitting, busyText) {
+    const button = form.querySelector('button[type="submit"]');
+    if (!button) return;
+    if (!button.dataset.idleText) button.dataset.idleText = button.textContent.trim();
+    button.disabled = isSubmitting;
+    button.setAttribute('aria-busy', isSubmitting ? 'true' : 'false');
+    button.textContent = isSubmitting ? busyText : button.dataset.idleText;
+  }
+
   function itemAddOns(item) {
     const addOns = [];
     if (item.tissue_dissociation) addOns.push('Tissue dissociation');
@@ -940,7 +949,7 @@ frappe.ready(() => {
     return [
       item.data_analysis ? `Analysis: ${item.data_analysis}` : null,
       item.read_depth ? `Coverage: ${item.read_depth}` : null,
-      item.reads_per_sample_million ? `Reads: ${item.reads_per_sample_million}M` : null,
+      item.million_reads_per_sample ? `Reads: ${item.million_reads_per_sample}M` : null,
       item.species ? `Species: ${item.species}` : null,
     ].filter(Boolean);
   }
@@ -1029,7 +1038,7 @@ frappe.ready(() => {
         `<td data-label="Project">${projectCell}</td>`,
         `<td data-label="Sample">${escape(item.sample_type || '')}</td>`,
         `<td data-label="Qty" class="ngs-num">${escape(item.quantity || '')}</td>`,
-        `<td data-label="Coverage / Reads" class="ngs-num">${item.read_depth ? escape(item.read_depth) : (item.reads_per_sample_million ? `${escape(item.reads_per_sample_million)}M` : '')}</td>`,
+        `<td data-label="Coverage / Reads" class="ngs-num">${item.read_depth ? escape(item.read_depth) : (item.million_reads_per_sample ? `${escape(item.million_reads_per_sample)}M` : '')}</td>`,
         `<td data-label="Analysis">${escape(item.data_analysis || '')}</td>`,
       ];
       if (includePrices) {
@@ -1430,40 +1439,50 @@ frappe.ready(() => {
   document.getElementById('ngs-quote-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
-    const items = collectQuoteItems();
-    const customProjectDescription = items
-      .filter((item) => item.project_type === 'Custom Project' && item.description)
-      .map((item, index) => `Custom Project ${index + 1}: ${item.description}`)
-      .join('\n\n');
-    const payload = {
-      source: 'Interactive',
-      custom_project_description: customProjectDescription,
-      items,
-    };
-    const response = await frappe.call('ngs_hub.api.portal.create_quote', { payload: JSON.stringify(payload) });
-    document.getElementById('ngs-quote-lines').innerHTML = '';
-    form.reset();
-    createQuoteLine();
-    await load();
-    setAccountMessage(`Quote draft ${response.message?.name || ''} created.`);
-    document.getElementById('ngs-quotes').scrollIntoView({ block: 'start', behavior: 'smooth' });
+    setSubmitting(form, true, 'Creating quote...');
+    try {
+      const items = collectQuoteItems();
+      const customProjectDescription = items
+        .filter((item) => item.project_type === 'Custom Project' && item.description)
+        .map((item, index) => `Custom Project ${index + 1}: ${item.description}`)
+        .join('\n\n');
+      const payload = {
+        source: 'Interactive',
+        custom_project_description: customProjectDescription,
+        items,
+      };
+      const response = await frappe.call('ngs_hub.api.portal.create_quote', { payload: JSON.stringify(payload) });
+      document.getElementById('ngs-quote-lines').innerHTML = '';
+      form.reset();
+      createQuoteLine();
+      await load();
+      setAccountMessage(`Quote draft ${response.message?.name || ''} created.`);
+      document.getElementById('ngs-quotes').scrollIntoView({ block: 'start', behavior: 'smooth' });
+    } finally {
+      setSubmitting(form, false);
+    }
   });
 
   document.getElementById('ngs-order-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     if (!validateOrderForm(form)) return;
-    const data = Object.fromEntries(new FormData(form).entries());
-    data.no_po = hasPoAvailable(form) ? 0 : 1;
-    delete data.po_available;
-    data.po_file = await uploadFile(form.elements.po_file.files[0]);
-    data.sample_registration_form = await uploadFile(form.elements.sample_registration_form.files[0]);
-    const response = await frappe.call('ngs_hub.api.portal.create_order', { payload: JSON.stringify(data) });
-    form.reset();
-    syncOrderMode(form);
-    await load();
-    setAccountMessage(`Order draft ${response.message?.name || ''} created.`);
-    document.getElementById('ngs-orders').scrollIntoView({ block: 'start', behavior: 'smooth' });
+    setSubmitting(form, true, 'Creating order...');
+    try {
+      const data = Object.fromEntries(new FormData(form).entries());
+      data.no_po = hasPoAvailable(form) ? 0 : 1;
+      delete data.po_available;
+      data.po_file = await uploadFile(form.elements.po_file.files[0]);
+      data.sample_registration_form = await uploadFile(form.elements.sample_registration_form.files[0]);
+      const response = await frappe.call('ngs_hub.api.portal.create_order', { payload: JSON.stringify(data) });
+      form.reset();
+      syncOrderMode(form);
+      await load();
+      setAccountMessage(`Order draft ${response.message?.name || ''} created.`);
+      document.getElementById('ngs-orders').scrollIntoView({ block: 'start', behavior: 'smooth' });
+    } finally {
+      setSubmitting(form, false);
+    }
   });
 
   const orderForm = document.getElementById('ngs-order-form');
