@@ -15,6 +15,18 @@ frappe.ui.form.on("NGS Order", {
 	},
 });
 
+frappe.ui.form.on("NGS Order Item", {
+	quantity(frm, cdt, cdn) {
+		update_order_item_amount(frm, cdt, cdn);
+	},
+});
+
+function update_order_item_amount(frm, cdt, cdn) {
+	const row = locals[cdt][cdn];
+	frappe.model.set_value(cdt, cdn, "amount", flt(row.quantity) * flt(row.unit_price));
+	frm.refresh_field("items");
+}
+
 function add_review_buttons(frm) {
 	if (["Draft", "Submitted"].includes(frm.doc.status)) {
 		frm.add_custom_button(__("Start Review"), () => {

@@ -37,7 +37,9 @@ class NGSOrder(Document):
 				frappe.throw(_("On-site service requires a location for order item {0}").format(item.idx))
 			if item.onsite_service and not item.onsite_address:
 				frappe.throw(_("On-site service requires an address for order item {0}").format(item.idx))
-			if item.service and not item.quote_item:
+			if item.quote_item:
+				item.unit_price = frappe.db.get_value("NGS Quote Item", item.quote_item, "unit_price") or 0
+			elif item.service:
 				item.unit_price = frappe.db.get_value("NGS Service Catalog", item.service, "unit_price") or 0
 			item.amount = (item.quantity or 0) * (item.unit_price or 0)
 

@@ -110,7 +110,8 @@
    "fieldname": "unit_price",
    "fieldtype": "Currency",
    "label": "Unit Price",
-   "in_list_view": 1
+   "in_list_view": 1,
+   "read_only": 1
   },
   {
    "fieldname": "amount",
