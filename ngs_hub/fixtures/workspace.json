@@ -481,7 +481,7 @@
  {
   "app": "ngs_hub",
   "charts": [],
-  "content": "[{\"id\":\"wmLUnVStZI\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">NGS Hub</span><span class=\\\"h4\\\"><b></b></span>\",\"col\":12}},{\"id\":\"lXwHln3sYS\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"vZiddIJKXI\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"AI Chat\",\"col\":4}},{\"id\":\"MfPowdF05x\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"btCnpabhP4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"NGS Customer\",\"col\":4}},{\"id\":\"_UwHPdljrR\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"NGS Quote\",\"col\":4}},{\"id\":\"hOWLCTc6Ub\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"NGS Project\",\"col\":4}},{\"id\":\"O1xdE_2YLl\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"n0Dinp4nye\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Customer\",\"col\":4}},{\"id\":\"FoMyIVobOR\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Quote\",\"col\":4}},{\"id\":\"KBLfg-EEwR\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Project\",\"col\":4}},{\"id\":\"3ZDt6rT7Y7\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Contact\",\"col\":4}}]",
+  "content": "[{\"id\":\"wmLUnVStZI\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">NGS Hub</span><span class=\\\"h4\\\"><b></b></span>\",\"col\":12}},{\"id\":\"lXwHln3sYS\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"vZiddIJKXI\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"AI Chat\",\"col\":4}},{\"id\":\"MfPowdF05x\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"btCnpabhP4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"NGS Customer\",\"col\":4}},{\"id\":\"_UwHPdljrR\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"NGS Quote\",\"col\":4}},{\"id\":\"TQPEqz-4S0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"NGS Order\",\"col\":4}},{\"id\":\"n0Dinp4nye\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Customer\",\"col\":4}},{\"id\":\"FoMyIVobOR\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Quote\",\"col\":4}},{\"id\":\"_U7Tdpw4cn\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Order\",\"col\":4}},{\"id\":\"JI7mg2K6y1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"hOWLCTc6Ub\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"NGS Project\",\"col\":4}},{\"id\":\"xk7LJQg0G2\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"KBLfg-EEwR\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Project\",\"col\":4}},{\"id\":\"3ZDt6rT7Y7\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"NGS Contact Form\",\"col\":4}}]",
   "custom_blocks": [],
   "docstatus": 0,
   "doctype": "Workspace",
@@ -495,7 +495,7 @@
   "link_to": null,
   "link_type": "DocType",
   "links": [],
-  "modified": "2026-06-16 23:34:37.659227",
+  "modified": "2026-06-20 10:41:27.125568",
   "module": "NGS Hub",
   "name": "NGS Hub",
   "number_cards": [],
@@ -503,8 +503,18 @@
   "public": 1,
   "quick_lists": [
    {
+    "document_type": "NGS Contact Form",
+    "label": "NGS Contact Form",
+    "quick_list_filter": "[]"
+   },
+   {
     "document_type": "NGS Customer",
     "label": "NGS Customer",
+    "quick_list_filter": "[]"
+   },
+   {
+    "document_type": "NGS Order",
+    "label": "NGS Order",
     "quick_list_filter": "[]"
    },
    {
@@ -515,11 +525,6 @@
    {
     "document_type": "NGS Project",
     "label": "NGS Project",
-    "quick_list_filter": "[]"
-   },
-   {
-    "document_type": "NGS Contact Form",
-    "label": "NGS Contact",
     "quick_list_filter": "[]"
    }
   ],
@@ -535,6 +540,20 @@
     "kanban_board": null,
     "label": "AI Chat",
     "link_to": "NGS LLM Chat Session",
+    "report_ref_doctype": null,
+    "restrict_to_domain": null,
+    "stats_filter": "[]",
+    "type": "DocType",
+    "url": null
+   },
+   {
+    "color": "Grey",
+    "doc_view": "List",
+    "format": null,
+    "icon": null,
+    "kanban_board": null,
+    "label": "NGS Order",
+    "link_to": "NGS Order",
     "report_ref_doctype": null,
     "restrict_to_domain": null,
     "stats_filter": "[]",
