@@ -187,7 +187,21 @@ class NGSQuote(Document):
 		standard_reads = self.get_standard_reads(item)
 		confirmed_tbd_fee = flt(item.get("confirmed_tbd_fee"))
 
-		if standard_reads:
+		if project_type == "Sequencing Only - 1M Reads":
+			reads = flt(item.reads_per_sample_million)
+			if not reads:
+				reads = standard_reads or 1
+				item.reads_per_sample_million = reads
+			if reads <= 0:
+				frappe.throw(_("Reads (M) for quote item {0} must be greater than zero.").format(item.idx))
+			unit_price = reads * self.get_service_price("SEQ_ONLY_1M_READS")
+			item.add_on_sequencing = 0
+			pricing_notes.append(
+				_("Sequencing: {0}M reads at ${1}/M.").format(
+					f"{reads:g}", self.get_service_price("SEQ_ONLY_1M_READS")
+				)
+			)
+		elif standard_reads:
 			if not item.reads_per_sample_million:
 				item.reads_per_sample_million = standard_reads
 			if flt(item.reads_per_sample_million) < standard_reads:

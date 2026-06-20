@@ -327,10 +327,14 @@ def price_breakdown(item):
 		rate = WGS_HIGH_VOLUME_RATE_PER_X if quantity >= WGS_HIGH_VOLUME_MIN_QUANTITY else WGS_LOW_VOLUME_RATE_PER_X
 		add("WGS library prep", WGS_LIBRARY_PREP_PRICE)
 		add(f"WGS sequencing ({depth:g}x at ${rate:g}/x)", depth * rate)
+	elif project_type == "Sequencing Only - 1M Reads":
+		reads = flt(item.get("reads_per_sample_million") or standard_reads or 1)
+		rate = get_service_price("SEQ_ONLY_1M_READS")
+		add(f"Sequencing ({reads:g}M reads at ${rate:g}/M)", reads * rate)
 	else:
 		add(service_name, get_base_unit_price(item, service_name))
 
-	if standard_reads:
+	if standard_reads and project_type != "Sequencing Only - 1M Reads":
 		extra_reads = flt(item.get("reads_per_sample_million")) - standard_reads
 		if extra_reads > 0:
 			add(f"Extra sequencing ({extra_reads:g}M reads at ${get_service_price('EXTRA_SEQUENCING_1M'):g}/M)", extra_reads * get_service_price("EXTRA_SEQUENCING_1M"))

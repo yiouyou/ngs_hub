@@ -456,7 +456,12 @@ frappe.ready(() => {
 
   function getLineDefaultReads(projectType, rule, subtype) {
     if (projectType === '10x Single Cell') return getSubtypeDefaultReads(subtype);
+    if (projectType === 'Sequencing Only' && subtype === '1M reads') return 1;
     return getDefaultReads(rule);
+  }
+
+  function lineUsesReads(projectType, rule, subtype) {
+    return Boolean(rule.reads || (projectType === 'Sequencing Only' && subtype === '1M reads'));
   }
 
   function resolveProject(row) {
@@ -630,14 +635,15 @@ frappe.ready(() => {
     const preprocessSelect = row.querySelector('[name="preprocess"]');
     const customDetailsInput = row.querySelector('[name="custom_project_description"]');
     const isCustomProject = projectType === 'Custom Project';
+    const usesReads = lineUsesReads(projectType, rule, subtypeSelect.value);
 
     row.querySelector('[data-field="subtype"]').classList.toggle('is-hidden', isCustomProject || !(rule.subtypes || []).length);
     row.querySelector('[data-field="species"]').classList.toggle('is-hidden', isCustomProject || !(rule.species || []).length);
     row.querySelector('[data-field="sample"]').classList.toggle('is-hidden', isCustomProject);
     row.querySelector('[data-field="analysis"]').classList.toggle('is-hidden', isCustomProject);
     row.querySelector('[data-field="depth"]').classList.toggle('is-hidden', isCustomProject || !rule.depth);
-    row.querySelector('[data-field="reads"]').classList.toggle('is-hidden', isCustomProject || !rule.reads);
-    row.classList.toggle('no-reads', !rule.reads);
+    row.querySelector('[data-field="reads"]').classList.toggle('is-hidden', isCustomProject || !usesReads);
+    row.classList.toggle('no-reads', !usesReads);
     const onsiteEnabled = Boolean(rule.onsite);
     row.querySelector('[data-field="onsite-row"]').classList.toggle('is-hidden', !onsiteEnabled);
     row.querySelector('[data-field="onsite"]').classList.toggle('is-hidden', !onsiteEnabled);
@@ -657,20 +663,23 @@ frappe.ready(() => {
     row.querySelector('[data-field="preprocess"]').classList.add('is-hidden');
     row.querySelector('[data-field="custom-details"]').classList.toggle('is-hidden', !isCustomProject);
     customDetailsInput.required = isCustomProject;
-    if (rule.reads && !isCustomProject) {
+    if (usesReads && !isCustomProject) {
       const defaultReads = getLineDefaultReads(projectType, rule, subtypeSelect.value);
+      const isSequencingOnlyReads = projectType === 'Sequencing Only' && subtypeSelect.value === '1M reads';
       readsInput.required = true;
       readsInput.min = defaultReads || 0;
       if (projectChanged || subtypeChanged || !readsInput.value) {
         readsInput.value = defaultReads;
       }
       readsInput.setCustomValidity(defaultReads && Number(readsInput.value || 0) < defaultReads ? `Reads must be at least ${defaultReads}M.` : '');
-      const readsMessage = defaultReads ? `Default included: ${defaultReads}M reads. Extra reads are quoted only above this value.` : '';
+      const readsMessage = isSequencingOnlyReads
+        ? 'Sequencing is billed per M reads. Library QC is charged once per library.'
+        : (defaultReads ? `Default included: ${defaultReads}M reads. Extra reads are quoted only above this value.` : '');
       readsHint.textContent = readsMessage;
       readsInfo.dataset.tooltip = readsMessage;
       readsInfo.setAttribute('aria-label', readsMessage);
       readsInfo.classList.toggle('is-hidden', !readsMessage);
-      addOnInput.value = defaultReads && Number(readsInput.value || 0) > defaultReads ? '1' : '0';
+      addOnInput.value = !isSequencingOnlyReads && defaultReads && Number(readsInput.value || 0) > defaultReads ? '1' : '0';
     } else {
       readsInput.required = false;
       readsInput.min = 0;
@@ -731,11 +740,12 @@ frappe.ready(() => {
     const species = row.querySelector('[name="species"]').value;
     const depth = row.querySelector('[name="read_depth"]').value;
     const quantity = row.querySelector('[name="quantity"]').value || 1;
+    const reads = row.querySelector('[name="reads_per_sample_million"]').value;
     if (projectType === 'Custom Project') {
       row.querySelector('.ngs-line-summary').textContent = `${resolved.displayProjectType} / ${quantity}`;
       return;
     }
-    const details = [resolved.displayProjectType, resolved.subtype, species, depth ? `${depth}x` : null, sampleType, quantity].filter(Boolean);
+    const details = [resolved.displayProjectType, resolved.subtype, species, depth ? `${depth}x` : null, sampleType, reads ? `${reads}M reads` : null, quantity].filter(Boolean);
     row.querySelector('.ngs-line-summary').textContent = details.join(' / ');
   }
 
