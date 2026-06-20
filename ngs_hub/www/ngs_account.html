@@ -588,7 +588,7 @@ frappe.ready(() => {
     row.querySelectorAll('select, input, textarea').forEach((input) => {
       input.addEventListener('change', () => refreshQuoteLine(row));
     });
-    row.querySelector('[name="reads_per_sample_million"]').addEventListener('input', () => refreshQuoteLine(row));
+    row.querySelector('[name="reads_per_sample_million"]').addEventListener('input', () => refreshQuoteLine(row, { preserveReadsInput: true }));
     row.querySelector('[name="read_depth"]').addEventListener('input', () => refreshQuoteLine(row));
     row.querySelector('[name="custom_project_description"]').addEventListener('input', () => refreshQuoteLine(row));
     row.querySelector('[name="onsite_address"]').addEventListener('input', () => refreshQuoteLine(row));
@@ -604,7 +604,7 @@ frappe.ready(() => {
     addressInput.setCustomValidity(message);
   }
 
-  function refreshQuoteLine(row) {
+  function refreshQuoteLine(row, options = {}) {
     const projectType = row.querySelector('[name="project_type"]').value;
     const projectChanged = row.dataset.projectType !== projectType;
     const rule = getRule(projectType);
@@ -668,10 +668,11 @@ frappe.ready(() => {
       const isSequencingOnlyReads = projectType === 'Sequencing Only' && subtypeSelect.value === '1M reads';
       readsInput.required = true;
       readsInput.min = defaultReads || 0;
-      if (projectChanged || subtypeChanged || !readsInput.value) {
+      if ((projectChanged || subtypeChanged || !readsInput.value) && !options.preserveReadsInput) {
         readsInput.value = defaultReads;
       }
-      readsInput.setCustomValidity(defaultReads && Number(readsInput.value || 0) < defaultReads ? `Reads must be at least ${defaultReads}M.` : '');
+      const readsValue = readsInput.value === '' ? null : Number(readsInput.value);
+      readsInput.setCustomValidity(defaultReads && readsValue !== null && readsValue < defaultReads ? `Reads must be at least ${defaultReads}M.` : '');
       const readsMessage = isSequencingOnlyReads
         ? 'Sequencing is billed per M reads. Library QC is charged once per library.'
         : (defaultReads ? `Default included: ${defaultReads}M reads. Extra reads are quoted only above this value.` : '');
@@ -679,7 +680,7 @@ frappe.ready(() => {
       readsInfo.dataset.tooltip = readsMessage;
       readsInfo.setAttribute('aria-label', readsMessage);
       readsInfo.classList.toggle('is-hidden', !readsMessage);
-      addOnInput.value = !isSequencingOnlyReads && defaultReads && Number(readsInput.value || 0) > defaultReads ? '1' : '0';
+      addOnInput.value = !isSequencingOnlyReads && defaultReads && readsValue !== null && readsValue > defaultReads ? '1' : '0';
     } else {
       readsInput.required = false;
       readsInput.min = 0;
