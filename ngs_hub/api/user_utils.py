@@ -4,6 +4,8 @@ import string
 import frappe
 from frappe.utils.password import update_password
 
+from ngs_hub.api.user_roles import ensure_ngs_external_customer_user
+
 
 def generate_random_password(length=10):
 	chars = string.ascii_letters + string.digits
@@ -25,9 +27,10 @@ def create_ngs_customer_user(email, full_name):
 			"enabled": 1,
 		}
 	)
-	user.append("roles", {"role": "NGS External Customer"})
+	ensure_ngs_external_customer_user(user)
 	try:
 		user.insert(ignore_permissions=True)
+		ensure_ngs_external_customer_user(user.name, save=True)
 		update_password(user.name, password)
 		frappe.msgprint(f"Create User for {full_name} ({email})", alert=True)
 		frappe.logger("create_user").info(f"Create User for {full_name} ({email})")

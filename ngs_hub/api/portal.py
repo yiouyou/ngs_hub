@@ -9,6 +9,7 @@ from frappe.utils.password import update_password
 
 from ngs_hub.api.crm_sync import sync_ngs_customer_to_crm
 from ngs_hub.api.frappe_crm_sync import sync_ngs_customer_to_frappe_crm
+from ngs_hub.api.user_roles import ensure_ngs_external_customer_user
 from ngs_hub.ngs_hub.doctype.ngs_quote.ngs_quote import (
 	DNA_EXTRACTION_BLOOD_SALIVA_SWAB_SAMPLE_TYPES,
 	DNA_EXTRACTION_STANDARD_SAMPLE_TYPES,
@@ -695,8 +696,6 @@ def create_ngs_user_account(payload):
 	if feedback and feedback.get("password_policy_validation_passed") is False:
 		suggestions = " ".join(feedback.get("suggestions") or [])
 		frappe.throw(suggestions or _("Choose a stronger password."))
-	if not frappe.db.exists("Role", "NGS External Customer"):
-		frappe.throw(_("NGS External Customer role is not configured."))
 	user = frappe.get_doc({
 		"doctype": "User",
 		"email": email,
@@ -707,8 +706,9 @@ def create_ngs_user_account(payload):
 		"send_welcome_email": 0,
 		"enabled": 1,
 	})
-	user.append("roles", {"role": "NGS External Customer"})
+	ensure_ngs_external_customer_user(user)
 	user.insert(ignore_permissions=True)
+	ensure_ngs_external_customer_user(user.name, save=True)
 	update_password(user.name, password)
 	frappe.cache.hdel("home_page", user.name)
 	return {"name": user.name, "login_url": "/login?redirect-to=/ngs_register"}
@@ -824,6 +824,7 @@ def register_ngs_customer(payload):
 		frappe.throw(_("Organization is required."))
 	if not address:
 		frappe.throw(_("Address is required."))
+	ensure_ngs_external_customer_user(user, save=True)
 	values = {
 		"full_name": full_name,
 		"first_name": first_name,
@@ -845,9 +846,6 @@ def register_ngs_customer(payload):
 		customer.insert(ignore_permissions=True)
 	sync_ngs_customer_to_crm(customer)
 	sync_ngs_customer_to_frappe_crm(customer)
-	if "NGS External Customer" not in {row.role for row in user.roles}:
-		user.append("roles", {"role": "NGS External Customer"})
-		user.save(ignore_permissions=True)
 	frappe.cache.hdel("home_page", user.name)
 	return {"name": customer.name, "existing": bool(existing_customer)}
 
