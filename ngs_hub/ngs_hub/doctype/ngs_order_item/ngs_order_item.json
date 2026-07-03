@@ -40,7 +40,7 @@
    "fieldname": "project_type",
    "fieldtype": "Select",
    "label": "Project Type",
-   "options": "\nBulk RNAseq\nWGS\nShotgun Meta\n10x 3' Transcriptome\n10x 5' Transcriptome\n10x 5' VDJ\n10x 5' Transcriptome + VDJ\nSequencing Only - 10B Lane\nSequencing Only - 25B Lane\nSequencing Only - 1M Reads\nCustom Project",
+   "options": "\nBulk RNAseq\nWGS\nShotgun Meta\nMicrobial Genome Sequencing (<7M)\nMicrobial Genome Sequencing (7-20M)\nMicrobial Genome Sequencing (20-60M)\n10x 3' Transcriptome\n10x 5' Transcriptome\n10x 5' VDJ\n10x 5' Transcriptome + VDJ\nSequencing Only - 10B Lane\nSequencing Only - 25B Lane\nSequencing Only - 1M Reads\nCustom Project",
    "in_list_view": 1,
    "reqd": 1
   },
@@ -48,7 +48,7 @@
    "fieldname": "sample_type",
    "fieldtype": "Select",
    "label": "Sample Type",
-   "options": "\nTotal RNA\nCells\nTissue\nDNA\nSaliva\nBlood\nPlasma\nSerum\nSwabs\nFresh Cells\nFresh Tissue or Organoid\nFrozen Cells\nFrozen Tissue or Organoid\nWater\nSoil\nStool\nLibrary\nOther",
+   "options": "\nTotal RNA\nCells\nTissue\nDNA\nSample for DNA Extraction\nSaliva\nBlood\nPlasma\nSerum\nSwabs\nFresh Cells\nFresh Tissue or Organoid\nFrozen Cells\nFrozen Tissue or Organoid\nWater\nSoil\nStool\nLibrary\nOther",
    "in_list_view": 1
   },
   {

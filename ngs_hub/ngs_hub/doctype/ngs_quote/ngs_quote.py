@@ -17,6 +17,7 @@ TENX_TISSUE_DISSOCIATION_SAMPLE_TYPES = {"Fresh Tissue or Organoid"}
 TENX_NUCLEI_EXTRACTION_SAMPLE_TYPES = {"Frozen Cells", "Frozen Tissue or Organoid"}
 DNA_EXTRACTION_STANDARD_SAMPLE_TYPES = {"Cells", "Tissue", "Plasma", "Serum"}
 DNA_EXTRACTION_BLOOD_SALIVA_SWAB_SAMPLE_TYPES = {"Blood", "Saliva", "Swabs"}
+MICROBIAL_DNA_EXTRACTION_SAMPLE_TYPES = {"Sample for DNA Extraction"}
 WGS_DEFAULT_DEPTH = 30
 WGS_MIN_DEPTH = 1
 WGS_MAX_DEPTH = 60
@@ -233,6 +234,11 @@ class NGSQuote(Document):
 		if project_type == "Shotgun Meta" and item.data_analysis in {"Mapping", "De novo Assembly"}:
 			unit_price += self.get_service_price("SHOTGUN_ANALYSIS")
 			pricing_notes.append(_("Shotgun metagenomics analysis added."))
+
+		if project_type.startswith("Microbial Genome Sequencing"):
+			if sample_type in MICROBIAL_DNA_EXTRACTION_SAMPLE_TYPES:
+				unit_price += self.get_service_price("DNA_EXTRACTION_STANDARD")
+				pricing_notes.append(_("DNA extraction added."))
 
 		if project_type == "WGS":
 			depth = self.get_wgs_depth(item)

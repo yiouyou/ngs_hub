@@ -13,6 +13,7 @@ from ngs_hub.api.user_roles import ensure_ngs_external_customer_user
 from ngs_hub.ngs_hub.doctype.ngs_quote.ngs_quote import (
 	DNA_EXTRACTION_BLOOD_SALIVA_SWAB_SAMPLE_TYPES,
 	DNA_EXTRACTION_STANDARD_SAMPLE_TYPES,
+	MICROBIAL_DNA_EXTRACTION_SAMPLE_TYPES,
 	TENX_NUCLEI_EXTRACTION_SAMPLE_TYPES,
 	TENX_TISSUE_DISSOCIATION_SAMPLE_TYPES,
 	WGS_HIGH_VOLUME_MIN_QUANTITY,
@@ -345,6 +346,8 @@ def price_breakdown(item):
 		add("Transcriptome de novo assembly", get_service_price("RNA_DENOVO_ASSEMBLY"))
 	if project_type == "Shotgun Meta" and item.get("data_analysis") in {"Mapping", "De novo Assembly"}:
 		add("Shotgun metagenomics analysis", get_service_price("SHOTGUN_ANALYSIS"))
+	if project_type.startswith("Microbial Genome Sequencing") and sample_type in MICROBIAL_DNA_EXTRACTION_SAMPLE_TYPES:
+		add("DNA extraction", get_service_price("DNA_EXTRACTION_STANDARD"))
 	if project_type == "WGS":
 		if sample_type in DNA_EXTRACTION_STANDARD_SAMPLE_TYPES:
 			add("DNA extraction - cell/tissue/plasma/serum", get_service_price("DNA_EXTRACTION_STANDARD"))

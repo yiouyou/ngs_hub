@@ -305,7 +305,7 @@ frappe.ready(() => {
   }
 
   let accountMessageTimer = null;
-  const projectTypes = ['Bulk RNAseq', 'WGS', '10x Single Cell', 'Shotgun Meta', 'Sequencing Only', 'Custom Project'];
+  const projectTypes = ['Bulk RNAseq', 'WGS', '10x Single Cell', 'Shotgun Meta', 'Microbial Genome Sequencing', 'Sequencing Only', 'Custom Project'];
   const tenxSubtypes = [
     { label: "3' transcriptome", projectType: "10x 3' Transcriptome", serviceCode: '10X_3_TRANSCRIPTOME' },
     { label: "5' transcriptome", projectType: "10x 5' Transcriptome", serviceCode: '10X_5_TRANSCRIPTOME' },
@@ -316,6 +316,11 @@ frappe.ready(() => {
     { label: '10B lane', projectType: 'Sequencing Only - 10B Lane', serviceCode: 'SEQ_ONLY_10B_LANE' },
     { label: '25B lane', projectType: 'Sequencing Only - 25B Lane', serviceCode: 'SEQ_ONLY_25B_LANE' },
     { label: '1M reads', projectType: 'Sequencing Only - 1M Reads', serviceCode: 'SEQ_ONLY_1M_READS' },
+  ];
+  const microbialGenomeSubtypes = [
+    { label: '<7M', projectType: 'Microbial Genome Sequencing (<7M)', serviceCode: 'MICROBIAL_GENOME_LT_7M' },
+    { label: '7-20M', projectType: 'Microbial Genome Sequencing (7-20M)', serviceCode: 'MICROBIAL_GENOME_7_20M' },
+    { label: '20-60M', projectType: 'Microbial Genome Sequencing (20-60M)', serviceCode: 'MICROBIAL_GENOME_20_60M' },
   ];
   const rules = {
     'Bulk RNAseq': {
@@ -356,6 +361,13 @@ frappe.ready(() => {
       reads: true,
       standardReads: 20,
       defaultReads: 20,
+    },
+    'Microbial Genome Sequencing': {
+      subtypes: microbialGenomeSubtypes,
+      samples: ['DNA', 'Sample for DNA Extraction'],
+      analyses: ['No'],
+      reads: false,
+      compact: true,
     },
     'Sequencing Only': {
       subtypes: sequencingOnlySubtypes,
@@ -904,6 +916,7 @@ frappe.ready(() => {
 
   function itemAddOns(item) {
     const addOns = [];
+    if ((item.project_type || '').startsWith('Microbial Genome Sequencing') && item.sample_type === 'Sample for DNA Extraction') addOns.push('DNA extraction');
     if (item.tissue_dissociation) addOns.push('Tissue dissociation');
     if (item.nuclei_extraction) addOns.push('Nuclei extraction');
     if (item.onsite_service) {
