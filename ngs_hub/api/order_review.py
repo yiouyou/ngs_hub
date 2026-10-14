@@ -1,8 +1,7 @@
 import frappe
 from frappe import _
 
-from ngs_hub.api.erpnext_sync import sync_ngs_order_to_sales_order
-
+from ngs_hub.api.erpnext_sync import _erpnext_sync_user, sync_ngs_order_to_sales_order
 
 INTERNAL_REVIEW_ROLES = {"System Manager", "NGS Internal Staff"}
 
@@ -58,5 +57,6 @@ def submit_erpnext_sales_order(order_name):
 	if sales_order.docstatus != 0:
 		frappe.throw(_("ERPNext Sales Order {0} is not a draft.").format(sales_order.name))
 	sales_order.flags.ignore_permissions = True
-	sales_order.submit()
+	with _erpnext_sync_user(order, "NGS Order"):
+		sales_order.submit()
 	return {"name": order.name, "status": order.status, "erpnext_sales_order": sales_order.name}

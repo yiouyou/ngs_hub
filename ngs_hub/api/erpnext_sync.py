@@ -1,12 +1,75 @@
+from contextlib import contextmanager
+
 import frappe
+from frappe import _
 from frappe.utils import add_days, today
 
 from ngs_hub.api.crm_sync import sync_ngs_customer_to_crm
 
-
 DEFAULT_ITEM_CODE = "NGS_CUSTOM_PROJECT"
 DEFAULT_ITEM_NAME = "NGS Custom Project"
 DEFAULT_ITEM_GROUP = "NGS Services"
+_MISSING = object()
+
+
+def _authorize_erpnext_sync(source_doc, expected_doctype):
+	if getattr(frappe.local, "ngs_erpnext_sync_actor", None):
+		frappe.throw(_("Nested ERPNext synchronization is not permitted."), frappe.PermissionError)
+	user = frappe.session.user
+	if not user or user == "Guest":
+		frappe.throw(_("Login is required"), frappe.PermissionError)
+	if source_doc.doctype != expected_doctype:
+		frappe.throw(_("Invalid document for ERPNext synchronization."), frappe.PermissionError)
+	customer = frappe.db.get_value(expected_doctype, source_doc.name, "customer")
+	if not customer or customer != source_doc.customer:
+		frappe.throw(_("Save the NGS document before synchronizing it."), frappe.PermissionError)
+	if user != "Administrator":
+		user_type = frappe.db.get_value("User", user, "user_type")
+		if not frappe.db.get_value("User", user, "enabled"):
+			frappe.throw(_("Not permitted to synchronize this NGS document."), frappe.PermissionError)
+		if user_type == "Website User":
+			email = frappe.db.get_value("User", user, "email") or user
+			user_customer = frappe.db.get_value("NGS Customer", {"email": email}, "name")
+			if user_customer != customer:
+				frappe.throw(_("Not permitted to synchronize this customer's document."), frappe.PermissionError)
+		elif (
+			user_type != "System User"
+			or {"NGS Internal Staff", "System Manager"}.isdisjoint(frappe.get_roles(user))
+			or not frappe.has_permission(expected_doctype, "write", doc=source_doc, user=user)
+		):
+			frappe.throw(_("Not permitted to synchronize this NGS document."), frappe.PermissionError)
+
+
+@contextmanager
+def _erpnext_sync_user(source_doc, expected_doctype):
+	_authorize_erpnext_sync(source_doc, expected_doctype)
+	if frappe.session.user == "Administrator":
+		yield
+		return
+
+	# ERPNext's Item/Account checks use the session identity, independently of the parent document's flags.
+	session = frappe.local.session
+	context = {
+		key: getattr(frappe.local, key, _MISSING)
+		for key in (
+			"cache", "form_dict", "jenv", "jenv_restricted", "jenv_unrestricted",
+			"role_permissions", "new_doc_templates", "user_perms",
+			"session_obj", "ngs_erpnext_sync_actor",
+		)
+	}
+	try:
+		frappe.local.session = frappe._dict(session.copy())
+		frappe.local.ngs_erpnext_sync_actor = session.user
+		frappe.set_user("Administrator")
+		yield
+	finally:
+		frappe.local.session = session
+		for key, value in context.items():
+			if value is _MISSING:
+				if hasattr(frappe.local, key):
+					delattr(frappe.local, key)
+			else:
+				setattr(frappe.local, key, value)
 
 
 def sync_ngs_quote_to_quotation(quote_doc):
@@ -15,7 +78,7 @@ def sync_ngs_quote_to_quotation(quote_doc):
 		return None
 	if quote_doc.get("status") == "Cancelled":
 		return None
-
+	_authorize_erpnext_sync(quote_doc, "NGS Quote")
 	erp_customer = get_or_create_erp_customer(quote_doc)
 	quotation_name = quote_doc.get("erpnext_quotation")
 	if quotation_name and not frappe.db.exists("Quotation", quotation_name):
@@ -23,6 +86,8 @@ def sync_ngs_quote_to_quotation(quote_doc):
 
 	if quotation_name:
 		quotation = frappe.get_doc("Quotation", quotation_name)
+		if quotation.quotation_to != "Customer" or quotation.party_name != erp_customer:
+			frappe.throw(_("The linked ERPNext quotation belongs to a different customer."))
 		if quotation.docstatus != 0:
 			return quotation.name
 		quotation.set("items", [])
@@ -51,7 +116,8 @@ def sync_ngs_quote_to_quotation(quote_doc):
 		quotation.append("items", build_quotation_item(quote_item))
 
 	quotation.flags.ignore_permissions = True
-	quotation.save()
+	with _erpnext_sync_user(quote_doc, "NGS Quote"):
+		quotation.save()
 	quote_doc.set("erpnext_quotation", quotation.name)
 	quote_doc.db_set("erpnext_quotation", quotation.name, update_modified=False)
 	return quotation.name
@@ -65,7 +131,7 @@ def sync_ngs_order_to_sales_order(order_doc):
 		return None
 	if not order_doc.get("items"):
 		return None
-
+	_authorize_erpnext_sync(order_doc, "NGS Order")
 	erp_customer = get_or_create_erp_customer(order_doc)
 	sales_order_name = order_doc.get("erpnext_sales_order")
 	if sales_order_name and not frappe.db.exists("Sales Order", sales_order_name):
@@ -73,6 +139,8 @@ def sync_ngs_order_to_sales_order(order_doc):
 
 	if sales_order_name:
 		sales_order = frappe.get_doc("Sales Order", sales_order_name)
+		if sales_order.customer != erp_customer:
+			frappe.throw(_("The linked ERPNext sales order belongs to a different customer."))
 		if sales_order.docstatus != 0:
 			return sales_order.name
 		sales_order.set("items", [])
@@ -101,7 +169,8 @@ def sync_ngs_order_to_sales_order(order_doc):
 		sales_order.append("items", build_sales_order_item(order_item))
 
 	sales_order.flags.ignore_permissions = True
-	sales_order.save()
+	with _erpnext_sync_user(order_doc, "NGS Order"):
+		sales_order.save()
 	mirror_order_attachments(order_doc, sales_order)
 	order_doc.set("erpnext_sales_order", sales_order.name)
 	order_doc.db_set("erpnext_sales_order", sales_order.name, update_modified=False)
