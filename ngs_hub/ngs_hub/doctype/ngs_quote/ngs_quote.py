@@ -11,7 +11,7 @@ from frappe.utils import flt
 
 from ngs_hub.api.erpnext_sync import sync_ngs_quote_to_quotation
 from ngs_hub.api.frappe_crm_sync import sync_ngs_quote_to_frappe_crm_deal
-
+from ngs_hub.api.quote_products import normalize_quote_item, validate_number
 
 TENX_TISSUE_DISSOCIATION_SAMPLE_TYPES = {"Fresh Tissue or Organoid"}
 TENX_NUCLEI_EXTRACTION_SAMPLE_TYPES = {"Frozen Cells", "Frozen Tissue or Organoid"}
@@ -163,20 +163,51 @@ class NGSQuote(Document):
 
 	def apply_quote_rules(self):
 		missing_info = []
+		previous = self.get_doc_before_save() if not self.is_new() else None
+		previous_items = {row.name: row for row in previous.items} if previous else {}
 		for item in self.items:
+			old_item = previous_items.get(item.name)
+			allow_disabled = bool(old_item and old_item.service == item.service and old_item.project_type == item.project_type)
+			normalize_quote_item(item, allow_disabled=allow_disabled, existing_item=old_item)
+			self.validate_price_override(item)
 			if item.service:
 				service = frappe.get_cached_doc("NGS Service Catalog", item.service)
 				item.unit_price = service.get("unit_price") or 0
 				item.project_type = item.project_type or service.get("project_type")
 				item.description = item.description or service.get("service_name")
+			elif item.get("use_price_override"):
+				item.unit_price = flt(item.override_unit_price)
+			validate_number(item.unit_price or 0, _("Unit price"))
 			if not item.quantity or item.quantity <= 0:
 				frappe.throw(_("Quantity must be greater than zero for quote item {0}").format(item.idx))
 			missing_info.extend(self.apply_project_defaults(item))
+			if item.get("use_price_override"):
+				item.unit_price = flt(item.override_unit_price)
+				item.rule_notes = "\n".join(filter(None, [item.rule_notes,
+					_("Manual unit price: ${0}.").format(f"{item.unit_price:g}")]))
 			item.amount = (item.quantity or 0) * (item.unit_price or 0)
 		self.missing_info = "\n".join(missing_info)
 		self.pricing_to_confirm = 1 if self.missing_info else 0
 		if self.missing_info and self.status not in {"Cancelled", "Converted to Order"}:
 			self.status = "Pending"
+
+	def validate_price_override(self, item):
+		if not item.get("use_price_override"):
+			return
+		user = frappe.session.user
+		if user == "Administrator" or (
+			frappe.db.get_value("User", user, "user_type") == "System User"
+			and not {"NGS Internal Staff", "System Manager"}.isdisjoint(frappe.get_roles(user))
+		):
+			return
+		# Customer cancellation may resave an unchanged, internally priced quote.
+		previous = self.get_doc_before_save()
+		old_item = next((row for row in previous.items if row.name == item.name), None) if previous else None
+		fields = ("use_price_override", "override_unit_price", "project_type", "service", "quantity",
+			"sample_type", "million_reads_per_sample", "read_depth", "data_analysis",
+			"onsite_service", "onsite_location", "onsite_address", "confirmed_tbd_fee")
+		if not old_item or any(old_item.get(field) != item.get(field) for field in fields):
+			frappe.throw(_("Only internal NGS staff can set a manual unit price."), frappe.PermissionError)
 
 	def apply_project_defaults(self, item):
 		project_type = item.project_type or ""
@@ -324,6 +355,7 @@ class NGSQuote(Document):
 	def get_wgs_depth(self, item):
 		raw_depth = item.read_depth or WGS_DEFAULT_DEPTH
 		depth = flt(str(raw_depth).lower().replace("x", "").strip())
+		validate_number(depth, _("Coverage"), positive=True)
 		if depth < WGS_MIN_DEPTH or depth > WGS_MAX_DEPTH:
 			frappe.throw(
 				_("WGS coverage for quote item {0} must be between {1}x and {2}x.").format(

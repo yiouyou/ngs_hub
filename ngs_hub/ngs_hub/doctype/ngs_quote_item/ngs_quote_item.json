@@ -5,6 +5,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "configure_project",
   "service",
   "project_type",
   "sample_type",
@@ -22,11 +23,19 @@
   "nuclei_extraction",
   "library_qc",
   "confirmed_tbd_fee",
+  "use_price_override",
+  "override_unit_price",
   "unit_price",
   "amount",
   "rule_notes"
  ],
  "fields": [
+  {
+   "fieldname": "configure_project",
+   "fieldtype": "Button",
+   "label": "Configure",
+   "in_list_view": 1
+  },
   {
    "fieldname": "service",
    "fieldtype": "Link",
@@ -125,6 +134,17 @@
    "label": "TBD Fee",
    "description": "Internal use: enter the confirmed fee for charges that were marked TBD, such as out-of-state on-site service.",
    "in_list_view": 1
+  },
+  {
+   "fieldname": "use_price_override",
+   "fieldtype": "Check",
+   "label": "Manual Unit Price"
+  },
+  {
+   "fieldname": "override_unit_price",
+   "fieldtype": "Currency",
+   "label": "Manual Unit Price Amount",
+   "depends_on": "eval:doc.use_price_override"
   },
   {
    "fieldname": "unit_price",
