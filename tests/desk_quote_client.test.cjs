@@ -346,7 +346,7 @@ for (const field of ['project_type', 'service']) {
       add_on_sequencing: 1, onsite_service: 1, onsite_location: 'Outside Massachusetts',
       onsite_address: 'Old address', confirmed_tbd_fee: 500, tissue_dissociation: 1,
       nuclei_extraction: 1, library_qc: 1, use_price_override: 1, override_unit_price: 888,
-      unit_price: 888, amount: 6216, rule_notes: 'Old rules',
+      unit_price: 888, amount: 6216, rule_notes: 'Old rules', pricing_details: '{"version":1}',
     });
     h.row[field] = h.products[0][field];
     const pending = h.fire(field);
@@ -359,7 +359,7 @@ for (const field of ['project_type', 'service']) {
       million_reads_per_sample: 20, add_on_sequencing: 0, data_analysis: 'Standard analysis',
       onsite_service: 0, onsite_location: '', onsite_address: '', tissue_dissociation: 0,
       nuclei_extraction: 0, library_qc: 0, confirmed_tbd_fee: 0,
-      use_price_override: 0, override_unit_price: 0, unit_price: 0, amount: 0, rule_notes: '',
+      use_price_override: 0, override_unit_price: 0, unit_price: 0, amount: 0, rule_notes: '', pricing_details: '',
     });
     assert.equal(h.row.service, 'RNA service');
     assert.equal(h.row.use_price_override, 0);

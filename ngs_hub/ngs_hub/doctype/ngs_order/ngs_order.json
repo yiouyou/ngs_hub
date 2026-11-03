@@ -8,6 +8,7 @@
   "customer",
   "quote",
   "status",
+  "project_summary",
   "project",
   "po_section",
   "po_number",
@@ -15,6 +16,7 @@
   "po_file",
   "sample_registration_form",
   "items_section",
+  "item_details",
   "items",
   "integration_section",
   "erpnext_sales_order",
@@ -46,6 +48,13 @@
    "label": "Status",
    "options": "\nDraft\nSubmitted\nIn Review\nAccepted\nIn Progress\nCompleted\nCancelled",
    "default": "Draft",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "project_summary",
+   "fieldtype": "Data",
+   "label": "Service Summary",
+   "read_only": 1,
    "in_list_view": 1
   },
   {
@@ -83,6 +92,11 @@
    "fieldname": "items_section",
    "fieldtype": "Section Break",
    "label": "Items"
+  },
+  {
+   "fieldname": "item_details",
+   "fieldtype": "HTML",
+   "label": "Project Details"
   },
   {
    "fieldname": "items",
@@ -178,6 +192,7 @@
  "sort_order": "DESC",
  "states": [],
  "track_changes": 1,
+ "title_field": "project_summary",
  "autoname": "field:order_id",
  "naming_rule": "By fieldname",
  "is_submittable": 1

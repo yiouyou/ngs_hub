@@ -29,6 +29,7 @@ ITEM_FIELDS = (
 	"unit_price",
 	"amount",
 	"rule_notes",
+	"pricing_details",
 )
 
 
@@ -81,6 +82,6 @@ def preview_quote_item(item, quote_name=None, customer=None):
 	if not isinstance(values, dict):
 		frappe.throw(_("Provide one quotation item."))
 	quote = frappe.new_doc("NGS Quote")
-	row = quote.append("items", {field: values[field] for field in ITEM_FIELDS if field in values})
+	row = quote.append("items", {field: values[field] for field in ITEM_FIELDS if field in values and field != "pricing_details"})
 	quote.apply_quote_rules()
 	return {field: row.get(field) for field in ITEM_FIELDS}

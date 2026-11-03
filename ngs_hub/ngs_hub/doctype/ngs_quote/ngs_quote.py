@@ -11,7 +11,9 @@ from frappe.utils import flt
 
 from ngs_hub.api.erpnext_sync import sync_ngs_quote_to_quotation
 from ngs_hub.api.frappe_crm_sync import sync_ngs_quote_to_frappe_crm_deal
+from ngs_hub.api.pricing_snapshot import create_pricing_snapshot
 from ngs_hub.api.quote_products import normalize_quote_item, validate_number
+from ngs_hub.api.service_summary import build_project_summary
 
 TENX_TISSUE_DISSOCIATION_SAMPLE_TYPES = {"Fresh Tissue or Organoid"}
 TENX_NUCLEI_EXTRACTION_SAMPLE_TYPES = {"Frozen Cells", "Frozen Tissue or Organoid"}
@@ -148,18 +150,7 @@ class NGSQuote(Document):
 			self.last_name = customer.get("last_name") or (parts[1] if len(parts) > 1 else None)
 
 	def set_project_summary(self):
-		project_types = []
-		seen = set()
-		for item in self.items:
-			project_type = item.project_type or item.description
-			if not project_type or project_type in seen:
-				continue
-			seen.add(project_type)
-			project_types.append(project_type)
-		visible_project_types = project_types[:3]
-		if len(project_types) > 3:
-			visible_project_types.append(_("+{0} more").format(len(project_types) - 3))
-		self.project_summary = " | ".join(visible_project_types)
+		self.project_summary = build_project_summary(self.items)
 
 	def apply_quote_rules(self):
 		missing_info = []
@@ -186,6 +177,9 @@ class NGSQuote(Document):
 				item.rule_notes = "\n".join(filter(None, [item.rule_notes,
 					_("Manual unit price: ${0}.").format(f"{item.unit_price:g}")]))
 			item.amount = (item.quantity or 0) * (item.unit_price or 0)
+			# Record rates at pricing time; later views must not rebuild these from a changed catalog.
+			from ngs_hub.api.portal import price_breakdown
+			item.pricing_details = create_pricing_snapshot(item, price_breakdown(item, use_snapshot=False))
 		self.missing_info = "\n".join(missing_info)
 		self.pricing_to_confirm = 1 if self.missing_info else 0
 		if self.missing_info and self.status not in {"Cancelled", "Converted to Order"}:

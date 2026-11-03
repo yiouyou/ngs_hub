@@ -27,7 +27,8 @@
   "override_unit_price",
   "unit_price",
   "amount",
-  "rule_notes"
+  "rule_notes",
+  "pricing_details"
  ],
  "fields": [
   {
@@ -158,6 +159,13 @@
    "label": "Amount",
    "in_list_view": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "pricing_details",
+   "fieldtype": "Long Text",
+   "label": "Recorded Pricing Details",
+   "read_only": 1,
+   "hidden": 1
   },
   {
    "fieldname": "rule_notes",

@@ -6,11 +6,16 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.model.naming import make_autoname
 
+from ngs_hub.api.desk_item_details import legacy_order_detail_fallbacks
 from ngs_hub.api.erpnext_sync import sync_ngs_order_to_sales_order
 from ngs_hub.api.frappe_crm_sync import sync_ngs_order_to_frappe_crm_deal
+from ngs_hub.api.service_summary import build_project_summary
 
 
 class NGSOrder(Document):
+	def onload(self):
+		self.set_onload("item_detail_fallbacks", legacy_order_detail_fallbacks(self))
+
 	def before_insert(self):
 		if not self.order_id:
 			self.order_id = make_autoname("ORD-.YY.-.MM.-.DD.-.###")
@@ -42,6 +47,7 @@ class NGSOrder(Document):
 			elif item.service:
 				item.unit_price = frappe.db.get_value("NGS Service Catalog", item.service, "unit_price") or 0
 			item.amount = (item.quantity or 0) * (item.unit_price or 0)
+		self.project_summary = build_project_summary(self.items)
 
 	def after_insert(self):
 		self.attach_uploaded_files()
@@ -59,7 +65,7 @@ class NGSOrder(Document):
 		for quote_item in quote.items:
 			read_depth = quote_item.read_depth
 			if not read_depth and quote_item.million_reads_per_sample:
-				read_depth = f"{quote_item.million_reads_per_sample:g}M"
+				read_depth = f"{quote_item.million_reads_per_sample:.15g}M"
 			self.append("items", {
 				"quote_item": quote_item.name,
 				"service": quote_item.service,
@@ -67,7 +73,10 @@ class NGSOrder(Document):
 				"sample_type": quote_item.sample_type,
 				"description": quote_item.description,
 				"quantity": quote_item.quantity,
+				"species": quote_item.species,
 				"read_depth": read_depth,
+				"million_reads_per_sample": quote_item.million_reads_per_sample,
+				"add_on_sequencing": quote_item.add_on_sequencing,
 				"data_analysis": quote_item.data_analysis,
 				"onsite_service": quote_item.onsite_service,
 				"onsite_location": quote_item.onsite_location,
@@ -75,9 +84,14 @@ class NGSOrder(Document):
 				"tissue_dissociation": quote_item.tissue_dissociation,
 				"nuclei_extraction": quote_item.nuclei_extraction,
 				"library_qc": quote_item.library_qc,
+				"confirmed_tbd_fee": quote_item.confirmed_tbd_fee,
+				"use_price_override": quote_item.get("use_price_override"),
+				"override_unit_price": quote_item.get("override_unit_price"),
+				"details_snapshot_version": 1,
 				"unit_price": quote_item.unit_price,
 				"amount": quote_item.amount,
 				"notes": quote_item.rule_notes,
+				"pricing_details": quote_item.get("pricing_details"),
 			})
 
 	def attach_uploaded_files(self):

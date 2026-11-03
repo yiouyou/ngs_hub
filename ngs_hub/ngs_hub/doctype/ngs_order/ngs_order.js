@@ -3,6 +3,7 @@
 
 frappe.ui.form.on("NGS Order", {
 	refresh(frm) {
+		frappe.ngs_item_details?.render(frm);
 		frm.add_custom_button(__("Customer"), () => {
 			if (frm.doc.customer) frappe.set_route("Form", "NGS Customer", frm.doc.customer);
 		}, __("Open"));
@@ -17,14 +18,22 @@ frappe.ui.form.on("NGS Order", {
 
 frappe.ui.form.on("NGS Order Item", {
 	quantity(frm, cdt, cdn) {
-		update_order_item_amount(frm, cdt, cdn);
+		return update_order_item_amount(frm, cdt, cdn);
 	},
+	...Object.fromEntries([
+		"items_remove", "project_type", "service", "sample_type", "species", "read_depth", "million_reads_per_sample",
+		"data_analysis", "description", "notes", "onsite_service", "onsite_location", "onsite_address",
+		"library_qc", "tissue_dissociation", "nuclei_extraction", "add_on_sequencing",
+		"confirmed_tbd_fee", "use_price_override", "override_unit_price", "unit_price", "amount",
+	].map((field) => [field, (frm) => frappe.ngs_item_details?.render(frm)])),
 });
 
 function update_order_item_amount(frm, cdt, cdn) {
 	const row = locals[cdt][cdn];
-	frappe.model.set_value(cdt, cdn, "amount", flt(row.quantity) * flt(row.unit_price));
-	frm.refresh_field("items");
+	return frappe.model.set_value(cdt, cdn, "amount", flt(row.quantity) * flt(row.unit_price)).then(() => {
+		frm.refresh_field("items");
+		frappe.ngs_item_details?.render(frm);
+	});
 }
 
 function add_review_buttons(frm) {

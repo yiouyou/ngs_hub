@@ -11,7 +11,10 @@
   "sample_type",
   "description",
   "quantity",
+  "species",
   "read_depth",
+  "million_reads_per_sample",
+  "add_on_sequencing",
   "data_analysis",
   "onsite_service",
   "onsite_location",
@@ -19,9 +22,14 @@
   "tissue_dissociation",
   "nuclei_extraction",
   "library_qc",
+  "confirmed_tbd_fee",
+  "use_price_override",
+  "override_unit_price",
+  "details_snapshot_version",
   "unit_price",
   "amount",
-  "notes"
+  "notes",
+  "pricing_details"
  ],
  "fields": [
   {
@@ -65,9 +73,27 @@
    "reqd": 1
   },
   {
+   "fieldname": "species",
+   "fieldtype": "Data",
+   "label": "Species",
+   "read_only": 1
+  },
+  {
    "fieldname": "read_depth",
    "fieldtype": "Data",
    "label": "Coverage / Read Depth"
+  },
+  {
+   "fieldname": "million_reads_per_sample",
+   "fieldtype": "Float",
+   "label": "Million Reads per Sample",
+   "read_only": 1
+  },
+  {
+   "fieldname": "add_on_sequencing",
+   "fieldtype": "Check",
+   "label": "Add-on Sequencing",
+   "read_only": 1
   },
   {
    "fieldname": "data_analysis",
@@ -107,6 +133,31 @@
    "label": "Library QC"
   },
   {
+   "fieldname": "confirmed_tbd_fee",
+   "fieldtype": "Currency",
+   "label": "Confirmed TBD Fee",
+   "read_only": 1
+  },
+  {
+   "fieldname": "use_price_override",
+   "fieldtype": "Check",
+   "label": "Manual Unit Price",
+   "read_only": 1
+  },
+  {
+   "fieldname": "override_unit_price",
+   "fieldtype": "Currency",
+   "label": "Manual Unit Price Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "details_snapshot_version",
+   "fieldtype": "Int",
+   "label": "Details Snapshot Version",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
    "fieldname": "unit_price",
    "fieldtype": "Currency",
    "label": "Unit Price",
@@ -119,6 +170,13 @@
    "label": "Amount",
    "read_only": 1,
    "in_list_view": 1
+  },
+  {
+   "fieldname": "pricing_details",
+   "fieldtype": "Long Text",
+   "label": "Recorded Pricing Details",
+   "read_only": 1,
+   "hidden": 1
   },
   {
    "fieldname": "notes",

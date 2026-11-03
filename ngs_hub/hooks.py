@@ -114,6 +114,10 @@ web_include_js = "/assets/ngs_hub/js/portal.js?v=20260620d"
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+	"NGS Quote": "public/js/desk_item_details.js",
+	"NGS Order": "public/js/desk_item_details.js",
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}

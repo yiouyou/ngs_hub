@@ -19,6 +19,7 @@
   "project_summary",
   "pricing_to_confirm",
   "missing_info",
+  "item_details",
   "items",
   "custom_project_description",
   "total_amount",
@@ -96,6 +97,11 @@
    "label": "Quote"
   },
   {
+   "fieldname": "item_details",
+   "fieldtype": "HTML",
+   "label": "Project Details"
+  },
+  {
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
@@ -110,7 +116,7 @@
   {
    "fieldname": "project_summary",
    "fieldtype": "Data",
-   "label": "Project Summary",
+   "label": "Service Summary",
    "read_only": 1,
    "in_list_view": 1
   },
@@ -230,6 +236,7 @@
  "sort_order": "DESC",
  "states": [],
  "track_changes": 1,
+ "title_field": "project_summary",
  "autoname": "field:quote_id",
  "naming_rule": "By fieldname",
  "is_submittable": 1

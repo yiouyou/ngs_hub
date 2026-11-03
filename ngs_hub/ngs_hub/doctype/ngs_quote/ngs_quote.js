@@ -9,7 +9,7 @@
     'read_depth', 'million_reads_per_sample', 'add_on_sequencing', 'data_analysis',
     'onsite_service', 'onsite_location', 'onsite_address', 'tissue_dissociation',
     'nuclei_extraction', 'library_qc', 'confirmed_tbd_fee', 'use_price_override',
-    'override_unit_price', 'unit_price', 'amount', 'rule_notes',
+    'override_unit_price', 'unit_price', 'amount', 'rule_notes', 'pricing_details',
   ];
 
   function context(frm) {
@@ -95,7 +95,7 @@
       read_depth: product.depth ? '30x' : '', add_on_sequencing: 0,
       onsite_service: 0, onsite_location: '', onsite_address: '', confirmed_tbd_fee: 0,
       tissue_dissociation: 0, nuclei_extraction: 0, library_qc: 0,
-      use_price_override: 0, override_unit_price: 0, unit_price: 0, amount: 0, rule_notes: '',
+      use_price_override: 0, override_unit_price: 0, unit_price: 0, amount: 0, rule_notes: '', pricing_details: '',
     };
   }
 
@@ -107,6 +107,7 @@
   function update_total(frm) {
     frm.doc.total_amount = (frm.doc.items || []).reduce((total, row) => total + (Number(row.amount) || 0), 0);
     frm.refresh_field('total_amount');
+    frappe.ngs_item_details?.render(frm);
   }
 
   function configure_grid(frm) {
@@ -457,6 +458,7 @@
     refresh(frm) {
       get_state(frm);
       configure_grid(frm);
+      frappe.ngs_item_details?.render(frm);
       toggle_custom_project_description(frm);
       if (Number(frm.doc.docstatus || 0) === 0) {
         frm.add_custom_button(__('Add Project'), () => open_dialog(frm));
@@ -489,6 +491,7 @@
 
   const handlers = {
     configure_project: open_dialog,
+    rule_notes: (frm) => frappe.ngs_item_details?.render(frm),
     project_type: (frm, cdt, cdn) => {
       toggle_custom_project_description(frm);
       return preview_row(frm, cdt, cdn, 'project_type');

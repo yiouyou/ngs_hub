@@ -9,6 +9,7 @@ from frappe.utils.password import update_password
 
 from ngs_hub.api.crm_sync import sync_ngs_customer_to_crm
 from ngs_hub.api.frappe_crm_sync import sync_ngs_customer_to_frappe_crm
+from ngs_hub.api.pricing_snapshot import get_recorded_breakdown
 from ngs_hub.api.user_roles import ensure_ngs_external_customer_user
 from ngs_hub.ngs_hub.doctype.ngs_quote.ngs_quote import (
 	DNA_EXTRACTION_BLOOD_SALIVA_SWAB_SAMPLE_TYPES,
@@ -297,7 +298,11 @@ def notify_order_created(order):
 	)
 
 
-def price_breakdown(item):
+def price_breakdown(item, use_snapshot=True):
+	if use_snapshot:
+		recorded = get_recorded_breakdown(item)
+		if recorded is not None:
+			return recorded
 	if requires_manual_pricing(item):
 		return [{"label": "Manual quote", "unit_price": None, "quantity": item.get("quantity") or 1, "amount": None, "display": "TBD"}]
 	quantity = flt(item.get("quantity") or 1)
@@ -333,14 +338,14 @@ def price_breakdown(item):
 	elif project_type == "Sequencing Only - 1M Reads":
 		reads = reads_per_sample or standard_reads or 1
 		rate = get_service_price("SEQ_ONLY_1M_READS")
-		add(f"Sequencing ({reads:g}M reads at ${rate:g}/M)", reads * rate)
+		add(f"Sequencing ({reads:.15g}M reads at ${rate:g}/M)", reads * rate)
 	else:
 		add(service_name, get_base_unit_price(item, service_name))
 
 	if standard_reads and project_type != "Sequencing Only - 1M Reads":
 		extra_reads = reads_per_sample - standard_reads
 		if extra_reads > 0:
-			add(f"Extra sequencing ({extra_reads:g}M reads at ${get_service_price('EXTRA_SEQUENCING_1M'):g}/M)", extra_reads * get_service_price("EXTRA_SEQUENCING_1M"))
+			add(f"Extra sequencing ({extra_reads:.15g}M reads at ${get_service_price('EXTRA_SEQUENCING_1M'):g}/M)", extra_reads * get_service_price("EXTRA_SEQUENCING_1M"))
 
 	if project_type == "Bulk RNAseq" and item.get("data_analysis") == "De novo Assembly":
 		add("Transcriptome de novo assembly", get_service_price("RNA_DENOVO_ASSEMBLY"))
@@ -376,7 +381,7 @@ def price_breakdown(item):
 	breakdown_total = sum(row["amount"] for row in rows if row.get("amount") is not None)
 	unit_price = flt(item.get("unit_price"))
 	adjustment = unit_price - (breakdown_total / quantity if quantity else 0)
-	if abs(adjustment) >= 0.005:
+	if abs(adjustment * quantity) >= 0.005:
 		add("Manual adjustment", adjustment)
 	return rows
 
@@ -595,9 +600,12 @@ def attach_quote_items(quotes):
 			"nuclei_extraction",
 			"library_qc",
 			"confirmed_tbd_fee",
+			"use_price_override",
+			"override_unit_price",
 			"unit_price",
 			"amount",
 			"rule_notes",
+			"pricing_details",
 		],
 		order_by="idx asc",
 		limit=500,
@@ -630,6 +638,9 @@ def attach_order_items(orders):
 			"description",
 			"quantity",
 			"read_depth",
+			"species",
+			"million_reads_per_sample",
+			"add_on_sequencing",
 			"data_analysis",
 			"onsite_service",
 			"onsite_location",
@@ -639,6 +650,12 @@ def attach_order_items(orders):
 			"library_qc",
 			"unit_price",
 			"amount",
+			"confirmed_tbd_fee",
+			"use_price_override",
+			"override_unit_price",
+			"details_snapshot_version",
+			"pricing_details",
+			"notes",
 		],
 		order_by="idx asc",
 		limit=500,
@@ -936,21 +953,7 @@ def create_order(payload):
 		"sample_registration_form": payload.get("sample_registration_form"),
 		"notes": payload.get("notes"),
 	})
-	for item in payload.get("items") or []:
-		order.append("items", {
-			"service": item.get("service"),
-			"project_type": item.get("project_type"),
-			"sample_type": item.get("sample_type"),
-				"description": item.get("description"),
-				"quantity": item.get("quantity") or 1,
-				"data_analysis": item.get("data_analysis"),
-				"onsite_service": item.get("onsite_service"),
-				"onsite_location": item.get("onsite_location"),
-				"onsite_address": item.get("onsite_address"),
-				"tissue_dissociation": item.get("tissue_dissociation"),
-				"nuclei_extraction": item.get("nuclei_extraction"),
-				"library_qc": item.get("library_qc"),
-			})
+	# Customer orders must inherit the validated quote, not a second, possibly incomplete item payload.
 	order.insert(ignore_permissions=True)
 	notify_order_created(order)
 	return {"name": order.name, "status": order.status}
