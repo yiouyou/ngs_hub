@@ -34,7 +34,7 @@
   {
    "fieldname": "configure_project",
    "fieldtype": "Button",
-   "label": "Configure",
+   "label": "Edit",
    "in_list_view": 1
   },
   {

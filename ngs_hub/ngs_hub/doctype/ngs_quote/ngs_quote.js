@@ -113,7 +113,7 @@
   function configure_grid(frm) {
     const grid = frm.fields_dict.items.grid;
     grid.update_docfield_property('configure_project', 'formatter', () =>
-      `<button type="button" class="btn btn-xs btn-default ngs-configure-project" title="${frappe.utils.escape_html(__('Configure Project'))}">${frappe.utils.escape_html(__('Configure'))}</button>`);
+      `<button type="button" class="btn btn-xs btn-default ngs-configure-project" title="${frappe.utils.escape_html(__('Edit item'))}">${frappe.utils.escape_html(__('Edit'))}</button>`);
     const wrapper = grid.wrapper.get(0);
     if (grid.ngs_configure_listener) wrapper.removeEventListener('click', grid.ngs_configure_listener, true);
     grid.ngs_configure_listener = (event) => {
