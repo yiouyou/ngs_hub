@@ -71,6 +71,9 @@
       <label>Phone
         <input name="phone" autocomplete="tel">
       </label>
+      <label class="ngs-profile-address">Invoice email address
+        <input name="invoice_email_address" type="email" maxlength="140" autocomplete="off">
+      </label>
       <label><span class="ngs-field-title">Organization <span class="ngs-required" aria-hidden="true">*</span></span>
         <input name="organization" required autocomplete="organization" placeholder="Use the full organization name, not an abbreviation.">
       </label>
@@ -225,6 +228,7 @@ frappe.ready(async () => {
       submit.textContent = 'Save NGS customer profile';
       summary.innerHTML = `<strong>${data.customer.full_name || data.user?.full_name || 'Customer profile'}</strong><br><span class="ngs-muted">${data.customer.organization || data.customer.email || ''}</span>`;
       form.elements.email.value = data.customer.email || data.user?.email || '';
+      form.elements.invoice_email_address.value = data.customer.invoice_email_address || '';
       form.elements.first_name.value = data.customer.first_name || data.user?.first_name || '';
       form.elements.last_name.value = data.customer.last_name || data.user?.last_name || '';
       form.elements.organization.value = data.customer.organization || '';

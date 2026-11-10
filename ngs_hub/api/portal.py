@@ -8,6 +8,7 @@ from frappe.utils import add_days, escape_html, flt, formatdate, get_url, getdat
 from frappe.utils.password import update_password
 
 from ngs_hub.api.crm_sync import sync_ngs_customer_to_crm
+from ngs_hub.api.customer_profile import normalize_invoice_email_address
 from ngs_hub.api.frappe_crm_sync import sync_ngs_customer_to_frappe_crm
 from ngs_hub.api.pricing_snapshot import get_recorded_breakdown
 from ngs_hub.api.user_roles import ensure_ngs_external_customer_user
@@ -816,6 +817,7 @@ def get_registration_context():
 			"first_name": customer_first_name,
 			"last_name": customer_last_name,
 			"email": customer_doc.email,
+			"invoice_email_address": customer_doc.get("invoice_email_address"),
 			"organization": customer_doc.organization or customer_doc.company_institution,
 			"phone": customer_doc.phone,
 			"address": customer_doc.address,
@@ -844,6 +846,10 @@ def register_ngs_customer(payload):
 		frappe.throw(_("Organization is required."))
 	if not address:
 		frappe.throw(_("Address is required."))
+	invoice_email_address = (
+		normalize_invoice_email_address(payload["invoice_email_address"])
+		if "invoice_email_address" in payload else None
+	)
 	ensure_ngs_external_customer_user(user, save=True)
 	values = {
 		"full_name": full_name,
@@ -857,8 +863,22 @@ def register_ngs_customer(payload):
 		"lab_group_name": (payload.get("lab_group_name") or "").strip(),
 		"note": (payload.get("note") or "").strip(),
 	}
+	if invoice_email_address is not None:
+		values["invoice_email_address"] = invoice_email_address
 	if existing_customer:
 		customer = frappe.get_doc("NGS Customer", existing_customer)
+		if customer.docstatus == 1:
+			# Display-only fallbacks on legacy profiles must not rewrite locked fields.
+			parts = (customer.full_name or "").split(None, 1)
+			fallbacks = {
+				"first_name": parts[0] if parts else "",
+				"last_name": parts[1] if len(parts) > 1 else "",
+				"organization": customer.company_institution,
+				"company_institution": customer.organization,
+			}
+			for field, fallback in fallbacks.items():
+				if not customer.get(field) and values.get(field) == fallback:
+					values.pop(field, None)
 		customer.update(values)
 		customer.save(ignore_permissions=True)
 	else:

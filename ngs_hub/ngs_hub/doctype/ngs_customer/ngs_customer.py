@@ -9,11 +9,18 @@ from frappe.model.document import Document
 from frappe.model.naming import make_autoname
 
 from ngs_hub.api.crm_sync import sync_ngs_customer_to_crm
+from ngs_hub.api.customer_profile import normalize_invoice_email_address
 from ngs_hub.api.frappe_crm_sync import sync_ngs_customer_to_frappe_crm
 from ngs_hub.api.user_utils import create_ngs_customer_user
 
 
 class NGSCustomer(Document):
+	def validate(self):
+		self.invoice_email_address = normalize_invoice_email_address(self.get("invoice_email_address"))
+
+	def before_update_after_submit(self):
+		self.validate()
+
 	def before_insert(self):
 		if not self.email:
 			frappe.throw(_("Email is required to generate Customer"))

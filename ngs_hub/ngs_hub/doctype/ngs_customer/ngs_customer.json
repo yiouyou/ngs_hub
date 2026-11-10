@@ -13,6 +13,7 @@
   "company_institution",
   "phone",
   "email",
+  "invoice_email_address",
   "address",
   "adress",
   "lab_group_name",
@@ -44,6 +45,13 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Email"
+  },
+  {
+   "fieldname": "invoice_email_address",
+   "fieldtype": "Data",
+   "label": "Invoice Email Address",
+   "options": "Email",
+   "allow_on_submit": 1
   },
   {
    "fieldname": "adress",
