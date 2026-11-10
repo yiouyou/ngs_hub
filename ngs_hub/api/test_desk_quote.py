@@ -28,6 +28,7 @@ PRODUCT_CASES = (
 	("10x 5' VDJ", "10X_5_VDJ", "Fresh Cells", "No", 40, 2500),
 	("10x 5' Transcriptome + VDJ", "10X_5_TRANSCRIPTOME_VDJ", "Fresh Cells", "No", 370, 3600),
 	("Shotgun Meta", "SHOTGUN_META_20M", "Water", "No", 20, 130),
+	("DNA Small Fragment Library Prep & Sequencing", "DNA_SMALL_FRAGMENT_PREP", "DNA", "No", 1, 46.5),
 	("Sequencing Only - 10B Lane", "SEQ_ONLY_10B_LANE", "Library", "No", None, 1618),
 	("Sequencing Only - 25B Lane", "SEQ_ONLY_25B_LANE", "Library", "No", None, 2618),
 	("Sequencing Only - 1M Reads", "SEQ_ONLY_1M_READS", "Library", "No", 1, 19.9),
@@ -43,7 +44,9 @@ class DeskQuoteTestCase(TestCase):
 	@classmethod
 	def setUpClass(cls):
 		super().setUpClass()
-		with (Path(__file__).resolve().parents[1] / "fixtures" / "ngs_service_catalog.json").open() as source:
+		with (
+			Path(__file__).resolve().parents[1] / "fixtures" / "catalog" / "seed_ngs_service_catalog.json"
+		).open(encoding="utf-8") as source:
 			cls.catalog_fixture = json.load(source)
 		# Warm real metadata/controllers before installing the no-SQL guards. This
 		# permits running against an existing site without test records or commits.
@@ -190,8 +193,8 @@ class DeskQuoteTestCase(TestCase):
 
 
 class TestDeskQuotePricing(DeskQuoteTestCase):
-	def test_all_fourteen_canonical_products_have_real_pricing_and_defaults(self):
-		self.assertEqual(len(PRODUCT_CASES), 14)
+	def test_all_fifteen_canonical_products_have_real_pricing_and_defaults(self):
+		self.assertEqual(len(PRODUCT_CASES), 15)
 		self.assertCountEqual(
 			[product["project_type"] for product in quote_products.PRODUCTS],
 			[case[0] for case in PRODUCT_CASES],
@@ -223,10 +226,10 @@ class TestDeskQuotePricing(DeskQuoteTestCase):
 					self.assertEqual(row.amount, (base + extraction) * 3)
 					self.assertEqual(row.rule_notes.count("DNA extraction added."), int(bool(extraction)))
 
-	def test_sequencing_150m_is_per_library_not_a_quantity_multiplier(self):
+	def test_sequencing_150m_times_two_uses_whole_document_progressive_pool(self):
 		_, row = self.price("Sequencing Only - 1M Reads", million_reads_per_sample=150, quantity=2)
-		self.assertEqual(row.unit_price, 150 * 1.9 + 18)
-		self.assertEqual(row.amount, 606)
+		self.assertEqual(row.unit_price, 270.5)
+		self.assertEqual(row.amount, 541)
 		self.assertEqual((row.quantity, row.library_qc, row.add_on_sequencing), (2, 1, 0))
 		self.assertEqual(row.rule_notes.count("Library QC added."), 1)
 
@@ -449,7 +452,7 @@ class TestDeskQuoteNormalization(DeskQuoteTestCase):
 			override_unit_price=-1,
 			onsite_service="0",
 		)
-		self.assertEqual((row.quantity, row.million_reads_per_sample, row.amount), (2, 150, 606))
+		self.assertEqual((row.quantity, row.million_reads_per_sample, row.amount), (2, 150, 541))
 		self.assertEqual((row.use_price_override, row.onsite_service), (0, 0))
 		_, row = self.price(
 			"10x 3' Transcriptome",
@@ -492,7 +495,11 @@ class TestDeskQuoteNormalization(DeskQuoteTestCase):
 
 	def test_included_reads_cannot_be_reduced_even_with_a_price_override(self):
 		for project, _, _, _, reads, _ in PRODUCT_CASES:
-			if not reads or project.startswith("Sequencing Only"):
+			if (
+				not reads
+				or project.startswith("Sequencing Only")
+				or project == "DNA Small Fragment Library Prep & Sequencing"
+			):
 				continue
 			with self.subTest(project=project), self.assertRaises(frappe.ValidationError):
 				self.price(
@@ -659,11 +666,11 @@ class TestDeskQuoteNormalization(DeskQuoteTestCase):
 
 
 class TestDeskQuoteMetadataAndPreview(DeskQuoteTestCase):
-	def test_metadata_has_all_fourteen_exact_products_and_catalog_services(self):
+	def test_metadata_has_all_fifteen_exact_products_and_catalog_services(self):
 		products = desk_quote.get_quote_builder_options()["products"]
-		self.assertEqual(len(products), 14)
+		self.assertEqual(len(products), 15)
 		by_project = {product["project_type"]: product for product in products}
-		self.assertEqual(len(by_project), 14)
+		self.assertEqual(len(by_project), 15)
 		for project, service, sample, analysis, reads, _ in PRODUCT_CASES:
 			with self.subTest(project=project):
 				product = by_project[project]
@@ -688,7 +695,7 @@ class TestDeskQuoteMetadataAndPreview(DeskQuoteTestCase):
 						{**original, **({"enabled": 0} if state == "disabled" else {"project_type": "WGS"})}
 					)
 				products = desk_quote.get_quote_builder_options()["products"]
-				self.assertEqual(len(products), 13)
+				self.assertEqual(len(products), 14)
 				self.assertNotIn("Shotgun Meta", [product["project_type"] for product in products])
 				with self.assertRaises(frappe.ValidationError):
 					desk_quote.preview_quote_item({"project_type": "Shotgun Meta", "quantity": 1})
@@ -938,7 +945,7 @@ class TestDeskQuotePermissions(DeskQuoteTestCase):
 			quote.validate_price_override(row)
 
 	def test_website_can_cancel_unchanged_stored_rows_after_catalog_is_disabled(self):
-		for use_override, expected in ((0, 303), (1, 190)):
+		for use_override, expected in ((0, 270.5), (1, 190)):
 			with self.subTest(override=use_override):
 				self.session.user, self.user_type, self.roles = (
 					"staff@example.test",

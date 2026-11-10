@@ -9,6 +9,7 @@ from frappe.model.naming import make_autoname
 from ngs_hub.api.desk_item_details import legacy_order_detail_fallbacks
 from ngs_hub.api.erpnext_sync import sync_ngs_order_to_sales_order
 from ngs_hub.api.frappe_crm_sync import sync_ngs_order_to_frappe_crm_deal
+from ngs_hub.api.sequencing_pricing import SMALL_FRAGMENT_DNA, apply_document_sequencing, catalog_price
 from ngs_hub.api.service_summary import build_project_summary
 
 
@@ -22,8 +23,19 @@ class NGSOrder(Document):
 		self.name = self.order_id
 
 	def validate(self):
+		if self.is_new():
+			self.sequencing_pricing_version = 1
+			self.sequencing_pricing_rates = None
+		else:
+			previous = self.get_doc_before_save()
+			if previous:
+				self.sequencing_pricing_version = previous.get("sequencing_pricing_version") or 0
+				self.sequencing_pricing_rates = previous.get("sequencing_pricing_rates")
 		if self.quote:
 			quote = frappe.get_cached_doc("NGS Quote", self.quote)
+			if self.is_new():
+				self.sequencing_pricing_version = quote.get("sequencing_pricing_version") or 0
+				self.sequencing_pricing_rates = quote.get("sequencing_pricing_rates")
 			self.customer = self.customer or quote.customer
 			if quote.customer != self.customer:
 				frappe.throw(_("Quote {0} is not linked to customer {1}").format(self.quote, self.customer))
@@ -46,7 +58,27 @@ class NGSOrder(Document):
 				item.unit_price = frappe.db.get_value("NGS Quote Item", item.quote_item, "unit_price") or 0
 			elif item.service:
 				item.unit_price = frappe.db.get_value("NGS Service Catalog", item.service, "unit_price") or 0
+				if item.project_type == SMALL_FRAGMENT_DNA:
+					from ngs_hub.ngs_hub.doctype.ngs_quote.ngs_quote import NGSQuote
+					preview = NGSQuote({"doctype": "NGS Quote", "items": [{
+						"project_type": item.project_type, "service": item.service,
+						"quantity": item.quantity, "million_reads_per_sample": item.million_reads_per_sample,
+						"sample_type": item.sample_type, "data_analysis": item.data_analysis,
+					}]})
+					preview.apply_quote_rules()
+					for field in ("service", "sample_type", "description", "species", "data_analysis",
+						"million_reads_per_sample", "add_on_sequencing", "library_qc", "unit_price", "pricing_details"):
+						item.set(field, preview.items[0].get(field))
+					item.notes = preview.items[0].rule_notes
 			item.amount = (item.quantity or 0) * (item.unit_price or 0)
+		if self.sequencing_pricing_version:
+			try:
+				self.sequencing_pricing_rates = apply_document_sequencing(
+					self.items, catalog_price,
+					self.sequencing_pricing_rates,
+				)
+			except (ValueError, ArithmeticError) as error:
+				frappe.throw(_("Invalid whole-order sequencing pricing: {0}").format(str(error)))
 		self.project_summary = build_project_summary(self.items)
 
 	def after_insert(self):

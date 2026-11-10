@@ -5,4 +5,5 @@
 [post_model_sync]
 ngs_hub.patches.v16_0.rename_reads_per_sample_field
 ngs_hub.patches.v16_0.populate_service_summaries
+ngs_hub.patches.v16_0.add_dna_small_fragment_and_sequencing_tiers
 # Patches added in this section will be executed after doctypes are migrated

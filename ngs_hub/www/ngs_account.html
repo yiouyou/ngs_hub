@@ -305,7 +305,7 @@ frappe.ready(() => {
   }
 
   let accountMessageTimer = null;
-  const projectTypes = ['Bulk RNAseq', 'WGS', '10x Single Cell', 'Shotgun Meta', 'Sequencing Only', 'Microbial Genome Sequencing', 'Custom Project'];
+  const projectTypes = ['Bulk RNAseq', 'WGS', '10x Single Cell', 'Shotgun Meta', 'DNA Small Fragment Library Prep & Sequencing', 'Sequencing Only', 'Microbial Genome Sequencing', 'Custom Project'];
   const tenxSubtypes = [
     { label: "3' transcriptome", projectType: "10x 3' Transcriptome", serviceCode: '10X_3_TRANSCRIPTOME' },
     { label: "5' transcriptome", projectType: "10x 5' Transcriptome", serviceCode: '10X_5_TRANSCRIPTOME' },
@@ -361,6 +361,14 @@ frappe.ready(() => {
       reads: true,
       standardReads: 20,
       defaultReads: 20,
+    },
+    'DNA Small Fragment Library Prep & Sequencing': {
+      backendProjectType: 'DNA Small Fragment Library Prep & Sequencing',
+      serviceCode: 'DNA_SMALL_FRAGMENT_PREP',
+      samples: ['DNA'],
+      analyses: ['No'],
+      reads: true,
+      defaultReads: 1,
     },
     'Microbial Genome Sequencing': {
       subtypes: microbialGenomeSubtypes,
@@ -541,7 +549,7 @@ frappe.ready(() => {
           <input name="quantity" type="number" min="1" value="${escape(String(values.quantity || 1))}" required>
         </label>
         <label class="ngs-field-reads" data-field="reads">
-          <span class="ngs-label-row">Reads (M)<button class="ngs-info-dot is-hidden" data-field="reads-info" type="button" aria-label=""></button></span>
+          <span class="ngs-label-row"><span data-field="reads-label">Reads (M)</span><button class="ngs-info-dot is-hidden" data-field="reads-info" type="button" aria-label=""></button></span>
           <input name="million_reads_per_sample" type="number" min="0" step="1">
         </label>
         <label class="ngs-field-analysis" data-field="analysis">Data analysis
@@ -678,21 +686,28 @@ frappe.ready(() => {
     if (usesReads && !isCustomProject) {
       const defaultReads = getLineDefaultReads(projectType, rule, subtypeSelect.value);
       const isSequencingOnlyReads = projectType === 'Sequencing Only' && subtypeSelect.value === '1M reads';
+      const isSmallFragment = projectType === 'DNA Small Fragment Library Prep & Sequencing';
+      row.querySelector('[data-field="reads-label"]').textContent = isSmallFragment ? 'Reads (M/sample)' : 'Reads (M)';
       readsInput.required = true;
-      readsInput.min = defaultReads || 0;
+      readsInput.min = isSmallFragment ? 0 : defaultReads || 0;
+      readsInput.step = isSmallFragment ? 'any' : '1';
       if ((projectChanged || subtypeChanged || !readsInput.value) && !options.preserveReadsInput) {
         readsInput.value = defaultReads;
       }
       const readsValue = readsInput.value === '' ? null : Number(readsInput.value);
-      readsInput.setCustomValidity(defaultReads && readsValue !== null && readsValue < defaultReads ? `Reads must be at least ${defaultReads}M.` : '');
+      readsInput.setCustomValidity(isSmallFragment
+        ? (readsValue !== null && Number.isFinite(readsValue) && readsValue > 0 ? '' : 'Reads must be greater than 0M.')
+        : (defaultReads && readsValue !== null && readsValue < defaultReads ? `Reads must be at least ${defaultReads}M.` : ''));
       const readsMessage = isSequencingOnlyReads
-        ? 'Sequencing is billed per M reads. Library QC is charged once per library.'
-        : (defaultReads ? `Default included: ${defaultReads}M reads. Extra reads are quoted only above this value.` : '');
+        ? 'Progressive bands apply to total Sequencing Only reads across this entire quote: first 200M at $1.90/M; next 400M at $1.25/M; next 600M at $0.54/M; above 1200M at $1.00/M. Library QC is $18 per library, billed separately.'
+        : (isSmallFragment
+          ? 'Per sample: $45 library preparation + $1.50/M for all requested reads (45 + 1.5 x reads in M). Default: 1M; no reads are included.'
+          : (defaultReads ? `Default included: ${defaultReads}M reads. Extra reads are quoted only above this value.` : ''));
       readsHint.textContent = readsMessage;
       readsInfo.dataset.tooltip = readsMessage;
       readsInfo.setAttribute('aria-label', readsMessage);
       readsInfo.classList.toggle('is-hidden', !readsMessage);
-      addOnInput.value = !isSequencingOnlyReads && defaultReads && readsValue !== null && readsValue > defaultReads ? '1' : '0';
+      addOnInput.value = !isSequencingOnlyReads && !isSmallFragment && defaultReads && readsValue !== null && readsValue > defaultReads ? '1' : '0';
     } else {
       readsInput.required = false;
       readsInput.min = 0;
@@ -859,16 +874,24 @@ frappe.ready(() => {
     return (order.items || []).reduce((sum, item) => sum + Number(item.amount || 0), 0);
   }
 
-  function orderTotalLabel(order) {
+  function orderHasUnpricedFees(order) {
     const quote = linkedQuoteForOrder(order);
-    if (quote) return quoteTotalLabel(quote);
+    return (quote && quoteHasUnpricedFees(quote)) || (order.items || []).some(itemHasUnpricedFee);
+  }
+
+  function orderTotalLabel(order) {
+    if (!(order.items || []).length) {
+      const quote = linkedQuoteForOrder(order);
+      return quote ? quoteTotalLabel(quote) : 'Pricing pending';
+    }
     const total = orderItemTotal(order);
-    return total > 0 ? `$${money(total)}` : 'Pricing pending';
+    if (!orderHasUnpricedFees(order)) return `$${money(total)}`;
+    return total > 0 ? `$${money(total)} + TBD` : 'TBD';
   }
 
   function orderTotalCaption(order) {
-    if (linkedQuoteForOrder(order)) return 'Quoted total';
-    return orderItemTotal(order) > 0 ? 'Order total' : 'Pricing';
+    if ((order.items || []).length) return orderHasUnpricedFees(order) ? 'Priced subtotal' : 'Order total';
+    return linkedQuoteForOrder(order) ? 'Quoted total' : 'Pricing';
   }
 
   function orderQuoteActions(order) {

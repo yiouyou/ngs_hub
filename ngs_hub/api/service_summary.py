@@ -48,9 +48,12 @@ def item_summary(item):
 		title = f"{title} {coverage}"
 	elif project == "WGS":
 		title += " (coverage not recorded)"
-	elif project in {"Bulk RNAseq", "Shotgun Meta", "Sequencing Only - 1M Reads"} or project.startswith(
-		"10x"
-	):
+	elif project in {
+		"Bulk RNAseq",
+		"Shotgun Meta",
+		"Sequencing Only - 1M Reads",
+		"DNA Small Fragment Library Prep & Sequencing",
+	} or project.startswith("10x"):
 		title += " (reads not recorded)"
 	quantity = _number(item.get("quantity"))
 	parts = [title[:90], f"x{quantity:.15g}" if quantity is not None else "Qty not recorded"]

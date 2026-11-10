@@ -13,6 +13,7 @@ from ngs_hub.api.erpnext_sync import sync_ngs_quote_to_quotation
 from ngs_hub.api.frappe_crm_sync import sync_ngs_quote_to_frappe_crm_deal
 from ngs_hub.api.pricing_snapshot import create_pricing_snapshot
 from ngs_hub.api.quote_products import normalize_quote_item, validate_number
+from ngs_hub.api.sequencing_pricing import SEQUENCING_READS, SMALL_FRAGMENT_DNA, apply_document_sequencing, catalog_price
 from ngs_hub.api.service_summary import build_project_summary
 
 TENX_TISSUE_DISSOCIATION_SAMPLE_TYPES = {"Fresh Tissue or Organoid"}
@@ -155,6 +156,10 @@ class NGSQuote(Document):
 	def apply_quote_rules(self):
 		missing_info = []
 		previous = self.get_doc_before_save() if not self.is_new() else None
+		if self.is_new():
+			self.sequencing_pricing_version = self.flags.get("sequencing_pricing_version", 1)
+		elif previous:
+			self.sequencing_pricing_version = previous.get("sequencing_pricing_version") or 0
 		previous_items = {row.name: row for row in previous.items} if previous else {}
 		for item in self.items:
 			old_item = previous_items.get(item.name)
@@ -177,8 +182,20 @@ class NGSQuote(Document):
 				item.rule_notes = "\n".join(filter(None, [item.rule_notes,
 					_("Manual unit price: ${0}.").format(f"{item.unit_price:g}")]))
 			item.amount = (item.quantity or 0) * (item.unit_price or 0)
-			# Record rates at pricing time; later views must not rebuild these from a changed catalog.
-			from ngs_hub.api.portal import price_breakdown
+		if self.sequencing_pricing_version:
+			try:
+				self.sequencing_pricing_rates = apply_document_sequencing(
+					self.items, catalog_price,
+					(previous.get("sequencing_pricing_rates") if previous
+						else self.flags.get("sequencing_pricing_rates")),
+				)
+			except (ValueError, ArithmeticError) as error:
+				frappe.throw(_("Invalid whole-order sequencing pricing: {0}").format(str(error)))
+		# Snapshot only after every line has contributed to the order-wide tiers.
+		from ngs_hub.api.portal import price_breakdown
+		for item in self.items:
+			if self.sequencing_pricing_version and item.project_type == SEQUENCING_READS:
+				continue
 			item.pricing_details = create_pricing_snapshot(item, price_breakdown(item, use_snapshot=False))
 		self.missing_info = "\n".join(missing_info)
 		self.pricing_to_confirm = 1 if self.missing_info else 0
@@ -227,6 +244,11 @@ class NGSQuote(Document):
 					f"{reads:g}", self.get_service_price("SEQ_ONLY_1M_READS")
 				)
 			)
+		elif project_type == SMALL_FRAGMENT_DNA:
+			reads = flt(item.million_reads_per_sample)
+			unit_price = self.get_service_price("DNA_SMALL_FRAGMENT_PREP") + reads * self.get_service_price("DNA_SMALL_FRAGMENT_1M")
+			item.add_on_sequencing = 0
+			pricing_notes.append(_("Small-fragment DNA: library preparation plus {0}M reads; all reads are billed.").format(f"{reads:.15g}"))
 		elif standard_reads:
 			if not item.million_reads_per_sample:
 				item.million_reads_per_sample = standard_reads
@@ -370,4 +392,4 @@ class NGSQuote(Document):
 		return 0
 
 	def get_service_price(self, service_code):
-		return flt(frappe.db.get_value("NGS Service Catalog", service_code, "unit_price"))
+		return flt(catalog_price(service_code))

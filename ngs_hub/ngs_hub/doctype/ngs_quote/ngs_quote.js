@@ -20,10 +20,19 @@
     const key = JSON.stringify(context(frm));
     let state = states.get(frm);
     if (!state || state.doc !== frm.doc || state.key !== key) {
-      state = { doc: frm.doc, key, rows: new Map(), submissions: new Set(), dialog_token: 0 };
+      if (state) wake(state);
+      state = { doc: frm.doc, key, rows: new Map(), submissions: new Set(), dialog_token: 0,
+        whole: { mode: has_pool(frm.doc.items || []), token: 0, pending: null, snapshot: null, error: null } };
+      wake(state);
       states.set(frm, state);
     }
     return state;
+  }
+
+  function wake(state) {
+    const previous = state.notify;
+    state.changed = new Promise((resolve) => { state.notify = resolve; });
+    if (previous) previous();
   }
 
   function current(frm, state) {
@@ -38,7 +47,7 @@
   function row_state(state, row) {
     let result = state.rows.get(row.name);
     if (!result || result.row !== row) {
-      result = { row, token: 0, pending: null, error: null, reset: null };
+      result = { row, token: 0, revision: 0, pending: null, error: null, reset: null };
       state.rows.set(row.name, result);
     }
     return result;
@@ -54,6 +63,124 @@
       if (Object.prototype.hasOwnProperty.call(values, field)) item[field] = values[field];
     }
     return item;
+  }
+
+  function pricing_item(values, row = values) {
+    const item = pick_item(values);
+    const key = row.name ?? values.pricing_allocation_key;
+    if (key != null) item.pricing_allocation_key = key;
+    return item;
+  }
+
+  function has_pool(items) {
+    return items.some((item) => item.project_type === 'Sequencing Only - 1M Reads' ||
+      item.service === 'SEQ_ONLY_1M_READS');
+  }
+
+  function input_key(item) {
+    const values = pick_item(item);
+    for (const field of ['unit_price', 'amount', 'rule_notes', 'pricing_details']) delete values[field];
+    return JSON.stringify(values);
+  }
+
+  function snapshot(frm, state) {
+    return (frm.doc.items || []).map((row) => ({ row, name: row.name, key: input_key(row),
+      reset: state.rows.get(row.name)?.reset || null }));
+  }
+
+  function vector_current(frm, state, vector) {
+    const rows = frm.doc.items || [];
+    return current(frm, state) && vector && rows.length === vector.length &&
+      vector.every((item, index) => rows[index] === item.row && rows[index].name === item.name &&
+        input_key(rows[index]) === item.key &&
+        (state.rows.get(rows[index].name)?.reset || null) === item.reset);
+  }
+
+  function valid_item(item) {
+    if (!item || typeof item.project_type !== 'string' || !item.project_type ||
+        item.unit_price == null || item.amount == null || item.quantity == null) return false;
+    const price = Number(item.unit_price);
+    const amount = Number(item.amount);
+    const quantity = Number(item.quantity);
+    const expected = quantity * price;
+    if (!Number.isFinite(price) || !Number.isFinite(amount) || !Number.isFinite(quantity) ||
+        !Number.isFinite(expected) ||
+        price < 0 || amount < 0 || quantity <= 0 ||
+        Math.abs(amount - expected) > 0.005 + Number.EPSILON * Math.max(amount, expected, 1)) return false;
+    if (item.project_type.startsWith('Sequencing Only') || String(item.service || '').startsWith('SEQ_ONLY_')) {
+      try {
+        const details = typeof item.pricing_details === 'string' ? JSON.parse(item.pricing_details) : item.pricing_details;
+        return Boolean(details && typeof details === 'object' && !Array.isArray(details) && Object.keys(details).length);
+      } catch {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  async function preview_items(frm, items) {
+    const response = await frappe.call({ method: api + 'preview_quote_items',
+      args: { ...context(frm), items: JSON.stringify(items.map((item) => pricing_item(item))) }, silent: true });
+    const result = response.message;
+    if (!result || !Array.isArray(result.items) || result.items.length !== items.length ||
+        !result.items.every(valid_item) || result.total_amount == null ||
+        !Number.isFinite(Number(result.total_amount))) {
+      throw new Error(__('The pricing preview returned an invalid quotation.'));
+    }
+    return result;
+  }
+
+  function clear_row_preview(state, row) {
+    const entry = row_state(state, row);
+    entry.token++;
+    entry.pending = null;
+    entry.error = null;
+    entry.reset = null;
+  }
+
+  function apply_items(frm, state, rows, result) {
+    rows.forEach((row, index) => {
+      clear_row_preview(state, row);
+      apply_row(frm, row, result.items[index], false);
+    });
+    update_total(frm);
+    toggle_custom_project_description(frm);
+    state.whole.snapshot = snapshot(frm, state);
+    state.whole.error = null;
+  }
+
+  function preview_whole(frm, state = get_state(frm)) {
+    const whole = state.whole;
+    whole.mode = true;
+    const token = ++whole.token;
+    whole.snapshot = snapshot(frm, state);
+    whole.error = null;
+    const vector = whole.snapshot;
+    // A product reset owns its defaults and will request the replacement vector.
+    if (vector.some((item) => item.reset) || !vector.length) {
+      whole.pending = null;
+      update_total(frm);
+      wake(state);
+      return Promise.resolve();
+    }
+    for (const { row } of vector) clear_row_preview(state, row);
+    const live = () => whole.token === token && vector_current(frm, state, vector);
+    const task = (async () => {
+      try {
+        const result = await preview_items(frm, vector.map(({ row }) => row));
+        if (live()) apply_items(frm, state, vector.map(({ row }) => row), result);
+      } catch (error) {
+        if (!live()) return;
+        whole.error = error;
+        frappe.show_alert({ message: __('Quotation pricing preview failed. Edit or configure a row to retry.'),
+          indicator: 'red' }, 7);
+      } finally {
+        if (whole.token === token) whole.pending = null;
+      }
+    })();
+    whole.pending = task;
+    wake(state);
+    return task;
   }
 
   async function get_options(frm, state = get_state(frm)) {
@@ -79,8 +206,7 @@
       silent: true,
     });
     const result = response.message;
-    if (!result || !result.project_type || result.unit_price == null || result.amount == null ||
-        !Number.isFinite(Number(result.unit_price)) || !Number.isFinite(Number(result.amount))) {
+    if (!valid_item(result)) {
       throw new Error(__('The pricing preview returned an invalid item.'));
     }
     return pick_item(result);
@@ -128,7 +254,7 @@
     wrapper.addEventListener('click', grid.ngs_configure_listener, true);
   }
 
-  function apply_row(frm, row, values) {
+  function apply_row(frm, row, values, refresh = true) {
     // Assign normalized fields without firing pricing handlers again.
     const grid = frm.fields_dict.items.grid;
     for (const [field, value] of Object.entries(pick_item(values))) {
@@ -138,8 +264,10 @@
       }
     }
     frm.dirty();
-    update_total(frm);
-    toggle_custom_project_description(frm);
+    if (refresh) {
+      update_total(frm);
+      toggle_custom_project_description(frm);
+    }
   }
 
   function update_amount(frm, row) {
@@ -151,10 +279,14 @@
     if (!row || row.doctype !== cdt || Number(frm.doc.docstatus || 0) !== 0) return Promise.resolve();
     const state = get_state(frm);
     const entry = row_state(state, row);
+    entry.revision++;
+    state.whole.mode ||= has_pool(frm.doc.items || []);
+    if (state.whole.mode && !reset && !state.rows.get(row.name)?.reset) return preview_whole(frm, state);
     const token = ++entry.token;
     entry.reset = reset || entry.reset;
     entry.error = null;
     update_amount(frm, row);
+    let inputs;
     const task = (async () => {
       try {
         if (entry.reset) {
@@ -166,23 +298,28 @@
           apply_row(frm, row, { ...defaults(product), quantity: row.quantity });
           entry.reset = null;
         }
-        const inputs = pick_item(row);
+        if (state.whole.mode || has_pool(frm.doc.items || [])) {
+          return await preview_whole(frm, state);
+        }
+        inputs = pick_item(row);
         const result = await preview(frm, inputs);
         if (!row_current(frm, state, entry, token) ||
             JSON.stringify(inputs) !== JSON.stringify(pick_item(row))) return;
         apply_row(frm, row, result);
       } catch (error) {
-        if (!row_current(frm, state, entry, token)) return;
+        if (!row_current(frm, state, entry, token) ||
+            (inputs && JSON.stringify(inputs) !== JSON.stringify(pick_item(row)))) return;
         entry.error = error;
         frappe.show_alert({
           message: __('Pricing preview failed for row {0}. Edit or configure the row to retry.', [row.idx]),
           indicator: 'red',
         }, 7);
       } finally {
-        if (entry.token === token) entry.pending = null;
+        if (entry.pending === task) entry.pending = null;
       }
     })();
     entry.pending = task;
+    wake(state);
     return task;
   }
 
@@ -192,14 +329,24 @@
     // A newer edit can replace a pending request while save is waiting.
     while (current(frm, state)) {
       const pending = [...state.submissions];
+      const whole = state.whole;
+      if ((whole.mode || has_pool(frm.doc.items || [])) &&
+          !vector_current(frm, state, whole.snapshot)) preview_whole(frm, state);
+      if (whole.pending) pending.push(whole.pending);
       for (const entry of state.rows.values()) {
         if (find_row(frm, entry.row.name) === entry.row && entry.pending) pending.push(entry.pending);
       }
       if (!pending.length) break;
-      await Promise.all(pending);
+      await Promise.race([Promise.all(pending), state.changed]);
     }
     if (!current(frm, state)) {
       frappe.throw(__('The quotation changed while pricing was pending. Please save again.'));
+    }
+    if (state.whole.error && vector_current(frm, state, state.whole.snapshot)) {
+      frappe.throw(__('Resolve quotation pricing preview errors before saving.'));
+    }
+    if (state.submission_error && vector_current(frm, state, state.submission_error)) {
+      frappe.throw(__('Resolve project configuration pricing errors before saving.'));
     }
     const failed = [...state.rows.values()]
       .filter((entry) => find_row(frm, entry.row.name) === entry.row && entry.error)
@@ -217,19 +364,20 @@
     const row = cdn ? find_row(frm, cdn) : null;
     if (cdn && !row) return;
     const entry = row ? row_state(state, row) : null;
-    const row_token = entry ? entry.token : null;
+    const row_revision = entry ? entry.revision : null;
     try {
       if (entry && entry.pending) await entry.pending;
+      if (state.whole.pending) await state.whole.pending;
       const products = await get_options(frm, state);
       if (!current(frm, state) || opening !== state.dialog_token ||
-          (entry && !row_current(frm, state, entry, row_token))) return;
+          (entry && (find_row(frm, cdn) !== row || entry.revision !== row_revision))) return;
       if (entry && entry.reset) throw new Error(__('Select an enabled project or service before configuring this row.'));
       const product = row
         ? products.find((candidate) => candidate.project_type === row.project_type &&
           (!row.service || candidate.service === row.service))
         : products[0];
       if (!product) throw new Error(__('This product is unavailable. Select an enabled project or service.'));
-      return build_dialog(frm, state, products, product, row, entry, row_token, opening);
+      return build_dialog(frm, state, products, product, row, entry, row_revision, opening);
     } catch (error) {
       if (current(frm, state) && opening === state.dialog_token) {
         frappe.msgprint({
@@ -240,13 +388,14 @@
     }
   }
 
-  function build_dialog(frm, state, products, initial_product, row, entry, row_token, opening) {
+  function build_dialog(frm, state, products, initial_product, row, entry, row_revision, opening) {
     let product = initial_product;
     let token = 0;
     let ready = false;
     let submitting = false;
     const groups = [...new Set(products.map((candidate) => candidate.group))];
     let base = row ? { ...defaults(product), ...pick_item(row) } : defaults(product);
+    const row_key = row ? input_key(row) : null;
     const changed = () => { if (ready) return refresh_preview(); };
     const fields = [
       { fieldname: 'group', fieldtype: 'Select', label: __('Project Group'), options: groups,
@@ -296,7 +445,7 @@
 
     function live() {
       return ready && dialog.is_visible && current(frm, state) && opening === state.dialog_token &&
-        (!entry || row_current(frm, state, entry, row_token));
+        (!entry || (find_row(frm, row.name) === row && entry.revision === row_revision && input_key(row) === row_key));
     }
 
     function write_values(values) {
@@ -381,18 +530,51 @@
       write_values({ unit_price: '', amount: '', rule_notes: '' });
     }
 
+    function item_current(item) {
+      try {
+        return input_key(item) === input_key(get_item());
+      } catch {
+        return false;
+      }
+    }
+
+    function preview_context(item) {
+      const vector = snapshot(frm, state);
+      const placeholder = row || (frm.doc.items || []).find((candidate) =>
+        Number(candidate.quantity || 1) === 1 && item_fields.every((field) =>
+          field === 'quantity' || !candidate[field]));
+      const index = placeholder ? vector.findIndex(({ row: sibling }) => sibling === placeholder) : vector.length;
+      const items = vector.map(({ row: sibling }) => pricing_item(sibling));
+      items[index] = pricing_item(item, placeholder || {});
+      return { vector, placeholder, index, items,
+        whole: state.whole.mode || has_pool(items) || has_pool(frm.doc.items || []) };
+    }
+
+    async function price_context(request_context) {
+      return request_context.whole ? preview_items(frm, request_context.items) :
+        { items: [await preview(frm, request_context.items[request_context.index])] };
+    }
+
     async function refresh_preview() {
       const request = ++token;
       if (!live()) return;
       dialog.clear_alert();
+      let item;
+      let request_context;
       try {
-        const item = get_item();
-        const result = await preview(frm, item);
-        if (!live() || request !== token || JSON.stringify(item) !== JSON.stringify(get_item())) return;
+        item = get_item();
+        request_context = preview_context(item);
+        const result = await price_context(request_context);
+        if (!live() || request !== token || !item_current(item)) return;
+        if (!vector_current(frm, state, request_context.vector)) return refresh_preview();
+        const priced_item = result.items[request_context.whole ? request_context.index : 0];
         // Never write defaults back into editable inputs during a preview.
-        write_values({ unit_price: result.unit_price, amount: result.amount, rule_notes: result.rule_notes });
+        write_values({ unit_price: priced_item.unit_price, amount: priced_item.amount, rule_notes: priced_item.rule_notes });
       } catch (error) {
-        if (live() && request === token) show_error(error);
+        if (!live() || request !== token) return;
+        if (item && !item_current(item)) return;
+        if (request_context && !vector_current(frm, state, request_context.vector)) return refresh_preview();
+        show_error(error);
       }
     }
 
@@ -406,42 +588,51 @@
       dialog.get_primary_btn().prop('disabled', true);
       const request = ++token;
       const task = (async () => {
+        let item;
+        let request_context;
         try {
-          const item = get_item();
-          const result = await preview(frm, item);
-          if (!live() || request !== token || JSON.stringify(item) !== JSON.stringify(get_item())) return;
-          if (row) {
-            entry.token++;
-            entry.error = null;
-            entry.reset = null;
-            apply_row(frm, row, result);
-          } else {
-            // Frappe starts a required table with one blank row; configure it instead of leaving an invalid placeholder.
-            const placeholder = (frm.doc.items || []).find((candidate) =>
-              Number(candidate.quantity || 1) === 1 && item_fields.every((field) =>
-                field === 'quantity' || !candidate[field]));
-            const added = placeholder || frm.add_child('items', result);
-            const added_entry = row_state(state, added);
-            added_entry.token++;
-            added_entry.pending = null;
-            added_entry.error = null;
-            added_entry.reset = null;
-            if (placeholder) apply_row(frm, added, result);
-            frm.refresh_field('items');
-            frm.dirty();
-            update_total(frm);
-            toggle_custom_project_description(frm);
+          item = get_item();
+          let result;
+          // Sibling edits can replace the vector while Apply/Add is awaiting RPC.
+          while (live() && request === token && item_current(item)) {
+            request_context = preview_context(item);
+            try {
+              result = await price_context(request_context);
+            } catch (error) {
+              if (!live() || request !== token || !item_current(item)) return;
+              if (!vector_current(frm, state, request_context.vector)) continue;
+              throw error;
+            }
+            if (!live() || request !== token || !item_current(item)) return;
+            if (vector_current(frm, state, request_context.vector)) break;
           }
+          if (!live() || request !== token || !item_current(item)) return;
+          const priced_item = result.items[request_context.whole ? request_context.index : 0];
+          const target = request_context.placeholder || frm.add_child('items', priced_item);
+          clear_row_preview(state, target);
+          if (request_context.whole) {
+            state.whole.mode = true;
+            state.whole.token++;
+            state.whole.pending = null;
+            apply_items(frm, state, frm.doc.items, result);
+          } else apply_row(frm, target, priced_item);
+          state.submission_error = null;
+          frm.refresh_field('items');
           dialog.hide();
         } catch (error) {
-          if (live() && request === token) show_error(error);
+          if (live() && request === token && (!item || item_current(item)) &&
+              (!request_context || vector_current(frm, state, request_context.vector))) {
+            state.submission_error = snapshot(frm, state);
+            show_error(error);
+          }
         } finally {
           submitting = false;
           dialog.get_primary_btn().prop('disabled', false);
         }
       })();
       state.submissions.add(task);
-      task.finally(() => state.submissions.delete(task));
+      wake(state);
+      task.finally(() => { state.submissions.delete(task); wake(state); });
       return task;
     }
 
@@ -479,6 +670,15 @@
       const previous = states.get(frm);
       const state = get_state(frm);
       if (previous && previous !== state && previous.doc === frm.doc) {
+        if (previous.whole.mode || has_pool(frm.doc.items || [])) {
+          state.whole.mode = true;
+          for (const entry of previous.rows.values()) {
+            if (entry.reset && find_row(frm, entry.row.name) === entry.row) {
+              preview_row(frm, entry.row.doctype, entry.row.name, entry.reset);
+            }
+          }
+          return preview_whole(frm, state);
+        }
         for (const entry of previous.rows.values()) {
           if (find_row(frm, entry.row.name) === entry.row) {
             preview_row(frm, entry.row.doctype, entry.row.name, entry.reset);
@@ -506,8 +706,14 @@
     items_remove(frm, cdt, cdn) {
       const state = get_state(frm);
       state.rows.delete(cdn);
+      wake(state);
       update_total(frm);
       toggle_custom_project_description(frm);
+      if (state.whole.mode || has_pool(frm.doc.items || [])) return preview_whole(frm, state);
+    },
+    items_add(frm, cdt, cdn) {
+      const state = get_state(frm);
+      if (state.whole.mode || has_pool(frm.doc.items || [])) return preview_whole(frm, state);
     },
   };
   for (const field of [

@@ -68,6 +68,14 @@ PRODUCTS = [
 		reads=True,
 		standard_reads=20,
 	),
+	_product(
+		"DNA Small Fragment Library Prep & Sequencing",
+		"DNA_SMALL_FRAGMENT_PREP",
+		["DNA"],
+		["No"],
+		reads=True,
+		standard_reads=1,
+	),
 	*[
 		_product(
 			project_type,

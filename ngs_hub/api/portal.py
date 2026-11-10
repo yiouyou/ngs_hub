@@ -11,6 +11,7 @@ from ngs_hub.api.crm_sync import sync_ngs_customer_to_crm
 from ngs_hub.api.customer_profile import normalize_invoice_email_address
 from ngs_hub.api.frappe_crm_sync import sync_ngs_customer_to_frappe_crm
 from ngs_hub.api.pricing_snapshot import get_recorded_breakdown
+from ngs_hub.api.sequencing_pricing import SMALL_FRAGMENT_DNA, catalog_price
 from ngs_hub.api.user_roles import ensure_ngs_external_customer_user
 from ngs_hub.ngs_hub.doctype.ngs_quote.ngs_quote import (
 	DNA_EXTRACTION_BLOOD_SALIVA_SWAB_SAMPLE_TYPES,
@@ -340,10 +341,14 @@ def price_breakdown(item, use_snapshot=True):
 		reads = reads_per_sample or standard_reads or 1
 		rate = get_service_price("SEQ_ONLY_1M_READS")
 		add(f"Sequencing ({reads:.15g}M reads at ${rate:g}/M)", reads * rate)
+	elif project_type == SMALL_FRAGMENT_DNA:
+		add("Small-fragment DNA library preparation", get_service_price("DNA_SMALL_FRAGMENT_PREP"))
+		rate = get_service_price("DNA_SMALL_FRAGMENT_1M")
+		add(f"Sequencing ({reads_per_sample:.15g}M reads at ${rate:g}/M)", reads_per_sample * rate)
 	else:
 		add(service_name, get_base_unit_price(item, service_name))
 
-	if standard_reads and project_type != "Sequencing Only - 1M Reads":
+	if standard_reads and project_type not in {"Sequencing Only - 1M Reads", SMALL_FRAGMENT_DNA}:
 		extra_reads = reads_per_sample - standard_reads
 		if extra_reads > 0:
 			add(f"Extra sequencing ({extra_reads:.15g}M reads at ${get_service_price('EXTRA_SEQUENCING_1M'):g}/M)", extra_reads * get_service_price("EXTRA_SEQUENCING_1M"))
@@ -430,7 +435,7 @@ def get_million_reads_per_sample(item):
 
 
 def get_service_price(service_code):
-	return flt(frappe.db.get_value("NGS Service Catalog", service_code, "unit_price"))
+	return flt(catalog_price(service_code))
 
 
 def get_wgs_depth_value(item):
@@ -474,7 +479,7 @@ def order_pdf_context(order):
 	items = order_pdf_items(order)
 	quote_doc = frappe.get_doc("NGS Quote", order.quote) if order.get("quote") and frappe.db.exists("NGS Quote", order.quote) else None
 	has_unpriced_fees = bool(quote_doc and quote_doc.get("missing_info")) or any(item.get("has_unpriced_fee") for item in items)
-	total_amount = flt(quote_doc.get("total_amount")) if quote_doc else sum(flt(item.get("amount")) for item in items)
+	total_amount = sum(flt(item.get("amount")) for item in items)
 	return {
 		"order": order,
 		"quote": quote_doc,

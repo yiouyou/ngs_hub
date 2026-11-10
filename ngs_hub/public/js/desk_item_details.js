@@ -95,7 +95,7 @@
   function price_unit(item) {
     if (item.project_type === 'Sequencing Only - 1M Reads') return 'per library';
     if (/^Sequencing Only - (10B|25B) Lane$/.test(item.project_type)) return 'per lane';
-    if (['Bulk RNAseq', 'WGS', 'Shotgun Meta'].includes(item.project_type) ||
+    if (['Bulk RNAseq', 'WGS', 'Shotgun Meta', 'DNA Small Fragment Library Prep & Sequencing'].includes(item.project_type) ||
         /^10x /.test(item.project_type) || /^Microbial Genome Sequencing /.test(item.project_type)) {
       return 'per sample';
     }
@@ -107,6 +107,9 @@
     const depth = coverage(item);
     if (type === 'Sequencing Only - 1M Reads') {
       return depth === '-' ? 'Sequencing Only - reads not recorded' : `Sequencing Only - ${depth}`;
+    }
+    if (type === 'DNA Small Fragment Library Prep & Sequencing') {
+      return depth === '-' ? `${type} - reads not recorded` : `${type} - ${depth}`;
     }
     if (['WGS', 'Bulk RNAseq', 'Shotgun Meta'].includes(type) || /^10x /.test(type)) {
       return depth === '-' ? type : `${type} - ${depth}`;

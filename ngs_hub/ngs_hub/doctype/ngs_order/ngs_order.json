@@ -9,6 +9,8 @@
   "quote",
   "status",
   "project_summary",
+  "sequencing_pricing_version",
+  "sequencing_pricing_rates",
   "project",
   "po_section",
   "po_number",
@@ -26,6 +28,23 @@
   "amended_from"
  ],
  "fields": [
+  {
+   "fieldname": "sequencing_pricing_rates",
+   "fieldtype": "Long Text",
+   "label": "Recorded Sequencing Rates",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "sequencing_pricing_version",
+   "fieldtype": "Int",
+   "label": "Sequencing Pricing Version",
+   "hidden": 1,
+   "read_only": 1,
+   "no_copy": 1,
+   "default": "0"
+  },
   {
    "fieldname": "customer",
    "fieldtype": "Link",

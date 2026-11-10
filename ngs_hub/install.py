@@ -1,5 +1,7 @@
-import frappe
+import json
+from pathlib import Path
 
+import frappe
 
 NGS_ITEM_GROUPS = [
 	("NGS Supplies", "All Item Groups", 1),
@@ -31,6 +33,36 @@ def ensure_ngs_defaults():
 	create_default_uoms()
 	create_ngs_roles()
 	create_ngs_item_groups()
+	create_ngs_service_catalog()
+	ensure_erp_service_rate_precision()
+
+
+def ensure_erp_service_rate_precision():
+	"""Keep allocated service rates without reducing the actual library quantity."""
+	from frappe.custom.doctype.property_setter.property_setter import make_property_setter
+
+	for doctype in ("Quotation Item", "Sales Order Item"):
+		if not frappe.db.exists("DocType", doctype):
+			continue
+		for fieldname in ("rate", "net_rate", "base_rate", "base_net_rate"):
+			field = frappe.get_meta(doctype).get_field(fieldname)
+			if field and int(field.precision or 0) < 9:
+				make_property_setter(doctype, fieldname, "precision", "9", "Int")
+
+
+def create_ngs_service_catalog():
+	"""Insert missing catalog codes without replacing saved prices or enabled flags."""
+	if not frappe.db.exists("DocType", "NGS Service Catalog"):
+		return
+
+	# Nested seed fixtures are not imported by Frappe's overwrite-based fixture sync.
+	path = Path(frappe.get_app_path("ngs_hub", "fixtures", "catalog", "seed_ngs_service_catalog.json"))
+	with path.open(encoding="utf-8") as source:
+		services = json.load(source)
+	for service in services:
+		if frappe.db.exists("NGS Service Catalog", {"service_code": service["service_code"]}):
+			continue
+		frappe.get_doc(service).insert(ignore_permissions=True)
 
 
 def create_default_uoms():
