@@ -16,10 +16,118 @@ frappe.ui.form.on("NGS Order", {
 			if (frm.doc.quote) frappe.set_route("Form", "NGS Quote", frm.doc.quote);
 		}, __("Open"));
 		if (!frm.is_new()) {
+			const grid = frm.fields_dict?.items?.grid;
+			if (grid?.update_docfield_property) {
+				for (const field of ["quote_item", "service", "project_type", "sample_type", "description", "quantity",
+					"read_depth", "data_analysis", "onsite_service", "onsite_location", "onsite_address",
+					"tissue_dissociation", "nuclei_extraction", "library_qc"]) {
+					grid.update_docfield_property(field, "read_only", 1);
+				}
+			}
 			add_review_buttons(frm);
+			add_order_billing_buttons(frm);
 		}
 	},
 });
+
+function add_order_billing_buttons(frm) {
+	const roles = frappe.user_roles || [];
+	if (!roles.some(role => ["NGS Internal Staff", "System Manager"].includes(role))) return;
+	if (frm.doc.docstatus === 0 && frm.doc.status !== "Cancelled") {
+		frm.add_custom_button(__("Adjust Order"), () => show_order_adjustment(frm), __("Actions"));
+	}
+	if (frm.doc.docstatus !== 2 && frm.doc.status !== "Cancelled") {
+		frm.add_custom_button(__("Generate Invoice"), async () => {
+			if (!saved_order_required(frm) || frm.__ngs_invoice_busy) return;
+			frm.__ngs_invoice_busy = true;
+			try {
+				const response = await frappe.call({
+					method: "ngs_hub.api.invoicing.generate_invoice",
+					type: "POST", args: { order_name: frm.doc.name }, freeze: true,
+					freeze_message: __("Generating invoice..."),
+				});
+				if (response.message?.name) {
+					frappe.show_alert({ message: response.message.existing
+						? __("Existing invoice opened. No duplicate email queued.")
+						: __("Invoice generated. Email queued."), indicator: "green" });
+					frappe.set_route("Form", "NGS Invoice", response.message.name);
+				}
+			} finally {
+				frm.__ngs_invoice_busy = false;
+			}
+		}, __("Invoices"));
+	}
+	frm.add_custom_button(__("View Invoices"), () => {
+		frappe.route_options = { order: frm.doc.name };
+		frappe.set_route("List", "NGS Invoice");
+	}, __("Invoices"));
+}
+
+function saved_order_required(frm) {
+	if (frm.is_dirty?.()) {
+		frappe.msgprint(__("Save order changes first."));
+		return false;
+	}
+	return true;
+}
+
+function show_order_adjustment(frm) {
+	if (!saved_order_required(frm)) return;
+	const dialog = new frappe.ui.Dialog({
+		title: __("Adjust Order"), size: "extra-large",
+		fields: [
+			{ fieldname: "items", fieldtype: "Table", label: __("Order Items"),
+				cannot_add_rows: true, cannot_delete_rows: true, in_place_edit: true,
+				data: (frm.doc.items || []).map(row => ({ name: row.name, row_name: row.name,
+					product: row.description || row.project_type, quantity: row.quantity,
+					remove: 0,
+					use_price_override: row.use_price_override || 0,
+					override_unit_price: row.use_price_override ? row.override_unit_price || 0 : row.unit_price })),
+				fields: [
+					{ fieldname: "row_name", fieldtype: "Data", hidden: true },
+					{ fieldname: "product", fieldtype: "Data", label: __("Product"), read_only: true, in_list_view: 1 },
+					{ fieldname: "quantity", fieldtype: "Float", label: __("Quantity"), precision: 9, in_list_view: 1, reqd: 1 },
+					{ fieldname: "remove", fieldtype: "Check", label: __("Remove"), in_list_view: 1 },
+					{ fieldname: "use_price_override", fieldtype: "Check", label: __("Manual Price"), in_list_view: 1 },
+					{ fieldname: "override_unit_price", fieldtype: "Currency", label: __("Manual Unit Price"), precision: 9, in_list_view: 1 },
+				] },
+			{ fieldname: "processing_fee", fieldtype: "Currency", label: __("Sample Processing Fee"), default: 0 },
+			{ fieldname: "processing_description", fieldtype: "Small Text", label: __("Processing Description") },
+			{ fieldname: "set_final_total", fieldtype: "Check", label: __("Set Final Total") },
+			{ fieldname: "final_total", fieldtype: "Currency", label: __("Final Total"),
+				depends_on: "eval:doc.set_final_total", mandatory_depends_on: "eval:doc.set_final_total" },
+			{ fieldname: "reason", fieldtype: "Small Text", label: __("Adjustment Reason"), reqd: 1 },
+		],
+		primary_action_label: __("Apply Adjustment"),
+		async primary_action(values) {
+			if (dialog.__ngs_busy) return;
+			dialog.__ngs_busy = true;
+			dialog.get_primary_btn().prop("disabled", true);
+			try {
+				const args = {
+					order_name: frm.doc.name, reason: values.reason,
+					items: JSON.stringify((values.items || []).map(row => ({ name: row.row_name,
+						quantity: row.remove ? 0 : row.quantity, use_price_override: row.use_price_override || 0,
+						override_unit_price: row.use_price_override ? row.override_unit_price || 0 : 0 }))),
+					processing_fee: values.processing_fee || 0,
+					processing_description: values.processing_description || "",
+				};
+				if (values.set_final_total) args.final_total = values.final_total;
+				await frappe.call({ method: "ngs_hub.api.order_adjustments.adjust_order", type: "POST",
+					args, freeze: true, freeze_message: __("Updating order...") });
+				dialog.hide();
+				await frm.reload_doc();
+			} finally {
+				dialog.__ngs_busy = false;
+				dialog.get_primary_btn().prop("disabled", false);
+			}
+		},
+	});
+	dialog.show();
+	dialog.fields_dict?.items?.grid?.wrapper.find(
+		".grid-add-row, .grid-add-multiple-rows, .grid-upload, .grid-download, .grid-duplicate-rows, .grid-remove-rows, .grid-remove-all-rows"
+	).remove();
+}
 
 frappe.ui.form.on("NGS Order Item", {
 	items_remove(frm) {

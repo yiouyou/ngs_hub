@@ -3,7 +3,6 @@ from frappe.utils import add_days, flt, today
 
 from ngs_hub.api.crm_sync import sync_ngs_customer_to_crm
 
-
 CRM_APP_NAME = "crm"
 CRM_ORGANIZATION = "CRM Organization"
 CRM_DEAL = "CRM Deal"
@@ -29,6 +28,15 @@ def sync_ngs_customer_to_frappe_crm(customer_doc):
 	if not crm_organization:
 		crm_organization = find_crm_organization(organization_name) or create_crm_organization(customer_doc, organization_name)
 	else:
+		current_name = frappe.db.get_value(CRM_ORGANIZATION, crm_organization, "organization_name")
+		if current_name != organization_name:
+			matching_organization = find_crm_organization(organization_name)
+			if matching_organization:
+				crm_organization = matching_organization
+			elif frappe.db.exists("NGS Customer", {
+				"frappe_crm_organization": crm_organization, "name": ["!=", customer_doc.name],
+			}):
+				crm_organization = create_crm_organization(customer_doc, organization_name)
 		update_crm_organization(crm_organization, customer_doc, organization_name)
 
 	crm_contact = erp_links.get("contact")

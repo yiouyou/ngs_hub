@@ -823,6 +823,7 @@ def get_registration_context():
 			"last_name": customer_last_name,
 			"email": customer_doc.email,
 			"invoice_email_address": customer_doc.get("invoice_email_address"),
+			"billing_address": customer_doc.get("billing_address"),
 			"organization": customer_doc.organization or customer_doc.company_institution,
 			"phone": customer_doc.phone,
 			"address": customer_doc.address,
@@ -855,6 +856,11 @@ def register_ngs_customer(payload):
 		normalize_invoice_email_address(payload["invoice_email_address"])
 		if "invoice_email_address" in payload else None
 	)
+	billing_address = None
+	if "billing_address" in payload:
+		if not isinstance(payload["billing_address"], str) or len(payload["billing_address"]) > 2000:
+			frappe.throw(_("Billing address must be text of at most 2000 characters."))
+		billing_address = payload["billing_address"].strip()
 	ensure_ngs_external_customer_user(user, save=True)
 	values = {
 		"full_name": full_name,
@@ -870,6 +876,8 @@ def register_ngs_customer(payload):
 	}
 	if invoice_email_address is not None:
 		values["invoice_email_address"] = invoice_email_address
+	if billing_address is not None:
+		values["billing_address"] = billing_address
 	if existing_customer:
 		customer = frappe.get_doc("NGS Customer", existing_customer)
 		if customer.docstatus == 1:

@@ -1,6 +1,8 @@
 # Copyright (c) 2026, sz and contributors
 # For license information, please see license.txt
 
+from decimal import ROUND_HALF_UP, Decimal
+
 import frappe
 from frappe import _
 from frappe.model.document import Document
@@ -9,7 +11,17 @@ from frappe.model.naming import make_autoname
 from ngs_hub.api.desk_item_details import legacy_order_detail_fallbacks
 from ngs_hub.api.erpnext_sync import sync_ngs_order_to_sales_order
 from ngs_hub.api.frappe_crm_sync import sync_ngs_order_to_frappe_crm_deal
-from ngs_hub.api.sequencing_pricing import SMALL_FRAGMENT_DNA, apply_document_sequencing, catalog_price
+from ngs_hub.api.order_adjustments import (
+	is_controlled_adjustment,
+	record_nonsequencing_pricing,
+	validate_controlled_changes,
+)
+from ngs_hub.api.sequencing_pricing import (
+	SMALL_FRAGMENT_DNA,
+	apply_document_sequencing,
+	catalog_price,
+	decimal_value,
+)
 from ngs_hub.api.service_summary import build_project_summary
 
 
@@ -23,6 +35,8 @@ class NGSOrder(Document):
 		self.name = self.order_id
 
 	def validate(self):
+		previous = None
+		quote = None
 		if self.is_new():
 			self.sequencing_pricing_version = 1
 			self.sequencing_pricing_rates = None
@@ -41,6 +55,8 @@ class NGSOrder(Document):
 				frappe.throw(_("Quote {0} is not linked to customer {1}").format(self.quote, self.customer))
 			if not self.items:
 				self.copy_items_from_quote(quote)
+		validate_controlled_changes(self, previous, quote)
+		previous_items = {row.name: row for row in previous.items} if previous else {}
 		if not self.customer:
 			frappe.throw(_("Customer is required to generate Order"))
 		if not self.no_po_available and not (self.po_number or self.po_file):
@@ -48,17 +64,31 @@ class NGSOrder(Document):
 		if not self.sample_registration_form:
 			frappe.throw(_("Upload the sample registration form before placing an order."))
 		for item in self.items:
-			if not item.quantity or item.quantity <= 0:
-				frappe.throw(_("Quantity must be greater than zero for order item {0}").format(item.idx))
+			try:
+				decimal_value(item.quantity, positive=True)
+			except ValueError:
+				frappe.throw(_("Quantity must be finite and greater than zero for order item {0}").format(item.idx))
 			if item.onsite_service and not item.onsite_location:
 				frappe.throw(_("On-site service requires a location for order item {0}").format(item.idx))
 			if item.onsite_service and not item.onsite_address:
 				frappe.throw(_("On-site service requires an address for order item {0}").format(item.idx))
-			if item.quote_item:
+			old_item = previous_items.get(item.name)
+			if old_item and not is_controlled_adjustment(self):
+				item.unit_price = old_item.unit_price
+				item.amount = old_item.amount
+				continue
+			if item.get("use_price_override"):
+				try:
+					item.unit_price = float(decimal_value(item.get("override_unit_price")))
+				except ValueError:
+					frappe.throw(_("Manual unit price must be finite and nonnegative."))
+			elif old_item and not old_item.get("use_price_override"):
+				item.unit_price = old_item.unit_price
+			elif item.quote_item:
 				item.unit_price = frappe.db.get_value("NGS Quote Item", item.quote_item, "unit_price") or 0
 			elif item.service:
 				item.unit_price = frappe.db.get_value("NGS Service Catalog", item.service, "unit_price") or 0
-				if item.project_type == SMALL_FRAGMENT_DNA:
+				if item.project_type == SMALL_FRAGMENT_DNA and not is_controlled_adjustment(self):
 					from ngs_hub.ngs_hub.doctype.ngs_quote.ngs_quote import NGSQuote
 					preview = NGSQuote({"doctype": "NGS Quote", "items": [{
 						"project_type": item.project_type, "service": item.service,
@@ -70,8 +100,12 @@ class NGSOrder(Document):
 						"million_reads_per_sample", "add_on_sequencing", "library_qc", "unit_price", "pricing_details"):
 						item.set(field, preview.items[0].get(field))
 					item.notes = preview.items[0].rule_notes
-			item.amount = (item.quantity or 0) * (item.unit_price or 0)
-		if self.sequencing_pricing_version:
+			item.amount = float((Decimal(str(item.quantity)) * Decimal(str(item.unit_price or 0))).quantize(
+				Decimal("0.01"), rounding=ROUND_HALF_UP,
+			))
+			if is_controlled_adjustment(self):
+				record_nonsequencing_pricing(item, previous_items.get(item.name))
+		if self.sequencing_pricing_version and (not previous or is_controlled_adjustment(self)):
 			try:
 				self.sequencing_pricing_rates = apply_document_sequencing(
 					self.items, catalog_price,
@@ -80,6 +114,9 @@ class NGSOrder(Document):
 			except (ValueError, ArithmeticError) as error:
 				frappe.throw(_("Invalid whole-order sequencing pricing: {0}").format(str(error)))
 		self.project_summary = build_project_summary(self.items)
+		from ngs_hub.api.invoicing import assert_order_invoice_unchanged
+
+		assert_order_invoice_unchanged(self)
 
 	def after_insert(self):
 		self.attach_uploaded_files()
@@ -146,6 +183,8 @@ class NGSOrder(Document):
 			file_doc.db_set("attached_to_field", fieldname, update_modified=False)
 
 	def link_quote(self):
+		if is_controlled_adjustment(self):
+			return
 		if self.quote and frappe.db.exists("NGS Quote", self.quote):
 			frappe.db.set_value("NGS Quote", self.quote, "order", self.name, update_modified=False)
 			frappe.db.set_value("NGS Quote", self.quote, "status", "Converted to Order", update_modified=False)

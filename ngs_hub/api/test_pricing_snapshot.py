@@ -301,6 +301,41 @@ class TestPricingSnapshot(unittest.TestCase):
 				create_pricing_snapshot(item(amount=amount), self.rows)
 		self.assertIsNone(self.recorded(unit_price=1e12, amount=1e12 + 1))
 
+	def test_decimal_row_products_preserve_inclusive_half_cent_tolerance(self):
+		for amount in (0.03, 0.04):
+			with self.subTest(amount=amount):
+				record = item(quantity=0.05, unit_price=0.7, amount=amount)
+				rows = [component("Recorded", amount)]
+				record["pricing_details"] = create_pricing_snapshot(record, rows)
+				self.assertEqual(get_recorded_breakdown(record), rows)
+				for invalid in (0.029, 0.041):
+					with self.subTest(invalid=invalid):
+						with self.assertRaises(ValueError):
+							create_pricing_snapshot({**record, "amount": invalid}, [component("Recorded", invalid)])
+						self.assertIsNone(get_recorded_breakdown({**record, "amount": invalid}))
+						data = json.loads(record["pricing_details"])
+						data["amount"] = invalid
+						self.assertIsNone(get_recorded_breakdown({**record, "pricing_details": json.dumps(data)}))
+
+	def test_decimal_component_products_preserve_signed_half_cent_tolerance(self):
+		for sign in (1, -1):
+			for amount in (0.03, 0.04):
+				with self.subTest(sign=sign, amount=amount):
+					part = {"label": "Rounded component", "quantity": 0.05,
+						"unit_price": sign * 0.7, "amount": sign * amount}
+					rows = [component("Base", 1), part]
+					record = item(unit_price=1 + sign * amount, amount=1 + sign * amount)
+					record["pricing_details"] = create_pricing_snapshot(record, rows)
+					self.assertEqual(get_recorded_breakdown(record), rows)
+					for invalid in (0.029, 0.041):
+						with self.subTest(invalid=invalid):
+							bad_rows = [rows[0], {**part, "amount": sign * invalid}]
+							with self.assertRaises(ValueError):
+								create_pricing_snapshot(record, bad_rows)
+							data = json.loads(record["pricing_details"])
+							data["components"] = bad_rows
+							self.assertIsNone(get_recorded_breakdown({**record, "pricing_details": json.dumps(data)}))
+
 	def test_labels_are_plain_preserved_text_for_consumers_to_escape(self):
 		rows = [component('<b>Recorded price & "label"</b>', 208)]
 		raw = create_pricing_snapshot(self.item, rows)

@@ -114,7 +114,7 @@ def _prices(item, *, saved=False):
 	quantity = _positive(_get(item, "quantity"), item_value=not saved)
 	unit_price = _nonnegative(_get(item, "unit_price"), item_value=not saved)
 	amount = _nonnegative(_get(item, "amount"), item_value=not saved)
-	if not _matches(_number(quantity * unit_price), amount):
+	if not _matches(Decimal(str(quantity)) * Decimal(str(unit_price)), amount):
 		raise ValueError("Saved amount does not match unit price and quantity.")
 	return quantity, unit_price, amount
 
@@ -142,7 +142,7 @@ def _components(components, amount):
 		else:
 			row["unit_price"] = _number(unit_price)
 			row["amount"] = _number(row_amount)
-			if "display" in component or not _matches(_number(row["unit_price"] * quantity), row["amount"]):
+			if "display" in component or not _matches(Decimal(str(row["unit_price"])) * Decimal(str(quantity)), row["amount"]):
 				raise ValueError("Component amount does not match its saved rate and quantity.")
 		rows.append(row)
 	total = _number(math.fsum(row["amount"] for row in rows if row["amount"] is not None))

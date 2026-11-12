@@ -386,6 +386,8 @@ class TestSequencingControllers(DeskQuoteTestCase):
 					self.price(project, million_reads_per_sample=reads)
 
 	def test_quoted_order_retains_version_rates_and_snapshot_after_catalog_changes(self):
+		from ngs_hub.api.order_adjustments import adjust_order
+
 		quote = self.make_quote(sequencing_row(quantity=2))
 		quote.validate()
 		quote.name = "QUOTED"
@@ -406,15 +408,29 @@ class TestSequencingControllers(DeskQuoteTestCase):
 		self.assertEqual(self.assert_snapshot(order.items[0]), original)
 		order.name = "ORDER-STORED"
 		order.set("__islocal", 0)
+		order.items[0].name = "ORDER-ROW"
 		order._doc_before_save = deepcopy(order)
 		order.sequencing_pricing_version = 0
 		order.sequencing_pricing_rates = "forged"
-		order.items[0].quantity = 4
+
+		def lookup(doctype, name, field, **kwargs):
+			if doctype == "User":
+				return 1 if field == "enabled" else "System User"
+			if doctype == "NGS Invoice":
+				return None
+			return order.name if doctype == "NGS Order" else 999
+
 		with (
 			patch.object(frappe, "get_cached_doc", return_value=quote),
-			patch.object(frappe.db, "get_value", return_value=999),
+			patch.object(frappe.db, "get_value", side_effect=lookup),
+			patch.object(frappe, "get_doc", side_effect=lambda doctype, name, **kw: order if doctype == "NGS Order" else self.customer),
+			patch.object(NGSOrder, "load_doc_before_save"),
+			patch.object(NGSOrder, "check_permission"),
+			patch.object(NGSOrder, "save", side_effect=order.validate),
+			patch.object(NGSOrder, "add_comment") as audit,
 		):
-			order.validate()
+			adjust_order(order.name, items=[{"name": "ORDER-ROW", "quantity": 4}], reason="Correct received sample count")
+			audit.assert_called_once()
 		self.assertEqual(order.sequencing_pricing_version, 1)
 		self.assertEqual(json.loads(order.sequencing_pricing_rates), parameters)
 		self.assertEqual((order.items[0].unit_price, order.items[0].amount), (238, 952))

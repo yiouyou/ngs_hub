@@ -13,6 +13,13 @@ from ngs_hub.api.customer_profile import normalize_invoice_email_address
 from ngs_hub.api.frappe_crm_sync import sync_ngs_customer_to_frappe_crm
 from ngs_hub.api.user_utils import create_ngs_customer_user
 
+CUSTOMER_PROFILE_FIELDS = (
+	"first_name", "last_name", "full_name", "email", "phone",
+	"organization", "company_institution", "address", "adress",
+	"invoice_email_address", "billing_category", "billing_address",
+	"lab_group_name", "note",
+)
+
 
 class NGSCustomer(Document):
 	def validate(self):
@@ -20,6 +27,22 @@ class NGSCustomer(Document):
 
 	def before_update_after_submit(self):
 		self.validate()
+
+	def on_update(self):
+		self.sync_profile()
+
+	def on_update_after_submit(self):
+		self.sync_profile()
+
+	def sync_profile(self):
+		"""NGS Customer owns the profile; integration links are outputs, not inputs."""
+		if self.docstatus == 2:
+			return
+		previous = self.get_doc_before_save()
+		if previous and not any(self.get(field) != previous.get(field) for field in CUSTOMER_PROFILE_FIELDS):
+			return
+		sync_ngs_customer_to_crm(self)
+		sync_ngs_customer_to_frappe_crm(self)
 
 	def before_insert(self):
 		if not self.email:

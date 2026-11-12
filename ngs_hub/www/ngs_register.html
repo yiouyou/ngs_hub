@@ -83,6 +83,9 @@
       <label class="ngs-profile-address"><span class="ngs-field-title">Address <span class="ngs-required" aria-hidden="true">*</span></span>
         <textarea name="address" rows="3" required autocomplete="street-address"></textarea>
       </label>
+      <label class="ngs-profile-address">Billing address
+        <textarea name="billing_address" rows="3" maxlength="2000" placeholder="Leave blank to use the address above."></textarea>
+      </label>
     </div>
     <label class="ngs-profile-notes">Notes
       <textarea name="note" rows="1" placeholder="Billing contact, preferred project contact, or other account setup details."></textarea>
@@ -229,6 +232,7 @@ frappe.ready(async () => {
       summary.innerHTML = `<strong>${data.customer.full_name || data.user?.full_name || 'Customer profile'}</strong><br><span class="ngs-muted">${data.customer.organization || data.customer.email || ''}</span>`;
       form.elements.email.value = data.customer.email || data.user?.email || '';
       form.elements.invoice_email_address.value = data.customer.invoice_email_address || '';
+      form.elements.billing_address.value = data.customer.billing_address || '';
       form.elements.first_name.value = data.customer.first_name || data.user?.first_name || '';
       form.elements.last_name.value = data.customer.last_name || data.user?.last_name || '';
       form.elements.organization.value = data.customer.organization || '';

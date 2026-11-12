@@ -10,6 +10,11 @@ before_install = "ngs_hub.install.prepare_install"
 after_install = "ngs_hub.install.ensure_ngs_defaults"
 after_migrate = "ngs_hub.install.ensure_ngs_defaults"
 
+extend_doctype_class = {
+	"Email Queue": ["ngs_hub.api.invoicing.InvoiceEmailQueueGuardMixin"],
+	"File": ["ngs_hub.api.invoice_files.InvoiceFileGuardMixin"],
+}
+
 fixtures = [
 	# 权限与用户配置
 	{"dt": "Role", "filters": [["name", "in", ["NGS Internal Staff", "NGS External Customer"]]]},

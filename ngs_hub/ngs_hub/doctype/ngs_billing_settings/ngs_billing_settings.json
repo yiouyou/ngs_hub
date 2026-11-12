@@ -1,0 +1,94 @@
+{
+ "doctype": "DocType",
+ "name": "NGS Billing Settings",
+ "module": "NGS Hub",
+ "engine": "InnoDB",
+ "issingle": 1,
+ "track_changes": 0,
+ "field_order": [
+  "company_name",
+  "company_address",
+  "company_email",
+  "company_phone",
+  "company_website",
+  "bank_name",
+  "account_name",
+  "account_type",
+  "account_number",
+  "routing_number",
+  "bank_note"
+ ],
+ "fields": [
+  {
+   "fieldname": "company_name",
+   "fieldtype": "Data",
+   "label": "Company Name",
+   "default": "ATHENOMICS LLC"
+  },
+  {
+   "fieldname": "company_address",
+   "fieldtype": "Small Text",
+   "label": "Company Address",
+   "default": "1 GRANT ST STE 230\nFRAMINGHAM, MA 01702-6767"
+  },
+  {
+   "fieldname": "company_email",
+   "fieldtype": "Data",
+   "label": "Company Email",
+   "default": "order@athenomics.com"
+  },
+  {
+   "fieldname": "company_phone",
+   "fieldtype": "Data",
+   "label": "Company Phone",
+   "default": "443-453-8418"
+  },
+  {
+   "fieldname": "company_website",
+   "fieldtype": "Data",
+   "label": "Company Website",
+   "default": "www.Athenomics.com"
+  },
+  {
+   "fieldname": "bank_name",
+   "fieldtype": "Data",
+   "label": "Bank Name"
+  },
+  {
+   "fieldname": "account_name",
+   "fieldtype": "Data",
+   "label": "Name of Account"
+  },
+  {
+   "fieldname": "account_type",
+   "fieldtype": "Data",
+   "label": "Account Type"
+  },
+  {
+   "fieldname": "account_number",
+   "fieldtype": "Data",
+   "label": "Account Number"
+  },
+  {
+   "fieldname": "routing_number",
+   "fieldtype": "Data",
+   "label": "Routing Number"
+  },
+  {
+   "fieldname": "bank_note",
+   "fieldtype": "Small Text",
+   "label": "Bank Note",
+   "default": "*No other bank charge should be deducted from the total amount."
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1
+  }
+ ],
+ "actions": [],
+ "links": [],
+ "states": []
+}

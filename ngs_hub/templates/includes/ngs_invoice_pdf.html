@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Invoice {{ invoice.name | e }}</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #20252a; line-height: 1.4; }
+    table { border-collapse: collapse; width: 100%; table-layout: fixed; }
+    td, th { vertical-align: top; overflow-wrap: break-word; word-wrap: break-word; }
+    .header .company { width: 42%; }
+    .header .logo-cell { width: 16%; text-align: center; vertical-align: middle; }
+    .header .title { width: 42%; text-align: right; }
+    .logo { width: 90px; height: auto; }
+    .company-name { font-size: 15pt; font-weight: bold; margin-bottom: 5px; }
+    h1 { font-size: 28pt; color: #17352f; margin: 0 0 16px; }
+    .multiline { white-space: pre-line; }
+    .billing { margin: 24px 0; }
+    .billing td { width: 58%; padding-right: 16px; }
+    .billing td:last-child { width: 42%; padding-right: 0; }
+    .label { color: #526269; font-weight: bold; }
+    .meta td { padding: 4px 0; }
+    .meta td:first-child { width: 45%; }
+    .meta td:last-child { width: 55%; text-align: right; }
+    .amount-summary { page-break-inside: avoid; }
+    .amount-summary th { background: #17352f; color: white; text-align: left; padding: 8px; }
+    .amount-summary td { padding: 12px 8px; border-bottom: 1px solid #d5dce0; }
+    .amount-summary th:first-child { width: 70%; }
+    .amount-summary th:last-child { width: 30%; }
+    .amount-summary .number { text-align: right; font-weight: bold; font-size: 12pt; }
+    .bank { margin-top: 28px; page-break-inside: avoid; }
+    .bank h2 { font-size: 12pt; margin: 0 0 8px; }
+    .note { font-size: 9pt; margin-top: 14px; }
+  </style>
+</head>
+<body>
+  <table class="header"><tr>
+    <td class="company">
+      <div class="company-name">{{ company.company_name | e }}</div>
+      <div class="multiline">{{ company.company_address | e }}</div>
+      <div>{{ company.company_email | e }}</div>
+      <div>{{ company.company_phone | e }}</div>
+      <div>{{ company.company_website | e }}</div>
+    </td>
+    <td class="logo-cell"><img class="logo" src="{{ logo | e }}" alt="Athenomics"></td>
+    <td class="title"><h1>Invoice</h1></td>
+  </tr></table>
+  <table class="billing"><tr>
+    <td>
+      <div class="label">Bill To:</div>
+      <strong>{{ invoice.invoice_customer | e }}</strong>
+      <div>{{ invoice.invoice_email_address | e }}</div>
+      <div class="multiline">{{ invoice.billing_address | e }}</div>
+    </td>
+    <td><table class="meta">
+      <tr><td class="label">Invoice Number:</td><td>{{ invoice.name | e }}</td></tr>
+      <tr><td class="label">Created Date:</td><td>{{ invoice.issue_date | e }}</td></tr>
+      <tr><td class="label">Due Date:</td><td>{{ invoice.due_date | e }}</td></tr>
+      <tr><td class="label">Order:</td><td>{{ invoice.order | e }}</td></tr>
+      <tr><td class="label">Currency:</td><td>{{ invoice.currency | e }}</td></tr>
+    </table></td>
+  </tr></table>
+  <table class="amount-summary">
+    <tr><th>{% if invoice.po_number %}PO{% else %}Order Reference{% endif %}</th><th class="number">Amount ({{ invoice.currency | e }})</th></tr>
+    <tr><td>{{ (invoice.po_number or invoice.order) | e }}</td><td class="number">{{ "{:,.2f}".format(invoice.total_amount | float) }}</td></tr>
+  </table>
+  <div class="bank">
+    <h2>Account Information:</h2>
+    <div>Bank Name: {{ company.bank_name | e }}</div>
+    <div>Name of Account: {{ company.account_name | e }}</div>
+    <div>Account Type: {{ company.account_type | e }}</div>
+    <div>Account Number: {{ company.account_number | e }}</div>
+    <div>Routing number: {{ company.routing_number | e }}</div>
+    <div class="note">{{ company.bank_note | e }}</div>
+  </div>
+</body>
+</html>

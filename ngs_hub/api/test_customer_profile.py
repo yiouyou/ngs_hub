@@ -146,3 +146,27 @@ class TestInvoiceProfileAPI(TestCase):
 			self.assertRaises(frappe.PermissionError),
 		):
 			portal.register_ngs_customer({**self.payload, "invoice_email_address": "billing@example.com"})
+
+	def test_billing_address_is_owner_scoped_trimmed_and_optional(self):
+		self.customer.billing_address = "Admin address"
+		self.save()
+		self.assertEqual(self.customer.billing_address, "Admin address")
+		self.save(billing_address="  Accounts payable address\nSecond line  ", billing_category="Academic")
+		self.assertEqual(self.customer.billing_address, "Accounts payable address\nSecond line")
+		self.assertIsNone(self.customer.get("billing_category"))
+		self.save(billing_address="")
+		self.assertEqual(self.customer.billing_address, "")
+
+	def test_invalid_billing_address_fails_before_role_or_profile_writes(self):
+		for value in (123, [], {}, "x" * 2001):
+			with (
+				self.subTest(value_type=type(value).__name__),
+				patch.object(frappe, "session", frappe._dict(user=self.user.name)),
+				patch.object(frappe.db, "get_value", return_value=self.customer.name),
+				patch.object(frappe, "get_doc", return_value=self.user),
+				patch.object(portal, "ensure_ngs_external_customer_user") as roles,
+				self.assertRaises(frappe.ValidationError),
+			):
+				portal.register_ngs_customer({**self.payload, "billing_address": value})
+			roles.assert_not_called()
+		self.customer.save.assert_not_called()

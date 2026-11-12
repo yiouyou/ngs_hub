@@ -14,6 +14,8 @@
   "phone",
   "email",
   "invoice_email_address",
+  "billing_category",
+  "billing_address",
   "address",
   "adress",
   "lab_group_name",
@@ -51,6 +53,19 @@
    "fieldtype": "Data",
    "label": "Invoice Email Address",
    "options": "Email",
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "billing_category",
+   "fieldtype": "Select",
+   "label": "Billing Category",
+   "options": "\nCommercial\nAcademic",
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "billing_address",
+   "fieldtype": "Small Text",
+   "label": "Billing Address",
    "allow_on_submit": 1
   },
   {

@@ -23,6 +23,10 @@ def _authorize_erpnext_sync(source_doc, expected_doctype):
 	customer = frappe.db.get_value(expected_doctype, source_doc.name, "customer")
 	if not customer or customer != source_doc.customer:
 		frappe.throw(_("Save the NGS document before synchronizing it."), frappe.PermissionError)
+	link_field = "erpnext_quotation" if expected_doctype == "NGS Quote" else "erpnext_sales_order"
+	saved_link = frappe.db.get_value(expected_doctype, source_doc.name, link_field)
+	if (source_doc.get(link_field) or None) != (saved_link or None):
+		frappe.throw(_("The ERPNext link must match the saved NGS document."), frappe.PermissionError)
 	if user != "Administrator":
 		user_type = frappe.db.get_value("User", user, "user_type")
 		if not frappe.db.get_value("User", user, "enabled"):
@@ -79,27 +83,29 @@ def sync_ngs_quote_to_quotation(quote_doc):
 	if quote_doc.get("status") == "Cancelled":
 		return None
 	_authorize_erpnext_sync(quote_doc, "NGS Quote")
-	erp_customer = get_or_create_erp_customer(quote_doc)
 	quotation_name = quote_doc.get("erpnext_quotation")
 	if quotation_name and not frappe.db.exists("Quotation", quotation_name):
 		quotation_name = None
 
 	if quotation_name:
 		quotation = frappe.get_doc("Quotation", quotation_name)
-		if quotation.quotation_to != "Customer" or quotation.party_name != erp_customer:
-			frappe.throw(_("The linked ERPNext quotation belongs to a different customer."))
+		if quotation.quotation_to != "Customer" or not quotation.party_name:
+			frappe.throw(_("The linked ERPNext quotation must belong to a customer."))
 		if quotation.docstatus != 0:
 			return quotation.name
+		# The authorized persisted link fixes the financial party, not the mutable profile.
+		erp_customer = quotation.party_name
 		quotation.set("items", [])
 	else:
+		erp_customer = get_or_create_erp_customer(quote_doc)
 		quotation = frappe.new_doc("Quotation")
+		quotation.transaction_date = today()
+		quotation.valid_till = add_days(quotation.transaction_date, 30)
 
 	quotation.update({
 		"quotation_to": "Customer",
 		"party_name": erp_customer,
 		"customer_name": quote_doc.get("company_institution") or erp_customer,
-		"transaction_date": today(),
-		"valid_till": add_days(today(), 30),
 		"order_type": "Sales",
 		"company": get_default_company(),
 		"currency": get_quote_currency(quote_doc),
@@ -132,26 +138,27 @@ def sync_ngs_order_to_sales_order(order_doc):
 	if not order_doc.get("items"):
 		return None
 	_authorize_erpnext_sync(order_doc, "NGS Order")
-	erp_customer = get_or_create_erp_customer(order_doc)
 	sales_order_name = order_doc.get("erpnext_sales_order")
 	if sales_order_name and not frappe.db.exists("Sales Order", sales_order_name):
 		sales_order_name = None
 
 	if sales_order_name:
 		sales_order = frappe.get_doc("Sales Order", sales_order_name)
-		if sales_order.customer != erp_customer:
-			frappe.throw(_("The linked ERPNext sales order belongs to a different customer."))
+		if not sales_order.customer:
+			frappe.throw(_("The linked ERPNext sales order must belong to a customer."))
 		if sales_order.docstatus != 0:
 			return sales_order.name
+		erp_customer = sales_order.customer
 		sales_order.set("items", [])
 	else:
+		erp_customer = get_or_create_erp_customer(order_doc)
 		sales_order = frappe.new_doc("Sales Order")
+		sales_order.transaction_date = today()
+		sales_order.delivery_date = add_days(sales_order.transaction_date, 30)
 
 	currency = get_order_currency(order_doc)
 	sales_order.update({
 		"customer": erp_customer,
-		"transaction_date": today(),
-		"delivery_date": add_days(today(), 30),
 		"order_type": "Sales",
 		"company": get_default_company(),
 		"currency": currency,
@@ -166,7 +173,7 @@ def sync_ngs_order_to_sales_order(order_doc):
 	})
 
 	for order_item in order_doc.get("items", []):
-		sales_order.append("items", build_sales_order_item(order_item))
+		sales_order.append("items", build_sales_order_item(order_item, sales_order.delivery_date))
 
 	sales_order.flags.ignore_permissions = True
 	with _erpnext_sync_user(order_doc, "NGS Order"):
@@ -188,7 +195,7 @@ def get_or_create_erp_customer(quote_doc):
 	return erp_customer
 
 
-def build_sales_order_item(order_item):
+def build_sales_order_item(order_item, delivery_date):
 	quote_item = get_quote_item(order_item)
 	item_code = get_item_code(order_item, quote_item)
 	description = get_item_description(order_item, quote_item)
@@ -200,7 +207,7 @@ def build_sales_order_item(order_item):
 		"uom": get_item_uom(item_code),
 		"conversion_factor": 1,
 		"rate": get_order_item_rate(order_item, quote_item),
-		"delivery_date": add_days(today(), 30),
+		"delivery_date": delivery_date,
 	}
 
 

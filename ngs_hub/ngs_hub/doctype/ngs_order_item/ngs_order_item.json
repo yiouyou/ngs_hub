@@ -26,6 +26,7 @@
   "use_price_override",
   "override_unit_price",
   "details_snapshot_version",
+  "is_processing_fee",
   "unit_price",
   "amount",
   "notes",
@@ -154,6 +155,13 @@
    "fieldname": "details_snapshot_version",
    "fieldtype": "Int",
    "label": "Details Snapshot Version",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "is_processing_fee",
+   "fieldtype": "Check",
+   "label": "Processing Fee",
    "read_only": 1,
    "hidden": 1
   },

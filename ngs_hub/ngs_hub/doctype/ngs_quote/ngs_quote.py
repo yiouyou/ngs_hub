@@ -13,7 +13,12 @@ from ngs_hub.api.erpnext_sync import sync_ngs_quote_to_quotation
 from ngs_hub.api.frappe_crm_sync import sync_ngs_quote_to_frappe_crm_deal
 from ngs_hub.api.pricing_snapshot import create_pricing_snapshot
 from ngs_hub.api.quote_products import normalize_quote_item, validate_number
-from ngs_hub.api.sequencing_pricing import SEQUENCING_READS, SMALL_FRAGMENT_DNA, apply_document_sequencing, catalog_price
+from ngs_hub.api.sequencing_pricing import (
+	SEQUENCING_READS,
+	SMALL_FRAGMENT_DNA,
+	apply_document_sequencing,
+	catalog_price,
+)
 from ngs_hub.api.service_summary import build_project_summary
 
 TENX_TISSUE_DISSOCIATION_SAMPLE_TYPES = {"Fresh Tissue or Organoid"}
@@ -125,10 +130,20 @@ class NGSQuote(Document):
 	def validate(self):
 		if not self.customer:
 			frappe.throw(_("Customer is required to generate Quote"))
+		self.validate_erpnext_link()
 		self.set_customer_snapshot()
 		self.apply_quote_rules()
 		self.set_project_summary()
 		self.calculate_total()
+
+	def validate_erpnext_link(self):
+		# Frappe reloads this snapshot from the database before save validation.
+		previous = self.get_doc_before_save() if not self.is_new() else None
+		saved_link = previous.get("erpnext_quotation") if previous else None
+		if (self.get("erpnext_quotation") or None) != (saved_link or None):
+			frappe.throw(_("The ERPNext quotation link is managed by synchronization."), frappe.PermissionError)
+		if saved_link and self.customer != previous.customer:
+			frappe.throw(_("The customer cannot change after linking an ERPNext quotation."), frappe.PermissionError)
 
 	def after_insert(self):
 		sync_ngs_quote_to_quotation(self)

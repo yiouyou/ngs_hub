@@ -7,6 +7,7 @@ from werkzeug.local import LocalProxy
 
 from ngs_hub.api import erpnext_sync
 from ngs_hub.api.erpnext_sync import _erpnext_sync_user
+from ngs_hub.ngs_hub.doctype.ngs_quote.ngs_quote import NGSQuote
 
 
 class TestERPNextSyncUser(TestCase):
@@ -29,6 +30,7 @@ class TestERPNextSyncUser(TestCase):
 		self.source.get = lambda key, default=None: getattr(self.source, key, default)
 		self.source.items = [object()]
 		self.saved_customer = "CUSTOMER-TEST"
+		self.saved_links = {}
 		self.user_customer = "CUSTOMER-TEST"
 		self.user_type = "Website User"
 		self.enabled = True
@@ -49,7 +51,7 @@ class TestERPNextSyncUser(TestCase):
 
 	def get_value(self, doctype, name, field):
 		if doctype in {"NGS Order", "NGS Quote"}:
-			return self.saved_customer
+			return self.saved_customer if field == "customer" else self.saved_links.get(field)
 		if doctype == "NGS Customer":
 			return self.user_customer
 		if doctype == "User":
@@ -140,7 +142,7 @@ class TestERPNextSyncUser(TestCase):
 			prepare_customer.assert_not_called()
 		self.switch_user.assert_not_called()
 
-	def test_rejects_erp_customer_mismatch_and_preserves_submitted_targets(self):
+	def test_rejects_untrusted_links_even_when_erp_customer_matches(self):
 		self.local.session.user = "Administrator"
 		self.local.session.sid = "Administrator"
 		self.local.session.data = {}
@@ -154,17 +156,58 @@ class TestERPNextSyncUser(TestCase):
 			):
 				self.source.doctype = doctype
 				setattr(self.source, field, "ERP-TARGET")
+				for saved_link in (None, "SAVED-TARGET"):
+					self.saved_links[field] = saved_link
+					for customer in ("ANOTHER-CUSTOMER", "ERP-CUSTOMER"):
+						with self.subTest(doctype=doctype, saved_link=saved_link, customer=customer):
+							target = SimpleNamespace(
+								name="ERP-TARGET", docstatus=1, customer=customer, party_name=customer,
+								quotation_to="Customer", save=Mock(), set=Mock(),
+							)
+							get_target.return_value = target
+							with self.assertRaises(frappe.PermissionError):
+								synchronize(self.source)
+							target.save.assert_not_called()
+							target.set.assert_not_called()
+			get_target.assert_not_called()
+		self.switch_user.assert_not_called()
+
+	def test_rejects_clearing_persisted_links_before_customer_preparation(self):
+		with patch.object(frappe, "get_installed_apps", return_value=["erpnext"]), patch.object(
+			erpnext_sync, "get_or_create_erp_customer"
+		) as prepare_customer:
+			for doctype, synchronize, field in (
+				("NGS Order", erpnext_sync.sync_ngs_order_to_sales_order, "erpnext_sales_order"),
+				("NGS Quote", erpnext_sync.sync_ngs_quote_to_quotation, "erpnext_quotation"),
+			):
+				self.source.doctype = doctype
+				self.saved_links[field] = "SAVED-TARGET"
+				with self.assertRaises(frappe.PermissionError):
+					synchronize(self.source)
+			prepare_customer.assert_not_called()
+		self.switch_user.assert_not_called()
+
+	def test_trusted_submitted_targets_keep_historical_customer(self):
+		frappe.db.exists = Mock(return_value=True)
+		with patch.object(frappe, "get_installed_apps", return_value=["erpnext"]), patch.object(
+			erpnext_sync, "get_or_create_erp_customer", return_value="ERP-NEW"
+		) as prepare_customer, patch.object(frappe, "get_doc") as get_target:
+			for doctype, synchronize, field in (
+				("NGS Order", erpnext_sync.sync_ngs_order_to_sales_order, "erpnext_sales_order"),
+				("NGS Quote", erpnext_sync.sync_ngs_quote_to_quotation, "erpnext_quotation"),
+			):
+				self.source.doctype = doctype
+				setattr(self.source, field, "ERP-TARGET")
+				self.saved_links[field] = "ERP-TARGET"
 				target = SimpleNamespace(
-					name="ERP-TARGET", docstatus=1, customer="ANOTHER-CUSTOMER", party_name="ANOTHER-CUSTOMER",
+					name="ERP-TARGET", docstatus=1, customer="ERP-OLD", party_name="ERP-OLD",
 					quotation_to="Customer", save=Mock(), set=Mock(),
 				)
 				get_target.return_value = target
-				with self.assertRaises(frappe.ValidationError):
-					synchronize(self.source)
-				target.customer = target.party_name = "ERP-CUSTOMER"
 				self.assertEqual(synchronize(self.source), "ERP-TARGET")
 				target.save.assert_not_called()
 				target.set.assert_not_called()
+			prepare_customer.assert_not_called()
 
 	def test_restores_complete_request_after_failure(self):
 		with self.assertRaisesRegex(RuntimeError, "sync failed"):
@@ -213,3 +256,70 @@ class TestERPNextSyncUser(TestCase):
 		with _erpnext_sync_user(self.source, "NGS Order"):
 			self.assertIs(self.local.form_dict, self.context["form_dict"])
 		self.switch_user.assert_not_called()
+
+
+class TestQuoteERPNextLinkGuard(TestCase):
+	def setUp(self):
+		self.quote = NGSQuote({"doctype": "NGS Quote", "name": "QUOTE-TEST", "customer": "NGS-CUSTOMER"})
+		self.saved = frappe._dict(customer="NGS-CUSTOMER", erpnext_quotation=None)
+		self.quote._doc_before_save = self.saved
+		for name in ("set_customer_snapshot", "apply_quote_rules", "set_project_summary", "calculate_total"):
+			patcher = patch.object(NGSQuote, name)
+			patcher.start()
+			self.addCleanup(patcher.stop)
+		for patcher in (
+			patch.object(frappe, "throw", side_effect=TestERPNextSyncUser.throw),
+		):
+			patcher.start()
+			self.addCleanup(patcher.stop)
+
+	def test_new_quote_rejects_client_link_even_for_administrator(self):
+		self.quote.erpnext_quotation = "FOREIGN-QUOTATION"
+		self.saved.erpnext_quotation = "FOREIGN-QUOTATION"
+		with patch.object(NGSQuote, "is_new", return_value=True), self.assertRaises(frappe.PermissionError):
+			self.quote.validate()
+		self.quote.set_customer_snapshot.assert_not_called()
+
+	def test_existing_quote_rejects_link_injection_replacement_and_removal(self):
+		for saved_link, supplied_link in ((None, "FOREIGN"), ("SAVED", "FOREIGN"), ("SAVED", None)):
+			with self.subTest(saved=saved_link, supplied=supplied_link):
+				self.saved.erpnext_quotation = saved_link
+				self.quote.erpnext_quotation = supplied_link
+				with patch.object(NGSQuote, "is_new", return_value=False), self.assertRaises(frappe.PermissionError):
+					self.quote.validate()
+		self.quote.set_customer_snapshot.assert_not_called()
+
+	def test_linked_quote_rejects_customer_reparenting(self):
+		self.saved.erpnext_quotation = self.quote.erpnext_quotation = "SAVED"
+		self.quote.customer = "ANOTHER-NGS-CUSTOMER"
+		with patch.object(NGSQuote, "is_new", return_value=False), self.assertRaises(frappe.PermissionError):
+			self.quote.validate()
+		self.quote.set_customer_snapshot.assert_not_called()
+
+	def test_unchanged_saved_link_remains_valid(self):
+		self.saved.erpnext_quotation = self.quote.erpnext_quotation = "SAVED"
+		with patch.object(NGSQuote, "is_new", return_value=False):
+			self.quote.validate()
+		self.quote.calculate_total.assert_called_once_with()
+
+	def test_missing_presave_snapshot_cannot_authorize_supplied_link(self):
+		self.quote._doc_before_save = None
+		self.quote.erpnext_quotation = "FOREIGN"
+		with patch.object(NGSQuote, "is_new", return_value=False), self.assertRaises(frappe.PermissionError):
+			self.quote.validate()
+
+	def test_save_snapshot_reload_discards_forged_previous_link(self):
+		self.quote.erpnext_quotation = "FOREIGN"
+		self.quote._doc_before_save = frappe._dict(customer=self.quote.customer, erpnext_quotation="FOREIGN")
+		with patch.object(NGSQuote, "is_new", return_value=False), patch.object(
+			frappe, "get_doc", return_value=self.saved
+		) as get_saved:
+			self.quote.load_doc_before_save(raise_exception=True)
+			get_saved.assert_called_once_with("NGS Quote", "QUOTE-TEST", for_update=True)
+			with self.assertRaises(frappe.PermissionError):
+				self.quote.validate()
+
+	def test_new_unlinked_quote_remains_valid(self):
+		with patch.object(NGSQuote, "is_new", return_value=True):
+			self.quote.validate()
+		self.quote.calculate_total.assert_called_once_with()
